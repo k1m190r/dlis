@@ -3,9 +3,9 @@ package main
 import "testing"
 
 func BenchmarkReadManual(b *testing.B) {
-	_ := readManual()
+	_ = readManual()
 }
 
 func BenchmarkReadReflect(b *testing.B) {
-	_ := readReflect()
+	_ = readReflect()
 }
