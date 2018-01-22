@@ -17,7 +17,7 @@ var fname = "n802b_SHELL14.dls"
 // Logical Format $2.2
 
 // LRSH - Logical Record Segment Header $2.2.2.1 Figure 2-2.
-// applies to all segments of LR and must be same for all
+// applies to all segments of LR and must be consistent for all
 type LRSH struct {
 	Length  uint16 // UNORM, Length, must be even, minimum 16 bytes
 	Attribs byte   // Figure 2-3.
@@ -27,7 +27,7 @@ type LRSH struct {
 // Logical Record Segment Encryption Packet $2.2.2.2 Figure 2-4.
 type LRSEP struct {
 	Size           uint16 // UNORM, must be even
-	CompanyCode    uint16 // $4.1.9 http://w3.energistics.org/rp66/v1/rp66v1_sec4.html
+	CompanyCode    uint16 // $4.1.9
 	EncriptionInfo *byte  // optional, so LRSEP can be 4 bytes
 }
 
@@ -37,11 +37,11 @@ type LRSB []byte
 // Logical Record Segment Trailer $2.2.2.4
 type LRST struct {
 	Padding  []byte
-	CheckSum *uint16 // optional, see LRSH.Attribs bit 6, http://w3.energistics.org/rp66/v1/rp66v1_appe.html
+	CheckSum *uint16 // optional, see LRSH.Attribs bit 6, App E
 	Length   uint16  // UNORM, Trailing Length
 }
 
-// Logical Record Segment is interface between Logical Format and Physical Format
+// Logical Record Segment is interface between LF and Physical Format
 // it applies to whole of LR not LRS, redundancy is intentional
 type LRS struct {
 	Header        LRSH
@@ -68,21 +68,30 @@ type LF []*LR
 // One SU can contain several LF
 // One LF can span multiple SU
 // SU starts with SUL and has whole number of LRS
+// Termination $2.3.5: run out of data.
 
 // Storage Set ordered set of all SU that have LF that span across SU
 // All SU in Storage Set have same Struct and SetID
+// Storage set contains single LF.
 
 // Physical Format is intersection of Logical Format, Visible and Invisible envelops
 // Invisible does not matter, we dont see it
 // Visible Envelop is visible to us on read
+
+// Visible Record
+type VR struct {
+	Length        uint16 // UNORM, len of whole VR struct, 20 is min
+	FormatVersion uint16 // $2.3.6.2 0xFF01, USHORT = 1 - always
+	LF            LF     // bunch of LRS
+}
 
 // SUL $2.3.2 = storage unit label first 80 bytes (0x50) of Visible Envelop
 // Fig 2-7. Only one SUL per SU, before LF.
 type SUL struct {
 	SeqNum      [4]byte  // sequence number
 	DLISVersion [5]byte  // "V1.00" - most likely
-	Struct      [6]byte  // storage unit structure - most likely a "RECORD"
-	MaxRecLen   [5]byte  // maximum record length, applies to Visible Records $2.3.6
+	Struct      [6]byte  // storage unit structure, "RECORD" = Record Storage Unit
+	MaxRecLen   [5]byte  // maximum record length, applies to Visible Records $2.3.6, $2.3.6.5 abs max is 16,384 (2^14)
 	SetID       [60]byte // storage set identifier
 }
 
