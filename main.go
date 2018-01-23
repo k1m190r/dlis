@@ -8,8 +8,9 @@ import (
 	"os"
 )
 
-// var fname = "TestDataSet.dlis"
-var fname = "n802b_SHELL14.dls"
+var fname = "TestDataSet.dlis"
+
+//var fname = "n802b_SHELL14.dls"
 
 // DLIS Spec: http://w3.energistics.org/rp66/v1/Toc/main.html
 
@@ -82,7 +83,19 @@ type LF []*LR
 type VR struct {
 	Length        uint16 // UNORM, len of whole VR struct, 20 is min
 	FormatVersion uint16 // $2.3.6.2 0xFF01, USHORT = 1 - always
-	LF            LF     // bunch of LRS
+	LF            []LRS  // bunch of LRS
+}
+
+// read from VR
+func (f *VR) Read(b []byte) (n int, err error) {
+	// read 8 bytes big-endian
+
+	return 0, nil
+}
+
+// write to VR
+func (f *VR) Write(b []byte) (n int, err error) {
+	return 0, nil
 }
 
 // SUL $2.3.2 = storage unit label first 80 bytes (0x50) of Visible Envelop
@@ -103,7 +116,8 @@ func (s SUL) String() string {
 }
 
 type VisibleEnvelop struct {
-	SUL SUL
+	Label SUL
+	VR    []*VR
 }
 
 func readManual() (env VisibleEnvelop) {
@@ -114,11 +128,11 @@ func readManual() (env VisibleEnvelop) {
 	}
 	defer dclose(f)
 
-	_, err = f.Read(env.SUL.SeqNum[:])
-	_, err = f.Read(env.SUL.DLISVersion[:])
-	_, err = f.Read(env.SUL.Struct[:])
-	_, err = f.Read(env.SUL.MaxRecLen[:])
-	_, err = f.Read(env.SUL.SetID[:])
+	_, err = f.Read(env.Label.SeqNum[:])
+	_, err = f.Read(env.Label.DLISVersion[:])
+	_, err = f.Read(env.Label.Struct[:])
+	_, err = f.Read(env.Label.MaxRecLen[:])
+	_, err = f.Read(env.Label.SetID[:])
 
 	return
 }
@@ -136,7 +150,32 @@ func readReflect() (env VisibleEnvelop) {
 }
 
 func main() {
+	// read
+	// need to read an process one VR at a time
+	// VR absolute max size is 16,384 (2^14) so this can be a starting point
+	// VR actual size is in SUL use that as primary buffer size
+	// Read VR header first 8 bytes Len/Format
+	// Read rest of VR Len VR-8
+	//   Interpret all LRS in VR
 
+	var temp1 struct {
+		Label SUL
+		// VR
+		VR struct {
+			Length        uint16 // UNORM, len of whole VR struct, 20 is min
+			FormatVersion uint16 // $2.3.6.2 0xFF01, USHORT = 1 - always
+		}
+	}
+
+	f, err := os.Open(fname)
+	if err != nil {
+		log.Printf("error opening file %s : %v", fname, err)
+		return
+	}
+	defer dclose(f)
+	err = binary.Read(f, binary.BigEndian, &temp1)
+
+	fmt.Printf("%+v", temp1)
 }
 
 func dclose(c io.Closer) {
