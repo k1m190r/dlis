@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_sec4.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ <TITLE>Chapter 4: SEMANTIC TERMINOLOGY AND RULES </TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"></HEAD> 
+<BODY>
+<H3><A name="4"> 4 - SEMANTIC TERMINOLOGY AND RULES</A></H3>
+<H4><A name="4_1">4.1 Terminology</A></H4>This  section introduces terminology 
+that helps provide a uniform approach  to the definition, in following chapters, 
+of semantic structures  within Logical Files. 
+<H5><A name="4_1_1">4.1.1 Names</A></H5>The <EM>Name</EM> of a Set is the value 
+of the Name Characteristic of its Set,  Name; Component.  Some Sets may have no 
+Name Characteristic and  are thus unnamed.  The Name of an Attribute is the 
+value of its  Label Characteristic.   
+<P>The Name of an Object is the value of the  Name Characteristic (all 
+Subfields) of its Object Component. 
+<H5><A name="4_1_2">4.1.2 Lists</A></H5>Frequently  an Attribute will be said to 
+contain a <EM>List</EM> of items.  This refers to the fact that the Attribute 
+can have a Count  Characteristic greater than 1.  The elements of the List may 
+ or may not correspond directly to  the Elements of the Value Characteristic.  
+Unless otherwise stated in the definition of the Attribute,  a one-to-one 
+correspondence should be assumed. 
+<P>When exceptions are made it is because the  set of Value Elements can be 
+subdivided into equal-size subgroups,  each of which has some higher semantic 
+meaning (defined externally  to the Attribute) than the individual Elements.  
+For example,  if a given Attribute has a Value with three Elements, then it  is 
+possible for a different Attribute to contain five instances  of the first 
+Attribute’s Value, linearly ordered.  The latter  Attribute would have a Value 
+with fifteen Elements.  Both Attributes,  of course, would have to have the same 
+Representation Code and  Units Characteristics. 
+<H5><A name="4_1_3">4.1.3 Origins</A></H5>An <EM>Origin</EM> is represented by 
+an Object of Type Origin that identifies and  characterizes a particular 
+instance of acquired or computed log  data and its associated information.  
+Information from one or  more different Origins can be present in a single 
+Logical File. 
+<P>
+<H5><A name="4_1_4">4.1.4 Channels</A></H5>A <EM>Channel</EM> is a measured or 
+computed quantity that occurs as a sequence  of samples indexed against depth, 
+time or possibly some other  physical dimension of a well.  Samples can be 
+scalar or can consist  of an array of elements. 
+<H5><A name="4_1_5">4.1.5 Frames and Frame Data</A></H5>Frames  are used to 
+represent "horizontal segments" of log  data.  Imagine a group of Channels 
+aligned side-by-side to form  a band.  A Frame is obtained by slicing a 
+horizontal segment  of the band containing one sample per Channel.  Frames are 
+represented  in Indirectly Formatted Logical Records, one Frame per Logical 
+ Record.  The Channel samples that are recorded in Frames are  called 
+<EM>Frame</EM> <EM>Data</EM>. 
+<H5><A name="4_1_6">4.1.6 Static Information</A></H5>Static  Information (SI) 
+consists of Objects typically used to describe  Channels and Frames, and 
+information about Channels and Frames.  This information is usually required by 
+applications and the  system prior to the processing of Frames. 
+<H5><A name="4_1_7">4.1.7 Transient Information</A></H5>Transient  Information 
+consists of Objects that correspond to events  that occur during the processing 
+of Frames.  These events can  affect Objects in the SI or can correspond to 
+messages between  the operator and the system. 
+<H5><A name="4_1_8">4.1.8 Spatial Coordinates of a Well</A></H5>Each  well has a 
+<EM>Well Reference Point</EM> (WRP) that defines the  origin of the well’s 
+spatial coordinate system.  The Well Reference  Point is a fixed point in space 
+defined for each Origin.  This  point is defined relative to some permanent 
+structure, such as  ground level or mean sea level.  It need not coincide with 
+the  permanent structure, but its vertical distance from the permanent 
+ structure must be stated.  This information is recorded in an  Object of Type 
+Well-Reference-Point (see Chapter 5). 
+<P>Spatial coordinates of a well are depth, <EM>Radial  Drift</EM>, and 
+<EM>Angular Drift</EM>.  Depth is defined in terms  of <EM>Borehole Depth</EM> 
+or <EM>Vertical Depth</EM>.  Figure 4-1  illustrates the spatial coordinate 
+system of a well. 
+<P align="center"><IMG width="480" height="360" src="Chapter%204%20SEMANTIC%20TERMINOLOGY%20AND%20RULES_files/rp66v1_sec4_fig1.gif"> 
+<BR><B>Figure 4-1.  Illustration of Spatial Coordinate System of a Well</B> 
+<P>Comments: 
+<UL>
+  <LI> 1. <EM>Vertical Generatrix</EM> is a vertical  line that passes through 
+  the Well Reference Point (WRP).  
+  <LI> 2. <EM>Vertical Depth</EM> is the distance  measured along the Vertical 
+  Generatrix from the WRP.  Vertical  Depth is zero at the WRP, is positive 
+  below the WRP and is negative  above the WRP.  
+  <LI> 3. <EM>Borehole Depth</EM> is the distance  measured along the borehole 
+  from the WRP.  Borehole Depth is  zero at the WRP and is positive below the 
+  WRP.  Above the WRP,  Borehole Depth is defined to be equal to Vertical Depth. 
+ 
+  <LI> 4. <EM>Radial Drift</EM> is the orthogonal  distance measured from the 
+  Vertical Generatrix.  The Radial Drift  of a point in space is the shortest 
+  distance between that point  and the Vertical Generatrix.  The line segment 
+  representing that  distance is called the point’s <EM>Line of Radial 
+  Drift</EM>.  
+  <LI> 5. <EM>Angular Drift</EM> is the angle measured  eastwardly (clockwise 
+  when viewed from above) about the Vertical  Generatrix from North.  The 
+  Angular Drift of a point in space  is the angle measured eastwardly from North 
+  to the point’s Line  of Radial Drift.  North is defined to be the direction 
+  from the  WRP defining the shortest path of constant longitude to the North 
+   Pole. </LI></UL>
+<H5><A name="4_1_8_1">4.1.8.1 Tool Zero Point</A></H5>When  a tool string is 
+lowered into the Borehole, a <EM>Tool Zero Point</EM> is defined for it.  The 
+Tool<EM></EM>Zero<EM></EM>Point is a fixed  point on the tool string, usually 
+the bottom of the bottom tool,  that stands opposite the Well Reference Point 
+when Borehole Depth  is zero. 
+<H5><A name="4_1_9">4.1.9 Producers and Consumers</A></H5>The term  
+<EM>Producer</EM> is used to designate the system or application  program or 
+company that produces information recorded in the  DLIS Logical Format.  The 
+term <EM>Consumer</EM> is used to designate  the system or application program 
+or company that uses information  recorded in the DLIS Logical Format.  The 
+specific meaning is  derived from the context of the text in which the term 
+appears. 
+<H5><A name="4_1_10">4.1.10 Logical Record Types</A></H5>Logical  Records can be 
+<EM>Public</EM> or <EM>Private</EM>.  Public Logical  Records are used to record 
+information for which the semantic  structure is defined for all Consumers.  
+Private Logical Records  contain information for which the semantic structure is 
+defined  by the Producer and is not generally intended for public interchange. 
+<P>Appendix A specifies the assignment of numeric  codes for Public and Private 
+Logical Records and the assignment  of Set Types to Public EFLRs. 
+<H5><A name="4_1_11">4.1.11 Private Data Set Types</A></H5>Since  there is no 
+public administration for Set Types defined as Private  Data, the following 
+convention is specified, in order to prevent  name conflicts, for naming of 
+Private Data Set Types: 
+<P>There is a dictionary of integer Company Codes  administered by POSC (see 
+Appendix G).  The name of any Private  Data Set Type shall have the form 
+<EM>code</EM>-<EM>TYPE</EM>, where  <EM>code</EM> is the ASCII representation of 
+the Company Code of  the Producer that defines the Type, and <EM>TYPE</EM> is an 
+arbitrary  name administered by the Producer. 
+<P>If Producer A has Company code 123, for example,  then all Private Data Set 
+Types for Producer A are identified  as 123-<EM>TYPE</EM>.  Specific examples 
+might be 123-PICTURE,  123-GRID, etc. 
+<H5><A name="4_2">4.2 Rules Governing Semantic Structure of Logical 
+Files</A></H5>Some  general rules can be stated that assure a uniform approach 
+to  defining and handling Objects, Sets, and Frames. 
+<H5><A name="4_2_1">4.2.1 Origins</A></H5>No two  Origin Objects in a Logical 
+file may have the same Origin Subfield  value in their Names.  That is, it must 
+be possible to identify  an Origin Object strictly by the Origin Subfield value 
+in its  Name.  The Names of all other Objects in a Logical File must  have an 
+Origin Subfield value that identifies an Origin Object  present in that Logical 
+File.  Informally, this states that all  Objects have Origins and all referenced 
+Origins must be present. 
+<P>In order to preserve the FILE-HEADER Object  as a "fixed-length" record (see 
+§5.1), the Origin Subfield  value in the Name of the Defining Origin must be 
+less than 12810. 
+<H5><A name="4_2_2">4.2.2 Names</A></H5>Attribute  Names, Set Names, Symbolic 
+Codes, Set Types, and the Identifier  Subfield of Object Names are expressed in 
+a single upper case  mode to make matching more efficient.  Except for 
+Identifiers,  the informal convention in this specification is to use whole 
+ words for names.  When two or more words are used, they are separated  by a 
+single dash.  This is not a requirement but is recommended  for readability. 
+<P>Some names are dictionary-controlled  It is  not within the scope of this 
+specification to define the administration  of the dictionaries or the 
+mechanisms for implementing them beyond  the semantics specified in Chapter 7. 
+<H5><A name="4_2_2_1">4.2.2.1 Attribute Names</A></H5>All Attributes  have 
+non-null dictionary-controlled Names that are distinct within  a Template. 
+<H5><A name="4_2_2_2">4.2.2.2 Object Names</A></H5>All Objects  must have Names 
+with non-null Identifier Subfields.  Within a  Logical File all Objects of the 
+same Type must have distinct  Names.  Two Names match if and only if all the 
+corresponding  Subfield values match; otherwise they are distinct.  The Name 
+ 0&amp;0&amp;6‘Matrix is obviously distinct from 0&amp;0&amp;6‘Bit-Size.  It is 
+less obviously also distinct from 0&amp;1&amp;6‘Matrix  as well as from 
+3&amp;0&amp;6‘Matrix. 
+<P>When an Object of a given Type is defined  in this specification, it shall be 
+stated whether the Names are  controlled by a dictionary.  Such Object Names 
+carry semantic  meaning.  Object Names that are not dictionary-controlled shall 
+ have <EM>no semantic meaning</EM>.  Such Names are used only to  distinguish 
+one Object from another of the same Type. 
+<H5><A name="4_2_2_3">4.2.2.3 Set Names</A></H5>Sets  are not required to have 
+Names.  Set Names are not dictionary-controlled,  have no semantic meaning, and 
+are usually defined dynamically  by the system when a Logical File is written.  
+Non-null Set Names  must be distinct throughout the Logical File. 
+<H5><A name="4_2_2_4">4.2.2.4 Symbolic Codes</A></H5>Symbolic  codes may be 
+defined by POSC or by the Producer.  POSC-defined  codes have 
+industry-standardized usage.  The following naming  convention is used to 
+distinguish between  POSC-defined and Producer-defined codes:   Any 
+Producer-defined code must begin with the unique  prefix consisting of the ASCII 
+representation of the Producer’s  numeric Company Code (see Appendix G), 
+followed by a dash (ASCII  code 45<SUB>10</SUB>).  All POSC-defined codes must 
+begin with  an alphabetic character in the range ‘A’ to ‘Z’. 
+<H5><A name="4_2_3">4.2.3 Use of References</A></H5>An Object  can be referenced 
+by Type and Name or by Name from Attributes  of other Objects.  As a special 
+case, an ORIGIN Object is referenced  whenever the integer value in the Origin 
+Subfield of its Name  is used in any other Object Name or when this integer 
+value is  used in the Data Descriptor Reference of an IFLR.  Except for  ORIGIN 
+Objects, which must be present if referenced, any other  Object that is 
+referenced need not be in the same Logical File  as the Object making the 
+reference. 
+<P>In general the sequential ordering between  an Object and the Object that 
+references it is arbitrary, when  both are present in the same Logical File, 
+except that no IFLR  may appear between them.  This rule also holds for Objects 
+that  have Attributes referenced from other Objects. 
+<P>Exceptions for Public Data are limited to  the following: 
+<UL>
+  <LI>
+  <DIR>
+  <DIR>• An ORIGIN Object must follow the FILE-HEADER  Object, but must precede 
+  any other Object or IFLR that references  it.  IFLRs may appear between an 
+  ORIGIN Object and other Objects  that reference it. 
+  <P>• An UPDATE Object must follow any Object  that it references.  IFLRs may 
+  appear between an UPDATE Object  and other Objects that it references. 
+  <P>• IFLRs may appear between an Object in  a Replacement Set and other 
+  Objects that it references or that  reference it.</P></DIR></DIR>Exceptions to 
+  this general rule may also be  specified for Private Data. 
+  <H5><A name="4_2_4">4.2.4 Multiple Occurrences of a Set Type</A></H5>More 
+   than one Set of a given Type may appear in a Logical File.  The  default 
+  Characteristics of Attributes that are declared in the  Templates need not be 
+  the same.  It should be the <EM>intent</EM> of any implementation or utility 
+  to make sure whenever possible  that for all occurrences of a given Set Type 
+  the same Attributes  are declared in the Templates.  It is recognized, 
+  however, that  this may not be reasonably achieved, especially for Transient 
+   Information. 
+  <H5><A name="4_3">4.3 Restrictions Permitted</A></H5>When  the Attributes of 
+  an Object are defined, it is permissible to  restrict some or all of the 
+  Attribute Characteristics to specified  subsets of available values. 
+  <P>The restrictions must be stated explicitly  in the definition.  If the 
+  restriction is not stated, then no  assumptions about the Characteristics of a 
+  given Attribute may  be made by a Consumer.  In this document, the following 
+  format  is used to define Attributes of an Object: 
+  <P align="center"><IMG width="460" height="185" src="Chapter%204%20SEMANTIC%20TERMINOLOGY%20AND%20RULES_files/image184.gif"> 
+  <BR><B>Figure 4-2.  Sample Format for Defining Attributes of an Object</B> 
+  <P>In Figure  4-2, C denotes the Count Characteristic and R denotes the 
+  Representation  Code Characteristic.  The Label Characteristic is defined 
+  explicitly  in the left column.  It is also permissible to restrict the Units 
+   Characteristic and the Value Characteristic, although these restrictions  are 
+  not illustrated in the above table. 
+  <P>A restriction, if it exists, is stated as  an enumeration of one or more 
+  allowed values. 
+  <P>Even if an Attribute’s Characteristics are  explicitly restricted in this 
+  standard, it is still necessary  to record the Characteristics according to 
+  the rules of the Template  and Global default values described in Chapter 3. 
+  <H5><A name="4_4">4.4 Frequently Used Attributes</A></H5>Attributes 
+  <P>Certain  Attributes are used by many different Object Types.  Four such 
+   Attributes, <EM>Long-Name</EM>, <EM>Description</EM>, <EM>Dimension  </EM>and 
+  <EM>Axis</EM>, are described here.  Redundant comments  may be omitted when 
+  these Attributes appear in the definitions  of Objects in later chapters. 
+  <H5><A name="4_4_1">4.4.1 LONG-NAME Attribute</A></H5>Certain  Objects require 
+  long descriptive names that cannot be used conveniently  in the Object Name.  
+  Such Objects shall have an Attribute labelled  Long-Name, which is defined in 
+  Figure 4-3. 
+  <P align="center"><IMG width="370" height="64" src="Chapter%204%20SEMANTIC%20TERMINOLOGY%20AND%20RULES_files/image185.gif"> 
+  <BR><B>Figure 4-3.  Definition of the Long-Name Attribute</B> 
+  <P>Comment: 
+  <UL>
+    <LI> 1. The <EM>Long-Name</EM> Attribute references  a Long-Name Object (see 
+    §5.4.1) that contains  a structured, dictionary-controlled  <EM>Long 
+    Name</EM> for the Object to which the Attribute  belongs.  Alternatively, 
+    when R = ASCII, the Long-Name Attribute  is an unstructured textual name of 
+    the Object to which the Attribute  belongs.  The alternative form permits a 
+    phased conversion of  existing unstructured names to structured Long Names. 
+    </LI></UL>
+  <H5><A name="4_4_2">4.4.2 DESCRIPTION Attribute</A></H5>Certain  Objects 
+  benefit from a description that is not a Name and is  not 
+  dictionary-controlled.  Such Objects may have an Attribute  labelled 
+  Description, which is defined in Figure 4-4. 
+  <P align="center"><IMG width="326" height="64" src="Chapter%204%20SEMANTIC%20TERMINOLOGY%20AND%20RULES_files/image186.gif"> 
+  <BR><B>Figure 4-4.  Definition of the Description Attribute</B> 
+  <P>Comment: 
+  <UL>
+    <LI> 1. The <EM>DESCRIPTION</EM> Attribute is  a textual description of the 
+    Object.  This description is typically  created by the user or by the 
+    application program and is not  dictionary-controlled. </LI></UL>
+  <H5><A name="4_4_3">4.4.3 DIMENSION Attribute</A></H5>The lowest  level of 
+  information defined by the DLIS is a sequence of elements,  each having the 
+  same Representation Code and the same physical  Units.  In an Attribute, such 
+  a sequence is called a Value.   It is a small step to interpret a linear 
+  sequence of elements  as a homogeneous array of elements.  The Characteristics 
+  of Attributes  do not carry dimensionality (beyond the linear dimension 
+  implied  by the Count Characteristic).  Therefore, an Attribute labelled 
+   Dimension is used to provide information about dimensionality  of Values in 
+  other Attributes or of sequences of elements recorded  in IFLRs. 
+  <P>Figure 4-5 defines the Dimension Attribute. 
+  <P align="center"><IMG width="313" height="64" src="Chapter%204%20SEMANTIC%20TERMINOLOGY%20AND%20RULES_files/image187.gif"> 
+  <BR><B>Figure 4-5.  Definition of the Dimension Attribute</B> 
+  <P>Comment: 
+  <UL>
+    <LI> 1. The <EM>Dimension</EM> Attribute is a  vector of integers that 
+    define the dimensions of some array.  The particular array is specified 
+    elsewhere.  The mechanics  of the dimension specification are described 
+    here. 
+    <P> The Count of the Dimension Attribute specifies  the number of dimensions 
+    of the array, i.e., its dimensionality.  Each Value Element of the Dimension 
+    Attribute specifies the  size of an array dimension.  For example, with 
+    Count = 3 and  Value = {3, 4, 128}, a 3 x 4 x 128 array is defined.  The 
+    total  number of elements of the defined array is the product of the  Value 
+    Elements of the Dimension Attribute.  In the example, the  defined array has 
+    1,536 elements. 
+    <P> The mapping of the linear sequence of  array elements to the array 
+    structure defined by the Dimension  Attribute is such that the first 
+    dimension index changes most  rapidly, and the last dimension index changes 
+    most slowly.  If  the elements of the array are denoted by A<SUB> 
+    i,j,k</SUB>,  then the linear order of array elements is 
+    <P>A<SUB>1,1,1</SUB>, A<SUB>2,1,1</SUB>, A<SUB>3,1,1</SUB>, 
+     A<SUB>1,2,1</SUB>, A<SUB>2,2,1</SUB>, ..., A<SUB>3,4,1</SUB>, 
+     A<SUB>1,1,2</SUB>, A<SUB>2,1,2</SUB>, ..., A<SUB>3,4,128</SUB> 
+    <P>When  the Count Characteristic is zero, there are no dimensions defined 
+     for the array, and the array is undefined, i.e., the array is  considered 
+    to be Absent. 
+    <P>The total size in bytes of an array is  the sum of its individual element 
+    sizes.  For certain Representation  Codes the size of each element is 
+    constant, and the total size  is the number of elements multiplied by this 
+    size.  With other  Representation Codes, UVARI and ASCII for example, the 
+    size of  each element is potentially different, and the total sample size 
+     must be determined by adding the sizes of all the elements. 
+    <H5><A name="4_4_4">4.4.4 AXIS Attribute</A></H5>The Dimension  Attribute 
+    specifies the structure of an array value, i.e., how  many dimensions and 
+    how many coordinate values along each dimension.  The specification of the 
+    semantic structure of each coordinate  axis is made with Axis Objects (see 
+    §5.3.1).  The Axis Attribute,  defined below, references the set of Axis 
+    Objects associated  with the whole coordinate system. Figure 4-6 defines the 
+    Axis Attribute. 
+    <P align="center"><IMG width="305" height="64" src="Chapter%204%20SEMANTIC%20TERMINOLOGY%20AND%20RULES_files/image188.gif"> 
+    <BR><B>Figure 4-6.  Definition of the Axis Attribute</B> 
+    <P>Comment: 
+    <UL>
+      <LI> 1. The <EM>AXIS</EM> Attribute is a List  of references to one or 
+      more Axis Objects (see §5.3.1).  This  Attribute may appear for any Object 
+      for which there is a Dimension  Attribute.  Recall that a multi-Element 
+      Value is an array.  The  Dimension Attribute specifies a coordinate system 
+      for the array,  including the number of coordinate axes and the number of 
+      coordinates  along each axis for which values are defined. 
+      <P>The Axis Objects referenced by the Axis  Attribute further specify the 
+      semantic features of the individual  coordinate axes associated with the 
+      array.  The order in which  the Axis Objects are referenced in this 
+      Attribute corresponds  with the order in which the array dimensions are 
+      specified in  the Dimension Attribute.  That is, the first referenced Axis 
+       Object describes the semantics of the first (fastest varying)  dimension, 
+      and so on. </P></LI></UL>
+    <H4><A name="4_5">4.5 Ordering of Attributes</A></H4>Formally,  the order in 
+    which Attributes are written is unimportant, since  Attributes are 
+    syntactically self-descriptive.  In practice,  the order may have some 
+    impact on the efficiency of an application.  For example, writing the 
+    Dimension Attribute before another  Attribute for which it specifies an 
+    array structure may provide  some small benefit.  Nevertheless, it is 
+    assumed that implementations  can deal effectively with these situations.  
+    Therefore, no constraints  shall be imposed on the order in which Attributes 
+    are defined  in a Template. The order in which Attributes appear and are 
+     described in this specification is largely arbitrary and should  not be 
+    considered part of the definition of Objects.  Producers  are expected to 
+    write Attributes in the order that is considered  most effective by the 
+    Producer.  Consumers shall make no assumptions  about the ordering of 
+    Attributes. </LI></UL></LI></UL></BODY></HTML>

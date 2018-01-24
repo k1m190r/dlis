@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_sec1.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1252"> 
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"> <TITLE>1 
+Introduction</TITLE> </HEAD> 
+<BODY><FONT face="Times" size="6"></FONT>
+<P align="JUSTIFY"><FONT face="Times" size="6"> <A name="1">1 Introduction</A> 
+</FONT> <B><FONT face="Times" size="4"></FONT></B>
+<P><B><FONT face="Times" size="4"><A name="1_1">1.1 Aim: Why Introduce a New 
+Standard?</A> </FONT></B> <FONT face="Times" size="2"></FONT>
+<P align="JUSTIFY"><FONT face="Times" size="2">A considerable  investment exists 
+in data recorded under current formats,  as well as in software to read and 
+process that data.  For  these reasons, changes in the way logging information 
+is recorded  are bound to create inconveniences for both the service companies 
+ that write the data and the oil companies that read the data.</FONT></P><FONT 
+face="Times" size="2">
+<P align="JUSTIFY">However, as service companies have developed  new 
+capabilities in data acquisition and have extended new  services to clients, the 
+need to offer flexibility not available  under current log data recording 
+formats is evident.</P>
+<P align="JUSTIFY">A number of enhanced data recording techniques  have been 
+designed in response to the requirements of new  logging technologies and 
+methods, as well as to requests from  clients for more complete information on 
+the recorded data.  While some of the enhancements could have been implemented 
+ within current formats, others required the introduction of  new concepts and 
+mechanisms for the representation of information.  The result is a more 
+efficient and powerful standard for  log information recording which is referred 
+to as the Digital  Log Interchange Standard (DLIS).</P>
+<P align="JUSTIFY">The following sections outline the nature  of the most 
+significant enhancements incorporated in the DLIS.</P></FONT><B><FONT face="Times" 
+size="4">
+<P> <A name="1_2">1.2 Data Objects</A> </P></FONT></B> <FONT face="Times" size="2">
+<P align="JUSTIFY">The DLIS provides  a more powerful mechanism for recording 
+<I>Frame</I> <I>Data</I>,  <I>Static</I> <I>Information</I>, and 
+<I>Transient</I> <I>Information</I> by means of a uniform syntax and an "object 
+oriented"  approach.</P>
+<P align="JUSTIFY">Frame Data consists of the values of <I>Data</I> 
+<I>Channels</I> as stored in Frames.  Static Information is  information that 
+establishes an environment in which Frame  Data can be understood.  Transient 
+Information is information  that occurs during the processing of Frame Data or 
+that modifies  Static Information.</P>
+<P align="JUSTIFY">New mechanisms for information representations  offer greater 
+compactness, uniformity and coherence.  The  standard supports the definition of 
+<I>Objects</I> that are  described in terms of <I>Attribute</I>s and may be 
+organized  in <I>Set</I>s.  This general technique for defining and representing 
+ new information allows the range of information items that  can be represented 
+under the DLIS to be extended indefinitely.</P></FONT> <B><FONT face="Times" 
+size="4">
+<P><A name="1_3">1.3 Origins</A> </P></FONT></B> <FONT face="Times" size="2">
+<P align="JUSTIFY">The DLIS provides  a means for unambiguous identification of 
+Data Channels by  using Origin information.  The Origin concept provides for 
+ uniquely tagging Data Channels from different borehole passes  and descents in 
+such a way that they subsequently can be merged  and still remain 
+distinguishable.  Origin Objects also provide  summary information about the 
+circumstances surrounding the  recording of Channels.  For example, the well 
+identification,  the date and time, and the original file specification are 
+ recorded as Attributes of Origin Objects.</P></FONT> <B><FONT face="Times" 
+size="4">
+<P><A name="1_4">1.4 Multiple Frame Types</A> </P></FONT></B> <FONT face="Times" 
+size="2">
+<P align="JUSTIFY">Perhaps the most  significant new capability is the allowance 
+for defining and  recording of multiple Frame types in a single data file.  
+ This permits Frames to be organized by indexing (i.e., time-based  Frames can 
+co-exist with depth-based Frames), or by sampling  rate (i.e., distinct Frames 
+to collect data at 6" and  2" intervals).  This capability facilitates making 
+measurements  with different tools at different depth intervals.  The sampling 
+ frequency can be adjusted to the depth resolution of the measurements, 
+ permitting optimization of the amount of recorded data.  Additionally,  the 
+possibility of interleaving Frames of different types  within a log file permits 
+embedding station measurements within  a continuous depth log data 
+file.</P></FONT> <B><FONT face="Times" size="4">
+<P><A name="1_5">1.5 Update Objects</A> </P></FONT></B> <FONT face="Times" size="2">
+<P align="JUSTIFY">Under current  formats, Parameters are set before the start 
+of a log run  and then recorded at the beginning of the data file. Even  though 
+the operator or the system may change certain Parameters  during the log, these 
+changes go unrecorded.  This has led  to difficulties in processing the data 
+after the fact.</P>
+<P align="JUSTIFY">The DLIS permits changes to be recorded  in the form of 
+Update Objects, so that Parameters can be correctly  updated when a log is 
+processed.</P></FONT> <B><FONT face="Times" size="4">
+<P><A name="1_6">1.6 Source References and Calibration Objects</A> 
+</P></FONT></B> <FONT face="Times" size="2">
+<P align="JUSTIFY">The DLIS introduces  two new types of information in the form 
+of source references  and Calibration Objects.</P>
+<P align="JUSTIFY">Source references are a mechanism for data  Channels to 
+specify their immediate source history to a Tool  or Process Object, and for 
+Process Objects to specify their  input and output Channels.  This allows a path 
+to be traced  from a computed or acquired Channel all the way back through  its 
+source history.</P>
+<P align="JUSTIFY">Calibration Objects provide a greatly improved  way of 
+recording calibration measurements.  Associated with  each calibrated Channel, 
+the new Objects allow recording of  extensive information about the 
+calibration.</P></FONT> <B><FONT face="Times" size="4">
+<P><A name="1_7">1.7 Data Encryption</A> </P></FONT></B> <FONT face="Times" 
+size="2">
+<P align="JUSTIFY">Though the actual  methods for encryption lie outside the 
+domain of the DLIS,  the standard does allow for encryption at the level of the 
+ bodies of Logical Records.</P></FONT> <B><FONT face="Times" size="4">
+<P><A name="1_8">1.8 Logical Record</A> </P></FONT></B> <FONT face="Times" size="2">
+<P align="JUSTIFY">The DLIS introduces  a more efficient approach to mapping 
+logical structures to  the physical structure of the recording medium.  Multiple 
+ Logical Records can be packed into the same physical record.  Additional 
+mechanisms for Logical Record continuation permit  independence from physical 
+record boundaries.  Improved data  recovery capability is provided by a checksum 
+at the Logical  Record Segment level and both header and trailer Logical Record 
+ Lengths.</P></FONT> </BODY></HTML>

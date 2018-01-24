@@ -1,0 +1,594 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_sec2.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ <TITLE>Chapter 2 - Data Organization</TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"></HEAD> 
+<BODY>
+<H3><A name="2">2 - Data Organization</A></H3>
+<H4><A name="2_1">2.1 Scope of the Standard</A></H4>The Digital  Log Interchange 
+Standard defines data organization on two levels,  on the <EM>Logical 
+Format</EM> level and  on the <EM>Physical Format</EM> level.   The Logical 
+Format concerns the syntactic and semantic organization  of a sequence of data 
+characters.  The Physical Format concerns  the location and physical 
+organization of data on various media. 
+<P>The Logical Format is embedded in a Physical Format,  but the two formats are 
+very loosely bound to support reasonable  access efficiency without unduly 
+constraining the elements of the  Logical Format.  Consequently, before an 
+application on a given  system can process DLIS data recorded on a given medium, 
+it must 
+<UL>
+  <LI> understand the Logical Format of the data, and  
+  <LI> be able to map elements between the Logical       Format and the Physical 
+  Format. </LI></UL>
+<H4><A name="2_2">2.2 Logical Format</A></H4>The DLIS  Logical Format consists 
+of the following elements: 
+<UL>
+  <LI> the <EM>Logical Record</EM>, a group of 8-bit       bytes or data 
+  characters  
+  <LI> the <EM>Logical File</EM>, a group of related Logical Records. </LI></UL>
+<P>The relationship and ordering of these elements  is illustrated in Figure 
+2-1.  At the byte level, DLIS data is an  ordered stream of 8-bit bytes, in 
+which byte k precedes byte k+1.  Within each byte, bit 1 is the high-order bit. 
+<P align="CENTER"><IMG width="550" height="237" src="Chapter%202%20-%20Data%20Organization_files/image175.gif"> 
+  <BR><B>Figure 2-1. Logical Format</B> 
+<H5><A name="2_2_1">2.2.1 Representation Codes</A></H5>Each distinct piece of 
+information in the Logical Format  has a well-defined representation  that 
+extends across one or more bytes.   All permissible representations  are listed 
+in Appendix B both by symbolic name and by the one-byte  <EM>Representation 
+Code</EM> used to designate the representation  explicitly in the Logical 
+Format. 
+<P>Symbolic names of the Representation Codes are  provided for use in this 
+specification.  It is likely that these  names will correspond to identifiers in 
+program code, and they are  restricted to six characters for this reason.  A 
+two-byte signed  integer quantity, then, is said to have Representation Code 
+SNORM,  whereas a single precision floating point number has Representation 
+ Code FSINGL, a variable-length string of text has Representation  Code ASCII, 
+and so on. 
+<H5><A name="2_2_2">2.2.2 Logical Record (LR)</A></H5>Logical  Records form the 
+basic coherent bodies of information in the DLIS  Logical Format.  They 
+encapsulate semantically related information  within a Logical File.  Each 
+Logical Record consists of one or more  consecutive <I>Logical Record 
+Segments</I>, which provide the interface  between the Logical Format and the 
+Physical Format.  Logical Record  Segmentation is dependent on the type of 
+Physical Format. 
+<P>For example, it is the responsibility of the  Logical Record Segments, not 
+the Logical Records, to align with  Physical Format boundaries.  Segmentation 
+also permits processing  Logical Records of indefinite length. 
+<P>A Logical Record Segment is composed of four  mutually disjoint parts: 
+<UL>
+  <LI> a <I>Logical Record Segment Header</I>, 
+  <LI> an optional <EM>Logical Record Segment Encryption Packet</EM>, 
+  <LI> a <EM>Logical Record Segment Body</EM>, and 
+  <LI> an optional <EM>Logical Record Segment Trailer</EM>. </LI></UL>The term 
+"Logical Record" distinguishes  the DLIS element from a physical disk or tape 
+record. 
+<H6><A name="2_2_2_1">2.2.2.1 Logical Record Segment Header (LRSH)</A></H6>Each 
+Logical  Record Segment begins with a Logical Record Segment Header.  The  LRSH 
+format is defined in Figure 2-2. 
+<P>Where information in the LRSH applies to a Logical  Record, rather than to a 
+Logical Record Segment, that information  must be used consistently in all 
+Segments of a Logical Record.   Redundant recording of such information permits 
+a uniform structure  for the LRSH and provides knowledge about the Logical 
+Record (e.g.,  what kind of information has been lost) that may not be otherwise 
+ available if, for example, the first Logical Record Segment is damaged. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Entry </B>
+    <TD><B>Representation Code </B>
+    <TD><B>Comments </B>
+  <TR>
+    <TD>Logical Record Segment Length 
+    <TD>UNORM 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_2_Comment_1">1</A> 
+  <TR>
+    <TD>Logical Record Segment Attributes 
+    <TD>(not defined) 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_2_Comment_2">2</A> 
+  <TR>
+    <TD>Logical Record Type 
+    <TD>USHORT 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_2_Comment_3">3</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 2-2. Logical Record Segment 
+  Header</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="Figure_2_2_Comment_1">1. </A> The <EM>Logical Record Segment 
+  Length</EM> is a two-byte, unsigned integer (Representation Code UNORM) that 
+   specifies the length, in bytes, of the Logical Record Segment. The Logical 
+  Record Segment Length is required  to be even.  The even length ensures that 
+  2-byte checksums can be  computed, when present, and permits some operating 
+  systems to handle  DLIS data more efficiently without degrading performance 
+  with other  systems.  There is no limitation on a Logical Record length.
+   Logical Record Segments must contain at least  sixteen (16) bytes.  This 
+  requirement facilitates mapping the Logical  Format to those Physical Formats 
+  that require a minimum physical  record length.
+  <P></P>
+  <LI><A name="Figure_2_2_Comment_2">2. </A> The <EM>Logical Record Segment 
+  Attributes</EM> consist of a one-byte bit string that specifies the Attributes 
+  of  the Logical Record Segment.  Its structure is defined in Figure  2-3.  
+  Since its structure is defined explicitly in Figure 2-3, no  Representation 
+  Code is assigned to it. 
+  <LI><A name="Figure_2_2_Comment_3">3. </A> The <EM>Logical Record Type</EM> is 
+  a one-byte,  unsigned integer (Representation Code USHORT) that specifies the 
+   Type of the Logical Record.  Its value indicates the general semantic 
+   content of the Logical Record.  The same value must be used in all  Segments 
+  of a Logical Record. Logical Record Types are specified in Appendix A. 
+</LI></UL>
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Bit </B>
+    <TD><B>Description </B>
+    <TD><B>Comments </B>
+  <TR>
+    <TD>1 
+    <TD>Logical Record Structure 
+      <DL>
+        <DD> 0 = Indirectly Formatted Logical Record 
+        <DD> 1 = Explicitly Formatted Logical Record </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_1">1</A> 
+  <TR>
+    <TD>2 
+    <TD>Predecessor 
+      <DL>
+        <DD> 0 = This is the first segment of the Logical Record 
+        <DD> 1 = This is not the first segment of the Logical Record </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_2">2</A> 
+  <TR>
+    <TD>3 
+    <TD>Successor 
+      <DL>
+        <DD> 0 = This is the last Segment of the Logical Record. 
+        <DD> 1 = This is not the last Segment of the Logical Record </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_3">3</A> 
+  <TR>
+    <TD>4 
+    <TD>Encryption 
+      <DL>
+        <DD> 0 = No encryption.  
+        <DD> 1 = Logical Record is encrypted </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_4">4</A> 
+  <TR>
+    <TD>5 
+    <TD>Encryption Packet 
+      <DL>
+        <DD> 0 = No Logical Record Segment Encryption Packet 
+        <DD> 1 = Logical Record Segment Encryption Packet is present </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_5">5</A> 
+  <TR>
+    <TD>6 
+    <TD>Checksum 
+      <DL>
+        <DD> 0 = No checksum 
+        <DD> 1 = A checksum is present in the LRST </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_6">6</A> 
+  <TR>
+    <TD>7 
+    <TD>Trailing Length 
+      <DL>
+        <DD> 0 = No Trailing Length 
+        <DD> 1 = A copy of the LRS lengt is present in the LRST </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_7">7</A> 
+  <TR>
+    <TD>8 
+    <TD>Padding 
+      <DL>
+        <DD> 0 = No record padding 
+        <DD> 1 = Pad bytes are present in LRST </DD></DL>
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_3_Comment_8">8</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 2-3. Logical Record Segment 
+  Attributes</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="Figure_2_3_Comment_1">1. </A> The <EM>Logical Record Structure 
+  </EM>bit  specifies which Logical Record syntax the DLIS reading software  can 
+  expect (see Chapter 3).  This bit must be applied the same way  in all 
+  Segments of a Logical Record. 
+  <LI><A name="Figure_2_3_Comment_2">2. </A> The <EM>Predecessor</EM> bit 
+  indicates whether  this is the first Segment in the Logical Record.   If the 
+  Predecessor bit is <U>not</U> set,  then this is the first Segment.  If the 
+  Predecessor  bit <U>is</U> set, then this is not the first Segment. 
+  <LI><A name="Figure_2_3_Comment_3">3. </A> The <I>Successor</I> bit indicates 
+  whether  this is the last Segment in the Logical Record.  If the Successor 
+   bit is <U>not</U> set, then this is the last Segment.  If the Successor  bit 
+  <U>is</U> set, then this is not the last Segment. 
+  <LI><A name="Figure_2_3_Comment_4">4. </A> The <EM>Encryption </EM>bit 
+  indicates whether  the Logical Record Segment Body and Pad Bytes (see comment 
+  8) are  encrypted.  This bit must be applied the same way in all Segments  of 
+  a Logical Record.  In particular, encryption is applied at the  Logical Record 
+  level and, therefore, cannot result in encryption  of only part of a Logical 
+  Record Body.  Logical Record Segment Headers,  Encryption Packets (see comment 
+  5), checksums (see comment 6), and  Trailing Lengths (see comment 7) are never 
+  encrypted.  Pad Bytes  are included when encryption is applied to allow for 
+  encryption  algorithms that require a minimum number of bytes or certain 
+  multiples  of bytes. Encryption is used by an organization to  record 
+  information that is considered proprietary. 
+  <LI><A name="Figure_2_3_Comment_5">5. </A> The <EM>Encryption Packet </EM>bit 
+  indicates  whether there is an Encryption Packet in the Logical Record 
+  Segment.  The Encryption Packet bit may not be set unless the Encryption  bit 
+  is also set.  It <U>must</U> be set in the first Segment of  a Logical Record 
+  whenever the Encryption bit is set.  It is optional  otherwise. Section 
+  2.2.2.2 describes the location, contents  and use of the Encryption Packet. 
+  <LI><A name="Figure_2_3_Comment_6">6. </A> The <EM>Checksum</EM> bit indicates 
+  whether  there is a checksum in the Logical Record Segment Trailer (LRST). 
+  <LI><A name="Figure_2_3_Comment_7">7. </A> The <I>Trailing Length</I> bit 
+  indicates  whether there is a copy of the Logical Record Segment Length in 
+   the LRST.  This bit must be applied the same way in all Logical  Record 
+  Segments of a Logical File.  In particular, all Logical Record  Segments in a 
+  Logical File must have Trailing Lengths or none have  them.  This requirement 
+  exists to permit traversal of a Logical  File in a backward direction. 
+  <LI><A name="Figure_2_3_Comment_8">8. </A> The <I>Padding</I> bit indicates 
+  the presence  of <I>Pad Bytes</I> and a <I>Pad Count</I> in the LRST.  If 
+  Padding  is present, the Pad Count is a single byte (Representation Code 
+   USHORT) that contains a count of Pad Bytes present in the LRST.  The Pad 
+  Count is considered one of the Pad Bytes, so the Pad Count  may have the value 
+  1.  The remaining Pad Bytes, if any, immediately  precede the Pad Count in the 
+  LRST.  The Pad Count precedes the checksum  and the Trailing Length when these 
+  are present. Padding is a transparent mechanism for achieving  minimum Logical 
+  Record Segment size and even Logical Record Segment  length when these 
+  conditions would not otherwise occur.  Pad Bytes,  other than the Pad Count, 
+  have no meaning, and their values are  arbitrary. </LI></UL>
+<H6><A name="2_2_2_2">2.2.2.2 Logical Record Segment Encryption Packet 
+(LRSEP)</A></H6>The Logical  Record Segment Encryption Packet, if present, 
+immediately follows  the Logical Record Segment Header.  The format of the 
+Encryption  Packet is described in Figure 2-4. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Bytes </B>
+    <TD><B>Description </B>
+    <TD><B>Comments </B>
+  <TR>
+    <TD>1-2 
+    <TD>Size of Encryption Packet in bytes (UNORM) 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_4_Comment_1">1</A> 
+  <TR>
+    <TD>3-4 
+    <TD>Producer's Company Code (UNORM) 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_4_Comment_2">2</A> 
+  <TR>
+    <TD>5-end 
+    <TD>Encryption information 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_4_Comment_3">3</A> 
+    <TD></TR>
+  <CAPTION align="bottom"><B>Figure 2-4. Definition of Logical Record Segment 
+  Encryption Packet</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="Figure_2_4_Comment_1">1. </A> Bytes 1-2 are mandatory and specify 
+  the  size of the Encryption Packet in bytes.  The Encryption Packet must 
+   consist of an even number of bytes. 
+  <LI><A name="Figure_2_4_Comment_2">2. </A> Bytes 3-4 are mandatory and specify 
+  the  integer Company Code of the Producer of the Logical Record (see  §4.1.9). 
+    <!-- -- Company Codes are listed in Table 17 of the API Bulletin D9 (revised), dated July, 1978, and later versions of the bulletin.  -- !--> 
+  <LI><A name="Figure_2_4_Comment_3">3. </A> The encryption information is 
+  optional  (i.e., the size of the Encryption Packet may be 4 bytes) and 
+  contains  information used by the Producer to identify and/or initialize 
+   encryption of data in the current Logical Record. The encryption or 
+  decryption of information  in a Logical Record must not be dependent on 
+  information in the  Encryption Packets of another Logical Record, since there 
+  is no  guarantee that the other Logical Record will be available when the 
+   information is needed. </LI></UL>
+<H6><A name="2_2_2_3">2.2.2.3 Logical Record Segment Body (LRB)</A></H6>The 
+Logical  Record Segment Body is an ordered set of 8-bit bytes that immediately 
+ follow the Logical Record Segment Encryption Packet, when the Encryption 
+ Packet is present, or otherwise immediately follow the Logical Record  Segment 
+Header. 
+<H6><A name="2_2_2_4">2.2.2.4 Logical Record Segment Trailer (LRST)</A> </H6>The 
+Logical  Record Segment Trailer, if present, immediately follows the Logical 
+ Record Segment Body and consists of any combination of:  Padding,  a 2-byte 
+checksum (see Appendix E), and/or a Trailing Length.  Padding  precedes a 
+checksum or a Trailing Length.  A checksum precedes a  Trailing Length. 
+<H6><A name="2_2_2_5">2.2.2.5 Logical Record Body (LRB)</A></H6>The Logical 
+ Record Body consists of the ordered union of the Logical Record  Segment Bodies 
+of all Logical Record Segments that make up the Logical  Record. Figure 2-5 
+illustrates a sample Logical Record  decomposed into three Logical Record 
+Segments. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD>LRSL   
+    <TD>
+<PRE>10100110
+  </PRE>
+    <TD>LRT   
+    <TD colspan="3">body   
+    <TD>CHECKSUM   
+    <TD>TRAILING LRSL  
+  <TR>
+    <TD>LRSL   
+    <TD>
+<PRE>11100110
+  </PRE>
+    <TD>LRT   
+    <TD colspan="3">body   
+    <TD>CHECKSUM   
+    <TD>TRAILING LRSL  
+  <TR>
+    <TD>LRSL   
+    <TD>
+<PRE>11000111
+  </PRE>
+    <TD>LRT   
+    <TD colspan="2">body   
+    <TD>PADDING   
+    <TD>CHECKSUM   
+    <TD>TRAILING LRSL  </TR>
+  <CAPTION align="bottom"><B>Figure 2-5. Illustration of a Three-Segment Logical 
+  Record</B></CAPTION></TABLE>
+<H5><A name="2_2_3">2.2.3 Logical File (LF)</A></H5>A Logical  File consists of 
+a sequence of one or more Logical Records, beginning  with a <I>File Header 
+Logical Record </I> (FHLR, see §5.1 and Appendix  A), and containing no other 
+FHLRs.  A Logical File is terminated  when another FHLR is encountered or when 
+no more Logical Records  are available for the Logical File. 
+<P>The term "Logical File" distinguishes  the DLIS element from a physical disk 
+or tape file. 
+<P>
+<H6><A name="2_2_3_1">2.2.3.1 File Header Logical Record (FHLR)</A></H6>Any FHLR 
+ must consist of exactly one Logical Record Segment.  It is useful  to be able 
+to handle an FHLR as a file label, and this is one of  the requirements 
+necessary to make that possible. 
+<H4><A name="2_3">2.3 Physical Format</A></H4>Physical Format is the way in 
+which recorded data is located and organized  on a physical medium, such as a 
+magnetic tape or disk.  The specific  binding of Logical Format to Physical 
+Format depends on the medium  and the access mechanism. 
+<P>This section defines bindings for <I>Record-Structured</I> Physical Formats, 
+including the industry-standard 9-track magnetic  tapes as a special case.  
+Bindings for other Physical Formats are  not defined here.</P>
+<H5><A name="2_3_1">2.3.1 Terminology</A></H5>The term  <I>Storage Unit</I> is 
+defined loosely as something that contains  recorded data and that is manageable 
+as a unit at the human level.  When applied to magnetic tape, Storage Unit 
+refers to a single  physical reel of tape.  When applied to disks, Storage Unit 
+refers  to a single file.  The term is used only when no distinction between 
+ different media is intended; the common terms "tape" and  "file" are used when 
+the context is targeted strictly  at magnetic tapes or at disk files, 
+respectively.
+<P></P>
+<P align="JUSTIFY">A sequence of Logical Files can reside on a single  Storage 
+Unit or a single Logical File can span multiple Storage  Units.  When a Logical 
+File begins on one Storage Unit and ends  on another, the Storage Units that it 
+intersects constitute part  of a <I>Storage Set</I>.  Further definition of a 
+Storage Set is  provided in §2.3.4, "Storage Set Requirements." 
+<P>All access mechanisms apply a structure to data  recorded on a Storage Unit.  
+The following structure is covered  in this specification: 
+<UL>
+  <LI><EM>Sequential Record Structure</EM> permits  access to data in 
+  sequential, variable-length records.  Records  must be written sequentially in 
+  a forward direction, but can be  read sequentially in either a forward or 
+  backward direction, either  directly or by backspacing over a record and then 
+  reading it in  a forward direction.  A Storage Unit on which the Physical 
+  Format  has been written with a Sequential Record Structure is called a  
+  <EM>Record Storage Unit</EM>. </LI></UL>A Physical Format can be partitioned 
+into three  mutually disjoint parts: the Logical Format, the <I>Invisible 
+Envelope</I>,  and the <I>Visible Envelope</I>, respectively.  These parts are 
+ illustrated in Figure 2-6.  The Logical Format is data that is of  interest to 
+applications.  The Invisible Envelope is data that is  managed by the access 
+mechanism and is not part of normal data read  and write transactions.  
+Invisible Envelope data is typically part  of the control interface between the 
+access mechanism and applications  or is available through special queries.  For 
+example, most disk  operating systems maintain file header control information 
+that  is separate from the file data.  Record Structure files can also  contain 
+record lengths that are passed as control between the operating  system and the 
+application but are not passed as data.  The Visible  Envelope is information 
+that is passed as data and is important  in defining a particular Physical 
+Format, but data that is not part  of the Logical Format. 
+<P>Except for industry-standard magnetic tapes,  a specification of the 
+Invisible Envelope is beyond the scope of  this document. 
+<P align="center"><IMG width="588" height="172" src="Chapter%202%20-%20Data%20Organization_files/image180.gif"> 
+<BR><B>Figure 2-6. Partitions of a Physical Format</B> 
+<P>
+<H5><A name="2_3_2">2.3.2 Storage Unit Label (SUL)</A></H5>The first  80 bytes 
+of the Visible Envelope consist of ASCII characters and  constitute a <I>Storage 
+Unit Label</I>.  Figure 2-7 defines  the format of the SUL. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Field </B>
+    <TD><B>Size in Bytes </B>
+    <TD><B>Comments </B>
+  <TR>
+    <TD>Storage Unit Sequence Number 
+    <TD>4 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_7_Comment_1">1</A> 
+  <TR>
+    <TD>DLIS Version 
+    <TD>5 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_7_Comment_2">2</A> 
+  <TR>
+    <TD>Storage Unit Structure 
+    <TD>6 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_7_Comment_3">3</A> 
+  <TR>
+    <TD>Maximum Record Length 
+    <TD>5 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_7_Comment_4">4</A> 
+  <TR>
+    <TD>Storage Set Identifier 
+    <TD>60 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec2.html#Figure_2_7_Comment_5">5</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 2-7. Format of Storage Unit 
+  Label</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="Figure_2_7_Comment_1">1. </A> The <I>Storage Unit Sequence 
+  Number</I> is a positive integer represented as four ASCII characters, right 
+   justified, with no embedded commas, and with preceding blanks or  zeros, if 
+  needed.  The leftmost character is byte 1 of the SUL,  and the rightmost 
+  character is byte 4 of the SUL.  It indicates  the order in which the current 
+  Storage Unit appears in a Storage  Set.  The first Storage Unit of a Storage 
+  Set has Sequence Number  1, the second has Sequence Number 2, and so on.
+  <P></P>
+  <LI><A name="Figure_2_7_Comment_2">2. </A> The <I>DLIS</I> <I>Version</I> is a 
+  five-character  ASCII-formatted string.  The leftmost character is byte 5 of 
+  the  SUL, and the rightmost character is byte 9 of the SUL.  It indicates  the 
+  version of the DLIS Logical Format that is recorded on the Storage  Unit.  The 
+  version is represented in the form Vn.mm, where <I>n</I> is a one-digit major 
+  version number (1 for this specification) and  <I>mm</I> is a two-digit minor 
+  version number that represents an  incremental update to the Logical Format.  
+  Minor version numbers  begin at 00 and increase sequentially through 01, 
+  02,..., 99.  All  Logical Files on the Storage Unit adhere to the major 
+  version and  to the same or smaller minor version.
+  <P></P>
+  <LI><A name="Figure_2_7_Comment_3">3. </A> The <I>Storage Unit Structure</I> 
+  is an  ASCII-formatted string, left justified with trailing blanks, if 
+   needed.  The leftmost character is byte 10 of the SUL, and the rightmost 
+   character is byte 15 of the SUL.  It indicates what structure was  used to 
+  record the data.  There is currently only one option: 
+  <UL>
+    <LI>Storage Unit was recorded with a Record Structure. </LI></UL><BR>
+  <LI><A name="Figure_2_7_Comment_4">4. </A> The <I>Maximum Record Length</I> is 
+  a nonnegative  integer represented as five ASCII characters, right justified, 
+  with  no embedded commas, and with preceding blanks or zeros, if needed.  The 
+  leftmost character is byte 16 of the SUL, and the rightmost  character is byte 
+  20 of the SUL.  When the Storage Unit Structure  is RECORD, the value applies 
+  to <I>Visible Records</I> (see §2.3.6).
+  <P></P>
+  <P align="JUSTIFY">	A value of 0 indicates that the maximum length  of a 
+  record is unknown.  A positive value indicates that no record  (of the implied 
+  type) in the Storage Unit will exceed Maximum Record  Length in size.  A 
+  positive value need not correspond to the actual  maximum record length; it 
+  need only be an upper bound.</P>
+  <LI><A name="Figure_2_7_Comment_5">5. </A> The <I>Storage Set Identifier</I> 
+  is a  60-character ASCII field that is used to identify the Storage Set. 
+</LI></UL>
+<H5><A name="2_3_3">2.3.3 Storage Unit Requirements</A></H5>A Storage  Unit must 
+have exactly one Storage Unit Label that must appear before  any Logical Format 
+data.  The first record in the Visible Envelope  of a Record Storage Unit; must 
+consist of an SUL.
+<P></P>
+<P align="JUSTIFY">A Storage Unit must contain an integer number  of Logical 
+Record Segments.  It need not contain an integer number  of Logical Records. 
+<H5><A name="2_3_4">2.3.4 Storage Set Requirements</A></H5>A Storage  Set was 
+introduced in §2.3.1 as a group of Storage Units across  at least two of which 
+resides a single Logical File.  With the introduction  of an SUL, it is now 
+possible to complete the definition of Storage  Set.  A Storage Set is a group 
+of one or more Storage Units that  satisfies the following conditions: 
+<UL>
+  <LI>All Storage Units have the same Structure. 
+  <LI>The Storage Set Identifier field in the  SUL is identical for all Storage 
+  Units. 
+  <LI>The set of Storage Unit Sequence Numbers  in the SULs form the sequence 1, 
+  2, 3, ..., n, where n is the number  of Storage Units in the Storage Set. 
+  <LI>The Storage Set contains a single Logical  Format, which is partitioned 
+  sequentially into n parts.  For any  k, part k is contained in Storage Unit k. 
+  </LI></UL>The Storage Set is provided to cover situations  in which a Logical 
+File overflows a Storage Unit and must be continued  on another.  This typically 
+need only occur with magnetic tapes,  although it is permitted to occur with any 
+type of Storage Unit.  Notice, however, that the actual requirements stated 
+above do not  demand Logical File continuation across members of a Storage Set, 
+ neither do they demand that the Storage Set Identifier be distinct  for all 
+Storage Sets.  The implementation of Storage Sets and Storage  Set Identifiers 
+is left to users who shall decide how they can best  suit the users' needs. 
+<H5><A name="2_3_5">2.3.5 Storage Unit Terminators</A></H5>A Storage  Unit may 
+simply run out of data, which is one way for it to terminate.
+<P></P>On industry standard 9-track magnetic tapes a  Storage Unit is terminated 
+by two consecutive Tape Marks (see §2.3.7.1).  These marks belong to the 
+Invisible Envelope of the tape. 
+<H5><A name="2_3_6">2.3.6 Record Structure Requirements</A></H5>A <I>Visible 
+ Record</I> on a Record Storage Unit consists of all data bytes passed  to an 
+application as a result of a normal record read operation.  
+<P>On a Record Storage Unit, each Visible Record  other than those in the 
+Invisible Envelope or those that contain  a Storage Unit Label must contain a 
+positive integer number of Logical  Record Segments, and all Segments must 
+belong to the same Logical  File.  That is, a Logical Record Segment cannot span 
+Visible Records  and Visible Records cannot intersect more than one Logical 
+File. 
+<P>This requirement permits a DLIS reader always  to locate the beginning of the 
+next Logical Record on the Storage  Unit.  If Trailing Lengths are recorded, it 
+permits backward recovery  of Logical Record Segments when the first Logical 
+Record Segment  Length in the Visible Record is damaged. 
+<H6><A name="2_3_6_1">2.3.6.1 Visible Record Length</A></H6>According  to 
+sections 2.3.1 and 2.3.6, a Visible Record consists of Visible  Envelope data 
+plus one or more Logical Record Segments.  Other than  the Storage Unit Label, a 
+Visible Record on a Record Storage Unit  must contain the following parts in the 
+order described: 
+<UL>
+  <LI> A <I>Visible Record Length</I>, expressed  in terms of Representation 
+  Code UNORM (part of the Visible Envelope)  
+  <LI> A two-byte <I>Format Version Field</I> (part  of the Visible Envelope, 
+  see section 2.3.6.2)  
+  <LI> One or more complete Logical Record Segments      (part of the Logical 
+  Format) </LI></UL>The Visible Record Length specifies the sum of  the lengths in 
+bytes of these three parts. 
+<H6><A name="2_3_6_2">2.3.6.2 Format Version</A></H6>Following  the Visible 
+Record Length in each Visible Record is a two-byte field,  called the <I>Format 
+Version</I>.  This belongs to the Visible Envelope.  The first byte is FF (hex), 
+which distinguishes the Visible Record  from records of other, older formats.  
+The second byte is an integer  (USHORT) specifying the major version number of 
+the format, which  for this specification is the value 1. 
+<H6><A name="2_3_6_3">2.3.6.3 Visible Envelope</A></H6>For a Storage  Set 
+consisting of Record Storage Units, the Visible Envelope consists  of 
+<UL>
+  <LI> the Storage Unit Label(s)  
+  <LI> the Visible Record Lengths  
+  <LI> the Format Versions </LI></UL>
+<H6><A name="2_3_6_4">2.3.6.4 Minimum Visible Record Length</A></H6>No explicit 
+ minimum record length is required.  Note that Logical Record Segments  must be 
+at least 16 bytes long.  When the Visible Record Length  and Format Version are 
+included, the combination yields an implicit  minimum length of 20 bytes, which 
+is sufficient for known devices  to handle. 
+<H6><A name="2_3_6_5">2.3.6.5 Maximum Visible Record Length</A></H6>The maximum 
+Visible Record Length permitted on a Record  Storage Unit is 16,384  bytes. 
+<j5><A name="2_3_7">2.3.7 Industry-Standard 9-Track Magnetic Tape</A> No 
+constraint  is imposed on the type of magnetic media that a company uses to 
+ record DLIS information for its private use.  However, any standard  DLIS tape 
+access utility may be required to read or write DLIS information  recorded only 
+on industry-standard 9-track tapes that are written  at a density of 800, 1600, 
+or 6250 bits per inch. 
+<P>To ensure uniformity of access to tape, which  is a removable medium, the 
+Invisible Envelope of a Physical Format  that is recorded on industry-standard 
+9-track magnetic tape.; must  consist of physical tape marks.  The complete 
+Physical Format encountered  on such a tape, then, consists of tape marks, 
+Storage Unit Label,  Visible Record Lengths, Format Versions, and Logical Record 
+Segments.  This is illustrated in Figure 2-8.  The use of tape marks is 
+described  in "Physical Tape Marks," which is the following section. 
+<P align="center"><IMG width="584" height="314" src="Chapter%202%20-%20Data%20Organization_files/image182.gif"> 
+<BR><B>Figure 2-8. Illustration of Magnetic Tape Physical Format (1st Reel)</B> 
+<H6><A name="2_3_7_1">2.3.7.1 Physical Tape Marks</A></H6>Physical tape marks 
+constitute the Invisible Envelope on industry-standard  9-track magnetic tapes.  
+Such tapes contain two indelible marks,  called BOT and ETW in Figure 2-8.  BOT 
+is near the physical beginning  of the tape and indicates the start of the 
+region in which recorded  information is permitted.  ETW is required to be a 
+minimum distance  from the physical end of the tape and serves as a warning; 
+with  many systems ETW can be sensed only when writing. 
+<P>Industry-standard 9-track magnetic tapes also  employ a form of tape mark 
+which is not indelible and that can appear  multiple times.  Marks of this type 
+are called TM in Figure 2-8.  A TM is a distinct form of recorded information 
+and takes the place  of a physical record.  When an industry-standard 9-track 
+magnetic  tape serves as a Storage Unit, the TM shall be used as follows: 
+<UL>
+  <LI>There shall be a single TM following the  BOT and immediately preceding 
+  the Storage Unit Label.  When reading  a tape, any information found between 
+  the BOT and the first TM shall  be discarded as "noise" attributable to the 
+  mechanical  variation in recording devices.  The Storage Unit Label shall be 
+   the first record on the tape following the first TM. 
+  <LI>There shall be at least two consecutive  TMs following the last of the 
+  Logical Format or the Visible Envelope  information that is recorded on tape.  
+  Two consecutive TMs function  as a Storage Unit Terminator. 
+  <LI>Exactly one TM shall separate the first  Visible Record of a Logical File 
+  from any preceding Logical Format  or Visible Envelope information. </LI></UL>
+<H5><A name="2_3_8">2.3.8 Considerations on Moving DLIS Between Media</A></H5>
+Programs  that move DLIS information from one Physical Format to another need 
+ to carry enough knowledge of the standard to ensure that the result  is a valid 
+DLIS Physical Format.  The knowledge required depends  on the sophistication of 
+the program and can include one or more  of the following: 
+<UL>
+  <LI> Tape marks  
+  <LI> Storage Unit Labels  
+  <LI> Record Storage Units  
+  <LI> Visible Record Lengths  
+  <LI> File Header Logical Records  
+  <LI> Logical Record Segments  
+  <LI> Arbitrary Logical Records  
+  <LI> Logical Files 
+  <UL></UL></LI></UL></j5></BODY></HTML>

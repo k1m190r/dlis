@@ -157,6 +157,7 @@ func main() {
 	// Read VR header first 8 bytes Len/Format
 	// Read rest of VR Len VR-8
 	//   Interpret all LRS in VR
+	// The reader itself should present a simple range capable interface...
 
 	var temp1 struct {
 		Label SUL

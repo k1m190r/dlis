@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_pref.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ <TITLE>PREFACE</TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"></HEAD> 
+<BODY>
+<H3><A name="PREFACE">PREFACE</A></H3>
+<UL>
+  <LI>This standard was prepared by the API Subcommittee on Recommended  Format 
+  for Digital Well Log Data.  The content is based on a concept  and proposal 
+  originally submitted to API by Schlumberger Well Services.  This publication 
+  was under jurisdiction of the American Petroleum  Institute Production 
+  Department's Executive Committee on  Drilling and Production Practices until 
+  June 1998, when Petrotechnical Open Software Corporation (POSC) accepted its 
+   stewardship.  
+  <LI>This publication specifies a format for digital well log data, called 
+   here the Digital Log Interchange Standard (DLIS).  This format may  be used 
+  for the recording of well log data on magnetic tape as well  as on other 
+  storage media.  
+  <LI>Anyone may use this standard who desires to do so, subject to the terms of 
+  the  <A href="http://www.posc.org/about/license.shtml">        POSC Software 
+  License Agreement</A>. <!-- -- API publications may be used by anyone desiring to do so.  Every 
+effort has been made by API to assure the accuracy and reliability 
+of data contained in this publication.  However, the Institute makes 
+no representation, warranty, or guarantee in connection with this publication 
+and hereby expressly disclaims any liability or responsibility for 
+loss or damage resulting from its use or applications hereunder or 
+for violation of any federal, state, or municipal regulation with which 
+this publication may conflict.
+ <!-- li
+Users of this standard are reminded that constantly developing 
+technology 
+and specialized operations may not permit complete coverage of all 
+operations or alternatives.  This standard is not intended to inhibit 
+developing technology, equipment improvements, or improved operational 
+precedures.  This standard does not obviate the need for qualified 
+engineering and operations analyses and sound judgment 
+regarding specific 
+applications.
+ -- !--> 
+ 
+  <LI>Suggestions for revisions or additions are invited and should be 
+   submitted to   <A href="mailto:info@energistics.org">POSC</A>.  
+  <LI>Requests for permission to reproduce any part of the material published 
+  herein shall be addressed to  <A href="mailto:info@energistics.org">POSC</A>. 
+  </LI></UL>
+<HR>
+
+<H3><A name="SPECIAL_NOTES">SPECIAL NOTES</A></H3>API RP66 V1 was originally 
+published by the API in May 1991  with a clause indicating that it would not be 
+considered  an operative API styandard  five years after its publication date, 
+unless reaffirmed  or republished.   This document, POSC RP66 V1, is considered 
+to be applicable  indefinitely, i. e., until withdrawn or deprecated by POSC, 
+with no requirement for periodic reaffirmation or  extension.  
+<HR>
+
+<H3><A name="ORGANIZATION">ORGANIZATION</A></H3>
+<H4>Structure:  How Is This Document Organized?</H4>This document is divided 
+into seven chapters, six appendices, and a  glossary. 
+<DL>
+  <DT>Chapter 1:   
+  <DD>INTRODUCTION  
+  <DT>Chapter 2:   
+  <DD>DATA ORGANIZATION, a description of the physical and logical  hierarchies, 
+  their organizations and relationships  
+  <DT>Chapter 3:   
+  <DD>LOGICAL RECORD SYNTAX, a description of how logical records  are 
+  represented  
+  <DT>Chapter 4:   
+  <DD>SEMANTIC TERMINOLOGY AND RULES, a summary of important concepts  and 
+  general rules for defining elements of the standard  
+  <DT>Chapter 5:   
+  <DD>SEMANTICS: STATIC AND FRAME DATA, a description of Frames,  the Objects 
+  required to define them, and the Objects which establish  the parameters and 
+  environment for processing Frames  
+  <DT>Chapter 6:   
+  <DD>SEMANTICS: TRANSIENT DATA, a description of the Objects  that convey 
+  messages and signify changes during acquisition and  processing of Frames  
+  <DT>Chapter 7:   
+  <DD>SEMANTICS: DICTIONARIES, a description of the Objects that  specify the 
+  semantic structure of the standard and that specify  dictionary-controlled 
+  names used by the standard  
+  <DT>Appendix A:   
+  <DD>LOGICAL RECORD TYPES, a list of defined Types for Public  and Private 
+  Logical Records  
+  <DT>Appendix B:   
+  <DD>REPRESENTATION CODES, a list of Representation Codes  
+  <DT>Appendix C:   
+  <DD>PROPERTY INDICATORS, a list of indicators used to designate  the 
+  processing or corrections performed on data  
+  <DT>Appendix D:   
+  <DD>CHANGEABLE ATTRIBUTES, a list of those defined Attributes  that are 
+  permitted to be changed (i.e., updated) in a Logical File  
+  <DT>Appendix E:   
+  <DD>CHECKSUM ALGORITHM, a description of the algorithm used  to compute the 
+  Checksum in the Logical Record Segment Trailer.  
+  <DT>Appendix F:   
+  <DD>UNIT SYMBOLS, a list of symbols for base units and selected  derived units 
+ 
+  <DT>Glossary </DT></DL>
+<HR>
+
+<H3><A name="NOTATION">Notation: How Is This Document Written?</A></H3>Numerous 
+cases of unusual capitalization appear in this document.   Capitalized terms 
+have special, formal, technical connotations in a  DLIS context; these terms do 
+not retain  their normal English connotations.  When such a special term is 
+first introduced, it is italicized. 
+<P>Acronyms are fully defined before they are used. 
+<P>Many figures include comment numbers that associate a particular item  with a 
+comment that appears below the figure.  For example,  
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>DESCRIPTION   
+    <TD>C = 1, R = ASCII   
+    <TD>-  
+  <TR>
+    <TD>OBJECT-TYPE   
+    <TD>C = 1, R = IDENT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_pref.html#pref_1_1">1</A>  
+  <TR>
+    <TD>OBJECT-LIST   
+    <TD>R = (OBNAME, OBJREF)   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_pref.html#pref_1_2">2</A>  
+  <TR>
+    <TD>GROUP-LIST   
+    <TD>R = OBNAME   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_pref.html#pref_1_3">3</A>  
+</TR>
+  <CAPTION align="bottom"><B>Figure 5-25.  Attributes of Group 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<PRE>
+<DL>
+ 
+<DD><A name="pref_1_1">1.</A> The OBJECT-TYPE Attribute specifies ...
+ 
+<DD><A name="pref_1_2">2.</A> The OBJECT-LIST Attribute is a List of references to ...
+ 
+<DD><A name="pref_1_3">3.</A> The GROUP-LIST Attribute is a List of references to ...
+</DD></DL>
+</PRE>
+<HR>
+
+<H3><A name="TRADEMARKS">Trademarks</A></H3>
+<DL>
+  <DT>The following is a mark of Schlumberger:   
+  <DD>Schlumberger  
+  <DT>The following is a mark of Digital Equipment Corporation:   
+  <DD>VAX  
+  <DT>The following is a mark of AT&amp;T:   
+  <DD>UNIX  
+  <DT>The following is a mark of IBM:   
+  <DD>IBM </DD></DL></BODY></HTML>

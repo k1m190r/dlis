@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_appd.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ <TITLE>Appendix D</TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"></HEAD> 
+<BODY>
+<H3>Appendix D<BR>CHANGEABLE ATTRIBUTES</H3>Most of the Attributes  of Objects 
+that are recorded in a Logical File must remain constant,  i.e., must not be 
+changed by means of an Update Object, either because  it would make no sense to 
+do so or because it would apply too great  a burden on the Consumer to 
+anticipate and react to the change.
+<P></P>
+<P align="JUSTIFY">Certain other Attributes correspond to values that  may 
+change during the acquisition or computation process, and these  changes are 
+recorded by the use of Update Objects.  Figure D-1 lists  those Attributes, 
+organized by Object Type, that are specifically <U>allowed</U> to change within 
+a Logical File, and applications must be prepared to  deal properly with the 
+changes.  Applications may assume that Attributes  that are not in this list or 
+that are not otherwise indicated changeable  by the standard remain constant 
+throughout a Logical File. 
+<P>Application designers must be aware that these statements  assert a specific 
+prohibition against the changing within programs of  certain information 
+associated with DLIS Objects.  Once such information  is recorded in a Logical 
+File and while the Logical File is being recorded,  that information must not 
+change within the program that writes to the  Logical File unless that 
+information corresponds to one of the Attributes  listed in Figure D-1.  Of 
+course, no constraint on changes to information  within a program exist before 
+that information is written to a Logical  File and after the Logical File has 
+been closed. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Object Type   </B>
+    <TD><B>Attribute   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD rowspan="2">AXIS   
+    <TD>COORDINATES   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_1">1</A>  
+  <TR>
+    <TD>SPACING   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_1">1</A>  
+  <TR>
+    <TD>CALIBRATION-COEFFICIENT   
+    <TD>COEFFICIENTS   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_2">2</A>  
+  <TR>
+    <TD rowspan="2">CHANNEL   
+    <TD>DIMENSION   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_3">3</A>  
+  <TR>
+    <TD>PROPERTIES   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_4">4</A>  
+  <TR>
+    <TD rowspan="4">EQUIPMENT   
+    <TD>STATUS   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_5">5</A>  
+  <TR>
+    <TD>VERTICAL-DEPTH   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_6">6</A>  
+  <TR>
+    <TD>RADIAL-DRIFT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_6">6</A>  
+  <TR>
+    <TD>ANGULAR-DRIFT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_6">6</A>  
+  <TR>
+    <TD>PARAMETER   
+    <TD>VALUES   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_7">7</A>  
+  <TR>
+    <TD>PROCESS   
+    <TD>STATUS   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_8">8</A>  
+  <TR>
+    <TD>SPLICE   
+    <TD>INPUT-CHANNELS   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_9">9</A>  
+  <TR>
+    <TD>TOOL   
+    <TD>STATUS   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_appd.html#cmt_d_10">10</A>  
+  </TR>
+  <CAPTION align="bottom"><B>Figure D-1.  Changeable 
+Attributes</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_d_1">1.</A> When the Dimension Attribute of a Channel Object 
+   changes, it may be due to a change in the positions and number of array 
+   elements along a coordinate axis.  Thus, the Coordinates and Spacing 
+   Attributes may require changing to keep in synch.  Update Objects that 
+   specify changes in this Attribute must specify The Frame Type and Frame 
+   Number of the Frame at which the change takes effect.  
+  <LI><A name="cmt_d_2">2.</A> The CoefficientS Attribute may change to reflect 
+   manual adjustments in the calibration of a Channel.  No specific requirements 
+   are made here regarding the usage of the Attributes of the Update Object, 
+   since different methods of calibration may require different kinds of 
+   information to specify when the change takes effect.  
+  <LI><A name="cmt_d_3">3.</A> The Dimension Attribute affects the contents  of 
+  a particular Slot in a particular Frame Type.  A typical type of  update is to 
+  indicate that a Channel is absent or to indicate its presence  after having 
+  been absent.  Update Objects that specify changes in this  Attribute must 
+  provide exactly one Frame Type and one Frame Number specifying  the Frame at 
+  which the change takes effect.  
+  <LI><A name="cmt_d_4">4.</A> The PROPERTIES Attribute of a spliced Channel 
+   may not be the same for all ranges of its Index, since the corresponding 
+   Properties of the input Channels of the spliced Channel may be different.  
+  These changes may be indicated by means of updating the PROPERTIES  Attribute 
+  of the spliced Channel in synchronization with the splice  points of its input 
+  Channels.  
+  <LI><A name="cmt_d_5">5.</A> The Status Attribute reflects the operational 
+   status of the equipment.  Update Objects that specify changes in this 
+   Attribute must specify the Borehole Depth of the Tool Zero Point at  the time 
+  that the particular equipment status changed.  
+  <LI><A name="cmt_d_6">6.</A> The Vertical-Depth, Radial-Drift, and 
+  Angular-Drift  Attributes specify the position of equipment (almost always 
+  surface  equipment) that is normally stationary.  Occasionally equipment will 
+   move during a logging run.  For example, geophones positioned on the  ocean 
+  surface will change vertical position relative to the Well Reference  Point 
+  due to tide motion.  Updates of these Attributes can reflect such  slow 
+  changes. Updates of these Attributes should not be used  to indicate motion of 
+  equipment that is normally non-stationary.  In  fact, these Attributes should 
+  normally be absent for such equipment.  Dynamic position of such equipment can 
+  best be conveyed via Channel  and Path Objects.  
+  <LI><A name="cmt_d_7">7.</A> The VALUES attribute of a PARAMETER Object may be 
+  updated if and only if the Parameter is Unzoned, namely, if and  only if the 
+  ZONES Attribute of the PARAMETER Object is Absent.  
+  <LI><A name="cmt_d_8">8.</A> The Process Object is generally recorded before 
+   the Frames containing its output Channels.  The final status of the  process 
+  may not be known until after all associated Frames have been  written.  Thus, 
+  the initial Status of a Process Object may be ‘In-Progress’,  while its final 
+  Status may be ‘Aborted’ or ‘Complete’.  In case there  is a system crash, the 
+  final Status may also be ‘In-Progress  
+  <LI><A name="cmt_d_9">9.</A> When a splice operation begins, it may not  be 
+  known what all of the input Channels will be.  It must be possible  to provide 
+  this information on the fly.  The INPUT-CHANNELS Attribute  may be updated if 
+  and only if the ZONES Attribute is Absent.  In this  case, the Count of 
+  INPUT-CHANNELS is 1, and an update indicates a change  in the input Channel at 
+  the Frames indicated by the UPDATE Object.  
+  <LI><A name="cmt_d_10">10.</A> The Status Attribute reflects the operational 
+   status of a tool.  Update Objects that specify changes in this Attribute 
+   must specify the Borehole Depth of the Tool Zero Point at the time that  the 
+  particular tool status changed. </LI></UL></BODY></HTML>

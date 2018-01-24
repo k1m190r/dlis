@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_sec7.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1252"> 
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"> <TITLE>Chapter 
+7</TITLE> </HEAD> 
+<BODY><FONT face="Times" size="5">
+<P>Chapter 7</P></FONT><FONT face="Times" size="6">
+<P>SEMANTICS: DICTIONARIES</P></FONT> 
+<H3>7.1	Specification Logical Record  (SPEC)</H3>
+<P>Specification  Logical Records are Explicitly Formatted Logical Records  of 
+Type SPEC that contain Objects that specify the LIS  semantic entities.  
+Specification Logical Records may contain  Set Types <I>Code</I>, 
+<I>Attribute</I>, <I>Object–Type</I>,  <I>Representation-Code</I>, 
+<I>Unit-Symbol</I>, <I>EFLR</I>,  <I>IFLR</I>, and <I> Specification</I>.</P>
+<H4>7.1.1	Code Objects</H4>
+<P>Code  Objects describe Values applicable to an Attribute for  which Values 
+are controlled.  The association between a  particular Attribute and the Code 
+Objects that apply to  it is defined in §7.1.2. 
+<P>Codes may be defined by POSC or by  the Producer.  POSC-defined codes have 
+industry-standardized  usage.  The following naming convention is used to 
+distinguish  between POSC-defined and Producer-defined codes:  The CODE  (if 
+IDENT) or IDENTIFIER Attribute of any Producer-defined  code must begin with the 
+unique prefix consisting of the  ASCII representation of the Producer’s Company 
+Code, followed  by a dash.  All POSC-defined codes must begin with an alphabetic 
+ character in the range ‘A’ to ‘Z’. Figure 7-1 defines the Attributes of  a Code 
+Object. 
+<P align="center"><IMG width="353" height="92" src="Chapter%207_files/image225.gif"> 
+ <BR><B>Figure 7-1.  Attributes of Code Object</B> 
+<P>Comments: 
+<UL>
+  <LI>1.	The <I>Code</I> Attribute is one  of a prescribed number of distinct 
+  Values that apply to  a particular Attribute.  In any Set of Code Objects, the 
+   Code Attribute of every Object must have the same Representation  Code and 
+  Units. 
+  <LI>2.	The <I>Identifier</I> Attribute  is a symbolic representation of the 
+  Code Attribute.  The  Identifier Attribute is mandatory except when the Code 
+   Attribute has a Representation Code of IDENT. </LI></UL>
+<H5>7.1.2	attribute Objects</H5>
+<P>Attribute  Objects specify the Characteristics of a single Attribute.  The 
+association between a particular Object Type and the  Attribute Objects that 
+apply to it is defined in §7.1.3. Figure 7-2 defines the Attributes of  an 
+Attribute Object. 
+<P align="center"><IMG width="396" height="170" src="Chapter%207_files/image226.gif"> 
+ <BR><B>Figure 7-2.  Attributes of Attribute Object</B> 
+<P>Comments: 
+<P align="JUSTIFY">1.	The <I>Label</I> Attribute is  the Label of the Attribute 
+described by the current Attribute  Object.</P>
+<P align="JUSTIFY">2.	The <I>Count</I> Attribute, when  present, specifies a 
+restriction on the Count of the Attribute  described by the current Attribute 
+Object.  Each Value  Element of the Count Attribute is a permissible Count value 
+ for the described Attribute, and no other values may be  used.  Typically, 
+Count is absent or Count = {1}.</P>
+<P align="JUSTIFY">3.	The <I>Representation-Code</I> Attribute, when present, 
+specifies a restriction on the  Representation Code of the Attribute described 
+by the current  Attribute Object.  Each Value Element of the Representation-Code 
+ Attribute is a permissible Representation Code value for  the described 
+Attribute, and no other values may be used.</P>
+<P align="JUSTIFY">4.	The <I>Units</I> Attribute, when  present, specifies a 
+restriction on the Units of the Attribute  described by the current Attribute 
+Object.  Each Value  Element of the Units Attribute is a permissible Units value 
+ for the described Attribute, and no other values may be  used.</P>
+<P align="JUSTIFY">5.	The <I>Updatable</I> Attribute,  when present, specifies 
+that the described Attribute is  updatable.</P>
+<P align="JUSTIFY">6.	The <I>Referenced-Types</I> Attribute  is a List of Types 
+of Objects that may be referenced by  the described Attribute.  This typically 
+applies to Attributes  that have Representation Codes ATTREF, OBNAME, or OBJREF. 
+ To prevent ambiguity, this Attribute must have C = 1 when  specifying Object 
+Types associated with OBNAME.</P>
+<P align="JUSTIFY">7.	The <I>Codes </I>Attribute is  a List of references to 
+Code Objects.  If the Codes Attribute  is present, then the range of the 
+described Attribute is  restricted to the discrete values specified by the 
+referenced  Code Objects.  Any Value Element of the described Attribute  must 
+match one of the specified code values.  In particular,  the described Attribute 
+must have the same Representation  Code and Units as the referenced Code 
+Attribute from which  a value is taken.  The collection of referenced Code 
+Objects  must have distinct Code Attribute Values. 
+<H5>7.1.3	Object-Type Objects</H5>
+<P>Object-Type  Objects specify the Type and Attributes of an Object Type.
+ Figure 7-3 defines the Attributes of  an Object-Type Object. 
+<P align="center"><IMG width="354" height="92" src="Chapter%207_files/image227.gif"> 
+ <BR><B>Figure 7-3.  Attributes of Object-Type Object</B> 
+<P>Comments: 
+<P align="JUSTIFY">1.	The <I>Type</I> Attribute is the  Type of the described 
+Objects.</P>
+<P align="JUSTIFY">2.	The <I>Attributes </I>Attribute  is a List of references 
+to Attribute Objects.  The referenced  Objects enumerate and describe the 
+Attributes of the described  Objects. 
+<H5>7.1.4	Unit-Symbol Objects</H5>Unit-Symbol  Objects describe standardized 
+unit symbols.  Unit symbols  are customary or simplified names that may be used 
+in place  of a unit expression (See Representation Code UNIT). Figure 7-4 
+defines the Attributes of  a Unit-Symbol Object;. 
+<P align="CENTER"><IMG width="381" height="106" src="Chapter%207_files/image228.gif"> 
+ <BR><B>Figure 7-4.  Attributes of Unit-Symbol Object</B> 
+<P>Comments: 
+<P align="JUSTIFY">1.	The <I>Unit-Symbol</I> Attribute  is a character string 
+token used as a customary or standardized  name for a unit expression.  The 
+Unit-Symbol Value <I>is</I> a unit but differs from a unit expression in that it 
+is  a single token containing no scalar factor and no ‘/’ and  no ‘.’. 
+Unit-Symbol Values are case-sensitive.</P>
+<P align="JUSTIFY">2.	The <I>Unit-Expression</I> Attribute  is a unit expression 
+containing an optional scalar factor  (See Representation Code UNIT).  When the 
+Unit-Expression  Attribute is absent, the unit represented by the Unit-Symbol 
+ Attribute is considered to be a base unit.  Base units  as well as unit symbols 
+are administered by POSC and  may not be defined arbitrarily by the 
+Producer.</P>
+<P align="JUSTIFY">3.	The <I>Unit-Offset</I> Attribute  is an optional numeric 
+quantity that expresses an additive  difference between UNIT-SYMBOL and  the 
+<I>unscaled</I> UNIT-EXPRESSION.  Let U<FONT size="1">2</FONT> be the unit 
+defined by UNIT-SYMBOL  and U<FONT size="1">1</FONT> be the unit defined by the 
+unscaled UNIT-EXPRESSION,  then 
+<P>UNIT-OFFSET (U<FONT size="1">2</FONT>) = 0 (U<FONT size="1">1</FONT>)</P>
+<P>Algebraically, if s is the scalar  in UNIT-EXPRESSION — i.e., U<FONT 
+size="1">2</FONT> = s U<FONT size="1">1</FONT> — then </P>
+<P>y (U<FONT size="1">2</FONT>) = x (U<FONT size="1">1</FONT>), where y = (1/s) 
+x + UNIT-OFFSET</P>
+<P>Use of this Attribute is exceptionally  rare.  It is used, for example, to 
+express Fahrenheit and  Celsius temperatures.  From Appendix F, for example, 
+given  UNIT-SYMBOL = degF, UNIT-EXPRESSION = 5/9 degC, and UNIT-OFFSET  = 32, 
+then U<FONT size="1">2</FONT> = degF, U<FONT size="1">1</FONT> = degC, s = 5/9, 
+ and</P>
+<P>(9/5 x + 32) degF = x degC</P>
+<H5>7.1.5	Representation-Code Objects</H5>Representation-Code  Objects enumerate 
+and briefly describe the Representation  Codes defined by the standard.  The 
+bit-level specification  of Representation Codes is not represented in these 
+Objects. To ensure the ability of implementations  to read past new 
+Representation Codes, all representations  other than those defined for the 
+initial specification  of a major version of the DLIS must begin with a UVARI 
+ field that specifies the total length in bytes of that  part of the 
+representation following the initial UVARI  field. Figure 7-5 defines the 
+Attributes of  a Representation-Code Object;.
+<P></P>
+<P align="CENTER"><IMG width="356" height="88" src="Chapter%207_files/image229.gif"> 
+<BR><B>Figure 7-5.  Attributes of Representation-Code Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>Code</I> Attribute specifies  the numeric code that identifies the 
+Representation Code.</P>
+<P>2.	The <I>Symbol</I> Attribute specifies  the symbolic value of the 
+Representation Code that is used  in documentation of the standard.</P>
+<H5>7.1.6	eflr Objects</H5>
+<P>EFLR  Objects specify Explicitly Formatted Logical Record Types. Figure 7-6 
+defines the Attributes of  an EFLR Object.</P>
+<P align="CENTER"><IMG width="352" height="105" src="Chapter%207_files/image230.gif"> 
+<BR><B>Figure 7-6.  Attributes of EFLR Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>Code</I> Attribute is the  numeric code that defines the Logical 
+Record Type of the  EFLR.</P>
+<P>2.	The <I>Type</I> Attribute is the  symbolic value of the Logical Record 
+Type of the EFLR.</P>
+<P>3.	The <I>Object-Types</I> Attribute  is a List of references to Object-Type 
+Objects that specify  the Object Types allowed to be recorded in the described 
+ EFLR.</P>
+<H5>7.1.7	IFLR Objects</H5>
+<P>IFLR  Objects specify an Indirectly Formatted Logical Record  Types. Figure 
+7-7 defines the Attributes of  an IFLR Object.</P>
+<P align="CENTER"><IMG width="381" height="105" src="Chapter%207_files/image231.gif"> 
+<BR><B>Figure 7-7.  Attributes of IFLR Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>Code</I> Attribute is the  numeric code that defines the  Logical 
+Record Type of the  IFLR.</P>
+<P>2.	The <I>Type</I> Attribute is the  symbolic value of the Logical Record 
+Type of the IFLR.</P>
+<P>3.	The <I>Descriptor-Type</I> Attribute  references an Object-Type Object 
+that specifies the Object  Type associated with the Data Descriptor Reference of 
+the  given IFLR Type.</P>
+<H5>7.1.8	Specification Objects</H5>
+<P>Specification  Objects specify all of the semantic elements of a particular 
+ version of the DLIS. Figure 7-8 defines the Attributes of  a Specification 
+Object.</P>
+<P align="CENTER"><IMG width="404" height="140" src="Chapter%207_files/image232.gif"> 
+<BR><B>Figure 7-8.  Attributes of Specification Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>Public-Version</I> Attribute  identifies the version of the Public 
+Data portion of the  standard that this Specification Object and related Objects 
+ describe.  The Value of the Public-Version Attribute corresponds  to the DLIS 
+Version field of the Storage Unit Label.</P>
+<P>	The notion of a <I>Private Version</I> is implied by the combination of the 
+Product and Version  Attributes of the Origin Object and is not explicitly 
+represented  in the Specification Object.  In particular, the subset  of Private 
+Data Types that a Producer employs may be different  from Product to Product 
+within an organization and from  version to version of the Product.</P>
+<P>2.	The <I>EFLRs </I>Attribute is  a List of references to EFLR Objects.  
+Collectively, the  referenced EFLR Objects and the Objects associated with  them 
+specify all of the Public Data and some or all of  the Private Data semantic 
+entities that may be recorded  in EFLRs for the specified version of the 
+standard.  Objects  in the specification that correspond to Private Data may  be 
+encrypted.</P>
+<P>3.	The <I>IFLRs </I>Attribute is  a List of references to IFLR Objects.  
+Collectively, the  referenced IFLR Objects and the Objects associated with  them 
+specify all of the Public Data and some or all of  the Private Data IFLRs for 
+the specified version of the  standard.  Objects in the specification that 
+correspond  to Private Data may be encrypted.</P>
+<P>4.	The <I>Representations</I> Attribute  is a List of references to 
+Representation-Code Objects.  These Objects specify the Representation Codes 
+defined  for the given version of the standard.</P>
+<P>5.	The <I>Units</I> Attribute is  a List of references to Unit-Symbol 
+Objects.  These Objects  specify the standardized unit letter symbols defined 
+for  the given version of the standard.</P>
+<H4>7.2	Dictionary Logical Record  (DICT)</H4>
+<P>Dictionary  Logical Records are Explicitly Formatted Logical Records  of Type 
+DICT that contain Objects that enumerate and describe  instances of Objects that 
+are declared dictionary-controlled.  Dictionary Logical Records may contain Set 
+Types <I>Lexicon</I>,  <I>IDENTIFIER</I>, <I>OPTION</I> and 
+<I>BASE-DICTIONARY</I>.</P>
+<P>The Objects in a DICT Logical Record  contain terminology for or information 
+about the Producer’s  dictionary, which is identified by the NAME-SPACE-NAME 
+ Attribute of the ORIGIN Object.  A dictionary is a set  of permanent bindings 
+of semantically meaningful names  (Long Names, Trademark Names, and Generic 
+Names) to Identifiers.  Once established, bindings may not be deleted, and 
+Identifiers  may not have entities with different meanings bound to  them.  The 
+dictionary itself is not permanent, since the  addition of new permanent 
+bindings is allowed.</P>
+<P>Dictionaries have versions.  A version  is a snapshot of a dictionary at a 
+point in its development.  A dictionary version is a permanent set of permanent 
+bindings.  The addition of new bindings in the dictionary generates  a new 
+version, a superset of the previous version.</P>
+<H5>7.2.1	Lexicon Objects</H5>
+<P>Lexicon  Objects contain standard words and phrases used in the  construction 
+of Long Names.  Long Names are structured  names that may be associated with 
+Objects and that provide  more meaning than the Object Identifiers, which are 
+not  required to carry specific semantic meaning. Figure 7-9 defines the 
+Attributes of  a Lexicon Object.</P>
+<P align="CENTER"><IMG width="393" height="108" src="Chapter%207_files/image233.gif"> 
+<BR><B>Figure 7-9.  Attributes of Lexicon Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>Name-Part-Type</I> Attribute  specifies the Name Part Type of the 
+Long Name to which  the Name–Part–Value Attribute applies.</P>
+<P>2.	The <I>Name-Part-Value</I> Attribute  is a word, symbol, or phrase 
+applicable to the Name Part  Type specified by the Name-Part-Type Attribute.</P>
+<P>3.	The <I>Version</I> Attribute specifies  the smallest (oldest) version of 
+the Producer’s dictionary  in which this Name Part Value is present.  This 
+corresponds  to the version specified in the Name-Space-Version Attribute  of 
+the Origin Object.  It follows that the given Name Part  Value will not be found 
+in any Logical File for which the  Name-Space-Version Attribute is smaller 
+(older) than this  version.</P>
+<H5>7.2.2	IDENTIFIER Objects</H5>
+<P>IDENTIFIER  Objects define dictionary-controlled Object Identifiers  and 
+associate them with various descriptive names.  This  Object Type provides a 
+convenient way for Producers to  distribute lists of Identifiers and 
+descriptions when software  releases are made and for Consumers to prepare their 
+internal  databases to accommodate the new Objects in advance of  receiving 
+field data.</P>
+<P>Bindings between Identifiers and descriptive  names are specified explicitly 
+by the appearance of the  Identifier in a dictionary (as represented by an 
+IDENTIFIER  Object).  The descriptive name for an Identifier may change  over 
+time to become more accurate or to use more standardized  terms.  However, the 
+meaning assigned to an Identifier  by these bindings (within the context of a 
+Set Type) is  permanent.</P>
+<P>A naming convention is used to permit  an implicit, non-permanent binding in 
+a Logical File between  an Identifier and a descriptive name.  In particular, 
+any  Identifier that begins with the two-character prefix ‘U-’  is considered to 
+be <I>Uncontrolled</I> and is temporarily  defined only in the Logical File in 
+which it appears by  reference to a LONG-NAME Object or by attachment of a 
+Trademark-Name,  a Generic-Name or a (ASCII) LOng-NAME Attribute.  Consequently, 
+ <B><I>no Identifier defined in a dictionary may begin with  the two 
+characters</I></B> ‘U-’. Figure 7-10 defines the Attributes of  an IDENTIFIER 
+Object.</P>
+<P align="CENTER"><IMG width="402" height="234" src="Chapter%207_files/image234.gif"> 
+<BR><B>Figure 7-10.  Attributes of IDENTIFIER Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>Type </I>Attribute is the  Object Type of the described Object.</P>
+<P>2.	The <I>Identifier</I> Attribute  is the value of the Identifier Subfield 
+of the Name of  the described Object.  Objects of the given Type with this 
+ Identifier always represent instances of the same information.  If the meaning 
+of the information changes, then a different  Identifier must be used.</P>
+<P>3.	The <I>IDENTIFIER-VERSION</I> Attribute is the earliest version of the 
+Producer’s dictionary  in which the Identifier is defined.</P>
+<P>4.	The <I>INITIAL-DESCRIPTION</I> Attribute is an informal description for an 
+Identifier  that does not yet have a Long Name.  A large number of  entities 
+represented by DLIS Objects predate the DLIS standard  and possibly will not 
+have Long Names when dictionaries  are initially created.</P>
+<P>5.	The <I>Long-Names</I> Attribute  is a List of references to Long-Name 
+Objects that contain  Long Names of the described Object.  The Long Name 
+associated  with a particular Identifier may change from one version  of a 
+dictionary to another, but only to achieve clearer  meaning or better 
+conformance to standardized Lexicons,  not to change the essential meaning of 
+the Long Name.   When there are two or more Long Name Objects for the 
+Identifier,  they are listed in order of increasing age.</P>
+<P>6.	The <I>Trademark-Name</I> Attribute  is the trademark name of the Object, 
+when applicable.   The trademark name is permanently associated with the 
+Identifier.  A new trademark name requires a new Identifier.</P>
+<P>7.	The <I>Generic-Names</I> Attribute  is a List of generic names of the 
+Object and applies to  Object Types that do not have a LONG-NAME Attribute.  The 
+ generic name is allowed to evolve in the same manner as  the Long Name.  When 
+there are two or more generic names  for the Identifier, they are listed in 
+order of increasing  age.</P>
+<P>8.	The <I>Options </I>Attribute is  a List of references to Option Objects.  
+Option Objects  specify Attributes of the described Object that have controlled 
+ (e.g., symbolic) Values and specify the Code Objects that  describe those 
+Values.</P>
+<P>9.	The <I>Versions</I> Attribute  is a List of dictionary versions 
+corresponding in order  to the List of referenced Long-Name Objects or generic 
+ names.  Each version is the earliest version of the Producer’s  dictionary in 
+which the corresponding Long Name is defined.</P>
+<P>10.	The <I>ALIASES</I> Attribute  is a List of Identifiers by which the 
+entity bound to the  current IDENTIFIER is known in other dictionaries.</P>
+<P>11.	The <I>ALIAS-NAME-SPACES</I> Attribute is a List of dictionary Name Space 
+Names corresponding  in order and number to the Identifiers in the ALIASES 
+Attribute.  The Producer guarantees that the entity defined by an  Alias 
+Identifier in the Alias Name Space is identical to  the entity bound to the 
+current IDENTIFIER.</P>
+<P>12.	The <I>ALIAS-VERSIONS</I> Attribute  is a List of dictionary versions 
+corresponding in order  and number to the Identifiers in the ALIASES Attribute.  
+These are versions of the Alias Name Spaces in which the  Alias Identifiers are 
+defined.</P>
+<H5>7.2.3	Option Objects</H5>
+<P>Option  Objects describe the controlled values associated with  particular 
+Attributes of particular Objects. Figure 7-11 defines the Attributes of  an 
+Option Object.</P>
+<P align="CENTER"><IMG width="349" height="90" src="Chapter%207_files/image235.gif"> 
+<BR><B>Figure 7-11.  Attributes of Option Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>Attribute </I>Attribute  is the Name of an Attribute for which 
+options are specified.  The Object Type for which this is an Attribute is 
+specified  in the Dictionary Object from which the Option Object is 
+ referenced.</P>
+<P>2.	The <I>Codes </I>Attribute is  a List of references to Code Objects.  The 
+Code Attributes  of the referenced Code Objects collectively define the  options 
+permitted for the Value of the described Attribute.  To prevent ambiguity, the 
+referenced options must be distinct.</P>
+<P>3.	The <I>VERSIONS</I> Attribute  is a List of dictionary versions, 
+corresponding in order  and number to the Elements of the CODES Attribute, that 
+ specify the earliest versions of the dictionary in which  the corresponding 
+Codes are defined.</P>
+<H5>7.2.4	BASE-DICTIONARY Objects</H5>
+<P>A  BASE-DICTIONARY Object specifies the portion of a dictionary  described in 
+the current File Set.  In addition, it makes  it possible to define a new 
+dictionary as an extension  of an existing dictionary.  The dictionary 
+associated with  an Object is the one identified by the PRODUCER-NAME and 
+ NAME-SPACE-NAME Attributes of the Object’s Origin.</P>
+<P>The types of dictionary distribution  are <I>Full</I>, <I>Incremental</I>, 
+and <I>Partial</I>.  These terms are defined in the comments below.  Informally, 
+ a Full distribution includes all controlled-name Objects  for a given 
+dictionary.  An Incremental distribution includes,  but is not limited to, all 
+controlled-name Objects defined  in dictionary versions N to M.  A Partial 
+distribution  includes controlled-name Objects selected according to  some local 
+need.  In a Partial distribution, what you see  is what you get.</P>
+<P>A BASE-DICTIONARY Object must be present  in any Logical File that contains 
+DICT Logical Records,  and it must precede any LEXICON, IDENTIFIER, or OPTIONS 
+ Objects in the same Logical File for the same dictionary. Figure 7-12 defines 
+the Attributes of  a BASE-DICTIONARY Object.</P>
+<P align="CENTER"><IMG width="385" height="93" src="Chapter%207_files/image236.gif"> 
+<BR><B>Figure 7-12.  Attributes of BASE-DICTIONARY Object</B> 
+<P>Comments:</P>
+<P>1.	The <I>BASE-NAME </I>Attribute  is the name of a dictionary.</P>
+<P>2.	The <I>BASE-VERSION</I> Attribute  is a version of the dictionary named in 
+the BASE-NAME Attribute.  The combination of BASE-NAME and BASE-VERSION define a 
+ <I>Base Dictionary</I>.  The combination of CURRENT-VERSION  from this Object 
+and NAME-SPACE-NAME from its Origin define  a <I>Current Dictionary</I>.</P>
+<P>	When BASE-VERSION is either Absent  or 0 (zero), then the Base Dictionary 
+and the Current Dictionary  must have the same names.</P>
+<P>	Absence of BASE-VERSION indicates  that the current File Set contains a 
+Partial distribution  of the Current Dictionary.  A Partial distribution of a 
+ dictionary includes any of its controlled-name Objects  selected by the 
+Producer to satisfy some particular local  need.</P>
+<P>	When BASE-VERSION is 0, then the  current File Set contains a Full 
+distribution of the Current  Dictionary.  A Full distribution of a dictionary 
+includes  in the current File Set all of the dictionary’s controlled-name 
+ Objects.</P>
+<P>	If BASE-VERSION is present and non-zero,  then the current File Set contains 
+an Incremental distribution  of the Current Dictionary.  There are two 
+cases:</P>
+<DIR>
+<P>•	The Base Dictionary has the same  name as the Current Dictionary.  In this 
+case, the Base  Dictionary is an earlier version of the Current Dictionary.  The 
+Incremental distribution includes in the current File  Set, but is not limited 
+to, all of the Current Dictionary’s  controlled-name Objects for all versions 
+later than BASE-VERSION.</P>
+<P>•	The Base Dictionary has a name  different from the Current Dictionary.  In 
+this case, the  Current Dictionary is an alternate extension of the Base 
+ Dictionary.  The Base Dictionary is defined to be version  1 of the Current 
+Dictionary; that is, all versions are  collapsed into a single version.  The 
+Incremental distribution  includes in the current File Set, but is not limited 
+to,  all of the Current Dictionary’s controlled-name Objects  for all versions 2 
+and later.</P></DIR>
+<P>3.	The <I>CURRENT-VERSION</I> Attribute  specifies the latest version of the 
+Current Dictionary.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></BODY></HTML>

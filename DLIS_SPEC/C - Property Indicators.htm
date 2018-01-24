@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_appc.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ <TITLE>Appendix C: PROPERTY INDICATORS</TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"></HEAD> 
+<BODY>
+<H3>
+<P>Appendix C:<BR><A name="C">PROPERTY INDICATORS</A></P></H3>Property 
+Indicators  are used to indicate the general intrinsic properties of the data 
+ associated with an Object (typically, but not exclusively, a Channel  Object) 
+and the general processing steps that have been performed  to create that data.  
+The Property Indicators listed below are  not mutually exclusive and may be 
+associated in various combinations  with the data of a particular Object. 
+<P>It is important to understand the general nature  of Property Indicators.  
+ They are intended to provide broad classifications  for Objects.  Such 
+classifications can help the Consumer decide  how to handle the Object, i.e., 
+based on what has been done to  the data of an Object decide what needs to be 
+done next.  For example,  the Property Indicator that the data associated with a 
+Channel  has been filtered does not indicate what the specific filtering 
+ algorithm was.  However, it may indicate that additional filtering  is 
+unnecessary. 
+<P>Property Indicators are dictionary-controlled  Codes (Representation Code 
+IDENT). 
+<P>
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Property Indicator Options   </B>
+    <TD><B>Description  </B>
+  <TR>
+    <TD>AVERAGED   
+    <TD>The data is the average of two or more other data sources.  
+  <TR>
+    <TD>CALIBRATED   
+    <TD>A calibration process has been applied to the data.  
+  <TR>
+    <TD>CHANGED-INDEX   
+    <TD>The data has been resampled along an index       that is different 
+      from its original sampling index.       For example, data that was 
+      originally sampled       according to time is resampled according to 
+      depth.  
+  <TR>
+    <TD>COMPUTED   
+    <TD>The data is an output of a transform, e.g.,       function former, 
+      based on input data from a single tool.    
+  <TR>
+    <TD>DEPTH-MATCHED   
+    <TD>The data has been aligned along       its depth index against a 
+      reference data source.  
+  <TR>
+    <TD>DERIVED   
+    <TD>The data is an output of empirical       equations or is the solution 
+      of log response equations based on       input data from more than one 
+      tool.  
+  <TR>
+    <TD>FILTERED   
+    <TD>A filtering process has been applied       to the data.  
+  <TR>
+    <TD>HOLE-SIZE-CORRECTED   
+    <TD>The data has been corrected       for hole size effect based on the 
+      value of a hole size input.  
+  <TR>
+    <TD>INCLINOMETRY-CORRECTED   
+    <TD>The data has been       corrected to standard directional references 
+      (vertical axis and       North axis).  
+  <TR>
+    <TD>LITHOLOGY-CORRECTED   
+    <TD>The data has been computed       or corrected based on the value of a 
+      matrix lithology parameter.  
+  <TR>
+    <TD>LOCAL-COMPUTATION   
+    <TD>The data is the result       of locally-defined computational 
+      expressions.        Such data is normally experimental.  
+  <TR>
+    <TD>LOCALLY-DEFINED   
+    <TD>The Object's Name has been created by the operator.        This Name 
+      might not be dictionary-controlled       and may have no semantic 
+      association with the Object's data.  
+  <TR>
+    <TD>MODELLED   
+    <TD>The data is the output of a theoretical       model and is not derived 
+      from any measured quantity.  
+  <TR>
+    <TD>MUDCAKE-CORRECTED   
+    <TD>The data has been corrected for mud cake effect.  
+  <TR>
+    <TD>NORMALIZED   
+    <TD>The data has been corrected so       that its range corresponds to a 
+      prescribed norm.  
+  <TR>
+    <TD>OVER-SAMPLED   
+    <TD>Interpolated data samples have       been added to the original data 
+      to align this       data with other data.  
+  <TR>
+    <TD>PATCHED   
+    <TD>The original data values have been       replaced at specific levels.  
+            This is normally done to remove spurious       values (e.g., 
+      spikes).  
+  <TR>
+    <TD>PRESSURE-CORRECTED   
+    <TD>The data has been corrected       for hydrostatic pressure (mud 
+      weight).  
+  <TR>
+    <TD>RE-SAMPLED   
+    <TD>The data has been resampled along its original index.        For 
+      example, as the result of a depth correction       process it is 
+      determined that       the original index values are incorrect.       Using 
+      a curve fitting process it is possible to determine new       data values 
+      for the original index values       that represent the original signal 
+      more accurately.  
+  <TR>
+    <TD>SALINITY-CORRECTED   
+    <TD>The data has been corrected for salinity effect.  
+  <TR>
+    <TD>SAMPLED-DOWNWARD   
+    <TD>The original sampling direction is downward.  
+  <TR>
+    <TD>SAMPLED-UPWARD   
+    <TD>The original sampling direction is upward.  
+  <TR>
+    <TD>SPEED-CORRECTED   
+    <TD>The data has been corrected       for variations of the downhole tool 
+      speed.  
+  <TR>
+    <TD>SPLICED   
+    <TD>The data has been obtained by concatenating       two or more other 
+      data sources.  
+  <TR>
+    <TD>SQUARED   
+    <TD>The data is the result of a squaring       process, i.e., a process 
+      that converts a smooth function       into a step function.  
+  <TR>
+    <TD>STACKED   
+    <TD>The data is the sum of two or more other data sources.  
+  <TR>
+    <TD>STANDARD-DEVIATION   
+    <TD>The data represents the       estimated standard deviation, due to     
+        environmental factors or incoherence       of the computational model, 
+      of another data source.  
+  <TR>
+    <TD>STANDOFF-CORRECTED   
+    <TD>The data has been corrected       for standoff effect.  
+  <TR>
+    <TD>TEMPERATURE-CORRECTED   
+    <TD>The data has been corrected       for temperature effect based on      
+       the value of a temperature source.  
+  <TR>
+    <TD>UNDER-SAMPLED   
+    <TD>Some of the original data samples       have been discarded to reduce 
+      the amount of data       or to align this data with other data. 
+</TR></TBODY></TABLE></P></BODY></HTML>

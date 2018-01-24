@@ -1,0 +1,1984 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_sec5.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ <TITLE>Chapter 5: SEMANTICS: STATIC AND FRAME DATA</TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"></HEAD> 
+<BODY>
+<H3><A name="5">Chapter 5:<BR>SEMANTICS: STATIC AND FRAME DATA</A></H3><A name="5"></A>
+<H4><A name="5"><A name="5_1">5.1</A> File Header Logical Record (FHLR)</H4>
+<P>Each Logical  File begins with a File Header Logical Record that serves as an 
+ identifying label for the Logical File.  A File Header Logical Record  is an 
+Explicitly Formatted Logical Record (EFLR) with Type FHLR.  A File Header 
+Logical Record contains a single <EM>FILE-HEADER</EM> Set.  A FILE-HEADER Set is 
+unnamed and contains exactly one Object  with two Attributes as defined in 
+Figure 5-1. The Origin Subfield of the Name of the File-Header  Object must 
+reference the Defining Origin (see §5.2.1).   The Identifier  Subfield is a 
+single arbitrary character. 
+<P>The Template Attributes for this Set must contain  explicitly the Label and 
+Representation Code Characteristics and  only the Label and Representation Code 
+Characteristics.  The Count,  Units, and Value Characteristics take the global 
+defaults.  The  Value Characteristics are later defined in the Object's 
+Attributes. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>SEQUENCE-NUMBER   
+    <TD>C=1, R=ASCII, U=absent   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_1_1">1</A>  
+  <TR>
+    <TD>ID   
+    <TD>C=1, R=ASCII, U=absent   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_1_2">2</A>  
+  </TR>
+  <CAPTION align="bottom"><B>Figure 5-1. Attributes of File-Header 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_1_1">1.</A>The <EM>Sequence-Number</EM> Attribute is  the 
+  ASCII representation of a positive integer that indicates the  sequential 
+  position of the Logical File in a Storage Set.  The Value  of the 
+  Sequence-Number Attribute must meet the following requirements:   
+  <UL>
+    <LI>The number of ASCII characters is fixed at 10 characters,        right 
+    justified and padded to the left with blank        characters (ASCII code 
+    32<SUB>10</SUB>).         That is, the character representing the        
+    least significant digit of the Sequence-Number is in byte 10.    
+    <LI>The Sequence-Number of any Logical File,        expressed as an integer, 
+    must be greater than the        Sequence-Number of the Logical File that 
+    immediately precedes        it in the Storage Set.  The Sequence-Number of 
+    the first        Logical File in a Storage Set may be any positive integer.  
+     </LI></UL>
+  <LI><A name="cmt_5_1_2">2.</A>The <EM>ID</EM> Attribute is a descriptive 
+   identification of the Logical File.  The Value of the ID Attribute  must meet 
+  the following requirement:   
+  <UL>
+    <LI>The number of ASCII characters is fixed        at 65 characters (width 
+    of a standard printed page).   </LI></UL></LI></UL>
+<P>Since the File Header Logical Record is required  to be written as a single 
+Logical Record Segment (see §2.2.3.1),  a general file management utility can 
+identify File Header Logical  Records, modify the Value of the Sequence-Number 
+Attribute, and  retrieve the Values of both the Sequence-Number and ID 
+Attributes  knowing only the following about DLIS Logical Records (see Figure 
+ 5-2):   
+<UL>
+  <LI>Bit 1 in byte 3 of a File Header Logical        Record Segment is set and 
+  byte 4 contains the numeric code FHLR        (see Appendix A).    
+  <LI>The Value (excluding the length byte) of        the Sequence-Number 
+  Attribute is in        bytes 48 through 57 inclusive.    
+  <LI>The Value (excluding the length byte) of        the ID Attribute is in 
+  bytes 60 through 124 inclusive.    
+  <LI>When searching for a File Header Logical        Record on Record Storage 
+  Units, only the first        Logical Record Segment        in each Visible 
+  Record needs to be read.         It begins following the        two-byte 
+  Format Version, which follows        the two-byte Visible Record Length.       
+    The first byte of the first Logical Record Segment is byte        5 of the 
+  Visible Record in a Record Storage Unit.   </LI></UL>
+<P align="center"><IMG width="571" height="369" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image190.gif"> 
+<BR><B>Figure 5-2. Byte Structure of File Header Logical Record</B> 
+<H4><A name="5_2">5.2</A> Origin Logical Record (OLR)</H4>Origin Logical 
+ Records are Explicitly Formatted Logical Records of Type OLR that  contain 
+Objects that provide information about the original conditions  under which the 
+information in the Logical File was acquired or  created.  Origin Logical 
+Records may contain Set Types <EM>ORIGIN </EM>and <EM>WELL-REFERENCE-POINT</EM>. 
+<H5><A name="5_2_1">5.2.1</A> Origin Objects</H5>ORIGIN Objects uniquely 
+identify Logical Files and  describe the basic circumstances  under which 
+Logical Files are created.   ORIGIN Objects also provide  a means for 
+distinguishing different instances of a given entity. Each Logical File must 
+contain at least one ORIGIN  Set, which may contain one or more ORIGIN Objects.  
+The first Object  in the first ORIGIN Set is the <EM>Defining Origin</EM> for 
+the Logical  File in which it is contained, and the corresponding Logical File 
+ is called the Origin'’s <EM>Parent File</EM>.  It is intended that  no two 
+Logical Files will ever have Defining Origins with all Attribute  Values 
+identical. Figure 5-3 defines the Attributes of an ORIGIN Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><EM>Label      </EM>
+    <TD><EM>Restrictions      </EM>
+    <TD><EM>Comments  </EM>
+  <TR>
+    <TD>FILE-ID      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_1">1</A> 
+       </CENTER>
+  <TR>
+    <TD>FILE-SET-NAME      
+    <TD>C=1, R=IDENT      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_2">2</A> 
+       </CENTER>
+  <TR>
+    <TD>FILE-SET-NUMBER      
+    <TD>C=1, R=UVARI      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_3">3</A> 
+       </CENTER>
+  <TR>
+    <TD>FILE-NUMBER      
+    <TD>C=1, R=UVARI      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_4">4</A> 
+       </CENTER>
+  <TR>
+    <TD>FILE-TYPE      
+    <TD>C=1, R=IDENT      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_5">5</A> 
+       </CENTER>
+  <TR>
+    <TD>PRODUCT      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_6">6</A> 
+       </CENTER>
+  <TR>
+    <TD>VERSION      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_7">7</A> 
+       </CENTER>
+  <TR>
+    <TD>PROGRAMS      
+    <TD>R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_8">8</A> 
+       </CENTER>
+  <TR>
+    <TD>CREATION-TIME      
+    <TD>C=1, R=DTIME      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_9">9</A> 
+       </CENTER>
+  <TR>
+    <TD>ORDER-NUMBER      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_10">10</A> 
+       </CENTER>
+  <TR>
+    <TD>DESCENT-NUMBER      
+    <TD>
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_11">11</A> 
+       </CENTER>
+  <TR>
+    <TD>RUN-NUMBER      
+    <TD>
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_12">12</A> 
+       </CENTER>
+  <TR>
+    <TD>WELL-ID      
+    <TD>C=1      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_13">13</A> 
+       </CENTER>
+  <TR>
+    <TD>WELL-NAME      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_14">14</A> 
+       </CENTER>
+  <TR>
+    <TD>FIELD-NAME      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_15">15</A> 
+       </CENTER>
+  <TR>
+    <TD>PRODUCER-CODE      
+    <TD>C=1, R=UNORM      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_16">16</A> 
+       </CENTER>
+  <TR>
+    <TD>PRODUCER-NAME      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_17">17</A> 
+       </CENTER>
+  <TR>
+    <TD>COMPANY      
+    <TD>C=1, R=ASCII      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_18">18</A> 
+       </CENTER>
+  <TR>
+    <TD>NAME-SPACE-NAME      
+    <TD>C=1, R=IDENT      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_19">19</A> 
+       </CENTER>
+  <TR>
+    <TD>NAME-SPACE-VERSION      
+    <TD>C=1, R=UVARI      
+    <TD>
+      <CENTER><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_3_20">20</A> 
+       </CENTER></TR>
+  <CAPTION align="bottom"><B>Figure 5-3. Attributes of Origin 
+  Object</B></CAPTION></TABLE>
+<P>Comments:  
+<DL>
+  <DD><A name="cmt_5_3_1"><B>1.</B></A> The <EM>File-ID</EM> Attribute is an 
+  exact  copy of the ID Attribute of the File-Header Object of the Parent  File, 
+  i.e., the Logical File for which this Origin Object is the  Defining Origin.  
+  <DD><A name="cmt_5_3_2"><B>2.</B></A> The <EM>File-Set-Name</EM> Attribute is 
+  the  name of a <EM>File</EM> <EM>Set</EM>, a group of Logical Files related 
+   according to Producer-defined criteria to which the Parent File  belongs.  
+  The File Set is an arbitrary grouping of a set of Logical  Files and has no 
+  DLIS semantic meaning.  The File-Set-Name Attribute  is not expected to be 
+  unique for all File Sets.  
+  <DD><A name="cmt_5_3_3"><B>3.</B></A> The <EM>File-Set-Number</EM> Attribute 
+  is  a random number, called the <EM>File Set</EM> <EM>Number</EM>, that  is 
+  used to distinguish the Logical Files of one File Set from the  Logical Files 
+  of another File Set.  This number should be such that  there is a high 
+  probability that it uniquely identifies the File  Set.  This number should be 
+  the same for all Logical Files of a  given File Set.  This Attribute must be 
+  present, even when the  File-Set-Name  Attribute is absent.  In that case, it 
+  is considered to apply to  the File Set consisting of the single current 
+  Logical File.  
+  <DD><A name="cmt_5_3_4"><B>4.</B></A> The <EM>File-Number</EM> Attribute is 
+  the  <EM>File</EM> <EM>Number</EM> of the Parent File relative to the File 
+   Set specified by the File-Set-Name Attribute.  File Numbers for  a File Set 
+  are positive and increase in the order in which the Logical  Files of the File 
+  Set are created.  File Numbers for a File Set  need not increase sequentially.
+   It should be true, with a high probability,  that no two Logical Files will 
+  ever have the same File Set Number  and File Number combination. Notice that 
+  there is no specific relationship  defined for File Numbers of Logical Files 
+  in the same Storage Set.  In particular, a File Set may or may not coincide 
+  with the Logical  Files of a Storage Set.  
+  <DD><A name="cmt_5_3_5"><B>5.</B></A> The <EM>File-Type</EM> Attribute is a 
+  Producer-specified  <EM>File</EM> <EM>Type</EM> and signifies the general 
+  contents of the  Parent File or the circumstances under which the Parent File 
+  was  created.  
+  <DD><A name="cmt_5_3_6"><B>6.</B></A> The <EM>Product</EM> Attribute is the 
+  name  of the software product (e.g., the wellsite "operating"  system) that 
+  produced the Parent File.  
+  <DD><A name="cmt_5_3_7"><B>7.</B></A> The<EM> Version</EM> Attribute is the 
+  version  of the product specified by the Product Attribute.  
+  <DD><A name="cmt_5_3_8"><B>8.</B></A> The <EM>Programs</EM> Attribute is a 
+  List  of the names of a specific programs or services, operating as part  of 
+  the software specified by the Product Attribute, that were used  to generate 
+  the data contained in the Parent File.  
+  <DD><A name="cmt_5_3_9"><B>9.</B></A> The <EM>Creation-Time</EM> Attribute is 
+  the  date and time at which the Parent File was created.  
+  <DD><A name="cmt_5_3_10"><B>10.</B></A> The <EM>Order-Number</EM> Attribute is 
+  a  unique accounting number associated with the acquisition or creation  of 
+  the data in the Parent File.  It is typically known as the  <EM>Service Order 
+  Number</EM>.  
+  <DD><A name="cmt_5_3_11"><B>11.</B></A> The <EM>Descent-Number </EM> Attribute 
+  is  meaningful to the Producer.  The meaning of this number is specified  by 
+  the Producer to the Consumer by means external to the DLIS.  
+  <DD><A name="cmt_5_3_12"><B>12.</B></A> The <EM>Run-Number</EM> Attribute is 
+  meaningful  to the company specified in the Company Attribute.  Its use is 
+   specified  to the Producer by this company by means external to the DLIS.  
+  <DD><A name="cmt_5_3_13"><B>13.</B></A> The <EM>Well-ID</EM> Attribute is a 
+  codified  identifier of the well in or about which measurements were taken.  
+  Whenever applicable, the API Well Number should be used.  This  is a unique, 
+  permanent, numeric identifier assigned to a well in  accordance with the 
+  American Petroleum Institute Bulletin D12A,  January, 1979.  
+  <DD><A name="cmt_5_3_14"><B>14.</B></A> The <EM>Well-Name</EM> Attribute is 
+  the name of the well.  
+  <DD><A name="cmt_5_3_15"><B>15.</B></A> The <EM>Field-Name</EM> Attribute is 
+  the  name of the Field to which the well belongs.  If there is no Field,  then 
+  the value of this Attribute should be WILDCAT.  
+  <DD><A name="cmt_5_3_16"><B>16.</B></A> The <EM>Producer-Code</EM> Attribute 
+  is  the Producer’s identifying code. The Producer is the company whose 
+   authorized agent generated the Logical File using software programs 
+   developed under the sponsorship of the company.  This code is assigned  on 
+  request by <A href="mailto:jim.theriot@posc.org">POSC</A>. A list of current 
+  Company Codes for Producers may be obtained from the same source.   
+  <DD><A name="cmt_5_3_17"><B>17.</B></A> The <EM>Producer-Name</EM> Attribute 
+  is  the Producer’s business or organization name  
+  <DD><A name="cmt_5_3_18"><B>18.</B></A> The <EM>Company</EM> Attribute is the 
+  name  of the client company for which the data was acquired or computed, 
+   typically the operator of the well.  
+  <DD><A name="cmt_5_3_19"><B>19.</B></A> The <EM>Name-Space-Name</EM> Attribute 
+  specifies  the name of the dictionary in which dictionary-controlled Object 
+   Names are administered for this Origin.  Each Producer is expected  to 
+  administer or subscribe to a dictionary of Object Names from  which meaningful 
+  definitions can be derived.  
+  <DD><A name="cmt_5_3_20"><B>20.</B></A> The <EM>Name-Space-Version</EM> 
+  Attribute  specifies the version of the dictionary in which 
+  dictionary-controlled  Object Names are administered for this Origin.  
+  Dictionary version  N is a superset of dictionary version M whenever N &gt; M. 
+  </DD></DL>
+<H5><A name="5_2_2">5.2.2 Well-Reference-Point Objects</A></H5>
+Well-Reference-Point  Objects specify the Well Reference Point of a well (see 
+§4.1.8). Figure 5-4 defines the Attributes of a Well-Reference-Point  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>PERMANENT-DATUM   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_1">1</A>  
+  <TR>
+    <TD>VERTICAL-ZERO   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_2">2</A>  
+  <TR>
+    <TD>PERMANENT-DATUM-ELEVATION   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_3">3</A>  
+  <TR>
+    <TD>ABOVE-PERMANENT-DATUM   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_4">4</A>  
+  <TR>
+    <TD>MAGNETIC-DECLINATION   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_5">5</A>  
+  <TR>
+    <TD>COORDINATE-1-NAME   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_6">6</A>  
+  <TR>
+    <TD>COORDINATE-1-VALUE   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_7">7</A>  
+  <TR>
+    <TD>COORDINATE-2-NAME   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_8">8</A>  
+  <TR>
+    <TD>COORDINATE-2-VALUE   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_9">9</A>  
+  <TR>
+    <TD>COORDINATE-3-NAME   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_10">10</A> 
+ 
+  <TR>
+    <TD>COORDINATE-3-VALUE   
+    <TD>C=1   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_4_11">11</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-4. Attributes of Well-Reference-Point 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_4_1">1.</A>The <EM>Permanent-Datum</EM> Attribute specifies 
+   a <EM>Permanent Datum</EM>, an entity or structure (e.g., Ground Level)  from 
+  which vertical distance can be measured.  
+  <LI><A name="cmt_5_4_2">2.</A>The <EM>Vertical-Zero</EM> Attribute specifies  
+  <EM>Vertical Zero</EM>, a particular entity (e.g., Kelly Bushing)  that 
+  corresponds to zero depth.  
+  <LI><A name="cmt_5_4_3">3.</A>The <EM>Permanent-Datum-Elevation</EM> Attribute 
+   specifies the distance of the Permanent Datum above mean sea level.  A 
+  negative value indicates that the Permanent Datum is below mean  sea level.  
+  <LI><A name="cmt_5_4_4">4.</A>The <EM>Above-Permanent-Datum</EM> Attribute 
+   specifies the distance of Vertical Zero above the Permanent Datum.  The 
+  distance can be negative, which indicates that Vertical Zero  is below the 
+  Permanent Datum.  
+  <LI><A name="cmt_5_4_5">5.</A>The <EM>Magnetic-Declination</EM> Attribute 
+   specifies the angle with vertex at the Well Reference Point determined  by 
+  the line of direction to geographic north and the line of direction  to 
+  magnetic north.  A positive value indicates that magnetic north  is east of 
+  geographic north.  A negative value indicates that magnetic  north is west of 
+  geographic north.  
+  <LI><A name="cmt_5_4_6">6.</A>The <EM>Coordinate-1-Name</EM> Attribute 
+   specifies the name of the first of three independent spatial coordinates, 
+   such as longitude or latitude or elevation, that can be used to  locate the 
+  Well Reference Point.  
+  <LI><A name="cmt_5_4_7">7.</A>The <EM>Coordinate-1-Value</EM> Attribute 
+   specifies the numerical value of the coordinate named by the 
+  Coordinate–1-Name  Attribute.  
+  <LI><A name="cmt_5_4_8">8.</A>The <EM>Coordinate-2-Name</EM> Attribute 
+   specifies the name of the second of three independent spatial coordinates 
+   that can be used to locate the Well Reference Point.  
+  <LI><A name="cmt_5_4_9">9.</A>The <EM>Coordinate-2-Value</EM> Attribute 
+   specifies the numerical value of the coordinate named by the 
+  Coordinate–2-Name  Attribute.  
+  <LI><A name="cmt_5_4_10">10.</A>The <EM>Coordinate-3-Name</EM> Attribute 
+   specifies the name of a third independent spatial coordinate that  can be 
+  used to locate the Well Reference Point. <BR>NOTE:  Traditionally the 
+  coordinates  of a well are described by latitude, longitude, and elevation.  
+   This information can be represented in the Well-Reference-Point  Object 
+  without using Coordinate-3-Name and Coordinate-3-Value.   There are other 
+  coordinate systems in use, however, that do not  use elevation and for which 
+  the third general coordinate is needed.  
+  <LI><A name="cmt_5_4_11">11.</A>The <EM>Coordinate-3-Value</EM> Attribute 
+   specifies the numerical value of the coordinate named by the 
+  Coordinate–3-Name  Attribute. </LI></UL>
+<H4><A name="5_3">5.3</A> Axis Logical Record (AXIS)</H4>An Axis  Logical Record 
+is an Explicitly Formatted Logical Record that contains  information describing 
+the coordinate axes of arrays. Axis Logical Records contain the single Set Type  
+<EM>AXIS</EM>. 
+<H5><A name="5_3_1">5.3.1</A> Axis Objects</H5>Axis Objects  describe the 
+coordinate axes of an array (see §4.4.4).  Each Axis  Object describes one 
+coordinate axis. Figure 5-5 defines the Attributes of an Axis  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>AXIS-ID   
+    <TD>C=1, R=IDENT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_5_1">1  
+</A>
+  <TR>
+    <TD>COORDINATES   
+    <TD>-   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_5_2">2  
+</A>
+  <TR>
+    <TD>SPACING   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_5_3">3  
+  </A></TR>
+  <CAPTION align="bottom"><B>Figure 5-5. Attributes of Axis 
+Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_5_1">1.</A>The <EM>Axis-ID</EM> Attribute  is a 
+  dictionary-controlled  identifier for the coordinate axis described by this 
+  Object.  
+  <LI><A name="cmt_5_5_2">2.</A>The <EM>Coordinates</EM> Attribute  specifies 
+   explicit coordinate values along a coordinate axis.  These values  may be 
+  numeric (i.e., for non-uniform coordinate spacing), or they  may be textual 
+  identifiers, for example "Near" and "Far".  If the Coordinates Value has 
+  numeric Elements, then they must occur  in order of increasing or decreasing 
+  value.  The Count of the Coordinates  Attribute need not agree with the number 
+  of array elements along  this axis specified by a related Dimension Attribute. 
+ 
+  <LI><A name="cmt_5_5_3">3.</A>The <EM>Spacing</EM> Attribute  specifies  a 
+  constant, signed spacing along the axis between successive coordinates, 
+   beginning at the <EM>last</EM> coordinate value specified by the Coordinates 
+   Attribute.  If the Coordinates Attribute is non-numeric or absent,  then the 
+  specified spacing is assumed to exist between every pair  of successive 
+  coordinate values along the axis, and the first coordinate  value is assumed 
+  to be zero (0). </LI></UL>
+<H4><A name="5_4">5.4"</A> Long Name Logical Record (LNAME)</H4>A Long Name 
+ Logical Record is an Explicitly Formatted Logical Record that contains 
+ structured Long Names of Objects. Long Name Logical Records contain the single 
+ Set Type <EM>Long-Name</EM>. 
+<H5><A name="5_4_1">5.4.1</A> Long-Name Objects</H5>Long-Name  Objects represent 
+structured names of other Objects.  A Long–Name  Object is referenced by (an 
+Attribute of) the Object of which it  is the structured name. There are 
+standardized Name Part Types corresponding  to the Labels of the Attributes of 
+the Long-Name Object.  For each  Name Part Type there is a dictionary-controlled 
+Lexicon of Name  Part Values.  A Name Part Value is a word or phrase.  The Long 
+Name  is built by selecting those Name Part Types that are applicable  to an 
+Object and then selecting for each Name Part Type one or more  Name Part Values 
+from the corresponding Lexicons. 
+<P>A reference to a Long-Name Object establishes  a binding between the Long 
+Name and the Identifier of the Object  making the reference.  Over a period of 
+time the Long Name that  is associated with a particular Identifier (for a given 
+Object Type)  may evolve, but only to clarify its meaning or to exchange a Name 
+ Part Value with an industry-preferred synonym.  The Identifier of  the 
+referencing Object retains its original usage forever. Figure 5-6 defines the 
+Attributes of a Long-Name  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>GENERAL-MODIFIER   
+    <TD>R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_1">1</A>  
+  <TR>
+    <TD>QUANTITY   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_2">2</A>  
+  <TR>
+    <TD>QUANTITY-MODIFIER   
+    <TD>R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_3">3</A>  
+  <TR>
+    <TD>ALTERED-FORM   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_4">4</A>  
+  <TR>
+    <TD>ENTITY   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_5">5</A>  
+  <TR>
+    <TD>ENTITY-MODIFIER   
+    <TD>R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_6">6</A>  
+  <TR>
+    <TD>ENTITY-NUMBER   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_7">7</A>  
+  <TR>
+    <TD>ENTITY-PART   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_8">8</A>  
+  <TR>
+    <TD>ENTITY-PART-NUMBER   
+    <TD>C=1, R=ASCII   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_9">9</A>  
+  <TR>
+    <TD>GENERIC-SOURCE   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_10">10</A> 
+ 
+  <TR>
+    <TD>SOURCE-PART   
+    <TD>R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_11">11</A> 
+ 
+  <TR>
+    <TD>SOURCE-PART-NUMBER   
+    <TD>R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_12">12</A> 
+ 
+  <TR>
+    <TD>CONDITIONS   
+    <TD>R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_13">13</A> 
+ 
+  <TR>
+    <TD>STANDARD-SYMBOL   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_14">14</A> 
+ 
+  <TR>
+    <TD>PRIVATE-SYMBOL   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_6_15">15</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-6. Attributes of Long-Name 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_6_1">1.</A>The <EM>GENERAL-MODIFIER</EM> Attribute 
+  qualifies  the Long Name otherwise specified by all the remaining Attributes 
+   of the Long-Name Object.  
+  <LI><A name="cmt_5_6_2">2.</A>The <EM>QUANTITY</EM>Attribute specifies 
+   something that is measurable, for example physical dimensionality,  or some 
+  classifiable feature of an entity, for example a name or  color or shape.  
+  <LI><A name="cmt_5_6_3">3.</A>The <EM>QUANTITY-MODIFIER</EM> Attribute 
+   identifies a specialization of a quantity; that is, it acts as an  adjective 
+  applied to the Quantity Attribute Value.  
+  <LI><A name="cmt_5_6_4">4.</A>The <EM>ALTERED-FORM</EM>Attribute specifies  a 
+  relationship to the Quantity Attribute Value.  For example, "Standard 
+   Deviation" is an altered form of the quantity "Pressure".  
+  <LI><A name="cmt_5_6_5">5.</A>The <EM>ENTITY</EM>Attribute specifies that 
+   thing of which the quantity is measured.  For example, "Diameter"  is a 
+  quantity of the entity "Borehole".  
+  <LI><A name="cmt_5_6_6">6.</A>The <EM>ENTITY-MODIFIER</EM>Attribute identifies 
+   a specialization of an entity; that is, it acts as an adjective  applied to 
+  the Entity Attribute Value.  
+  <LI><A name="cmt_5_6_7">7.</A>The <EM>ENTITY-NUMBER</EM>Attribute 
+  distinguishes  multiple instances of the same entity.  
+  <LI><A name="cmt_5_6_8">8.</A>The <EM>ENTITY-PART</EM>Attribute identifies  a 
+  specific part of an entity.  
+  <LI><A name="cmt_5_6_9">9.</A>The <EM>ENTITY-PART-NUMBER</EM>Attribute 
+   distinguishes multiple instances of the same entity part, for example, 
+   "Button 1", "Arm 2".  
+  <LI><A name="cmt_5_6_10">10.</A>The <EM>GENERIC-SOURCE</EM>Attribute specifies 
+   briefly and generally the source of the information.  The generic  source of 
+  a borehole diameter measurement might be either "2-Arm  Caliper" or "4–Arm 
+  Caliper".  
+  <LI><A name="cmt_5_6_11">11.</A>The <EM>SOURCE-PART</EM>Attribute identifies 
+   a specific part of the source of the information specified by the 
+   Generic-Source Attribute, for example, "Receiver" or "Transmitter".  
+  <LI><A name="cmt_5_6_12">12.</A>The <EM>SOURCE-PART-NUMBER</EM>Attribute 
+   distinguishes multiple instances of the same source part.  
+  <LI><A name="cmt_5_6_13">13.</A>The <EM>CONDITIONS</EM>Attribute specifies 
+   conditions applicable at the time the information was acquired or  generated. 
+   A condition of resistivity, for example, is "At  Standard Temperature."  
+  <LI><A name="cmt_5_6_14">14.</A>The <EM>STANDARD-SYMBOL</EM> Attribute is  an 
+  industry-standardized symbolic name by which the information  is known.  The 
+  possible values of this Attribute are specified by  POSC.  Consequently, this 
+  Attribute is optional and is used only  when an applicable standardized name 
+  exists.  
+  <LI><A name="cmt_5_6_15">15.</A>The <EM>PRIVATE-SYMBOL</EM> Attribute provides 
+   an association between the recorded information and corresponding  records or 
+  objects of the Producer’s internal or corporate database.  The value used in 
+  this Attribute and the way in which the value  is assigned are completely at 
+  the discretion of the Producer that  is identified in the Origin Object 
+  associated with the Long Name  Object. </LI></UL>
+<H4><A name="5_5">5.5</A> Channel Logical Record (CHANNL)</H4>A Channel  Logical 
+Record is an Explicitly Formatted Logical Record that contains  information 
+defining and characterizing Channels (see §4.1.4). Channel Logical Records 
+contain the single Set  Type <EM>Channel</EM>. 
+<H5><A name="5_5_1">5.5.1</A> Channel Objects</H5>Channel  Objects are 
+dictionary-controlled Objects that identify Channels  and specify their 
+properties and their representation in Frames.  The actual Channel sample values 
+are recorded in Indirectly Formatted  Logical Records, when present. Figure 5-7 
+defines the Attributes of a Channel Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD colspan="3">CHANNEL Object Names are dictionary-controlled.   
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>LONG-NAME   
+    <TD>C=1, R=(OBNAME&lt; ASCII)   
+    <TD>-  
+  <TR>
+    <TD>PROPERTIES   
+    <TD>R=IDENT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_7_1">1</A>  
+  <TR>
+    <TD>REPRESENTATION-CODE   
+    <TD>C=1, R=USHORT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_7_2">2</A>  
+  <TR>
+    <TD>UNITS   
+    <TD>C=1, R=UNITS   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_7_3">3</A>  
+  <TR>
+    <TD>DIMENSION   
+    <TD>R=UVARI   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_7_4">4</A>  
+  <TR>
+    <TD>AXIS   
+    <TD>R=OBNAME   
+    <TD>-  
+  <TR>
+    <TD>ELEMENT-LIMIT   
+    <TD>R=UVARI   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_7_5">5</A>  
+  <TR>
+    <TD>SOURCE   
+    <TD>C=1, R=OBJREF   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_7_6">6</A>  
+  </TR>
+  <CAPTION align="bottom"><B>Figure 5-7. Attributes of Channel 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_7_1">1.</A>The <EM>PROPERTIES</EM> Attribute is a List  of 
+  Property Indicators (see Appendix C).  The Property Indicators  summarize the 
+  characteristics of the Channel and the processing  that has occurred to 
+  produce it.  
+  <LI><A name="cmt_5_7_2">2.</A>The <EM>REPRESENTATION-CODE</EM> Attribute 
+   specifies the Representation Code of each element of a sample value.  
+  <LI><A name="cmt_5_7_3">3.</A>The <EM>UNITS</EM> Attribute specifies the 
+   physical units of each element of a sample value.  
+  <LI><A name="cmt_5_7_4">4.</A>The <EM>DIMENSION</EM> Attribute specifies  the 
+  array structure of a sample value for the Channel (see §4.4.3).  
+  <LI><A name="cmt_5_7_5">5.</A>The <EM>ELEMENT-LIMIT</EM> Attribute specifies 
+   limits on the dimensionality and size of a Channel sample.  The  Count of 
+  this Attribute specifies the maximum allowable number of  dimensions, and each 
+  Element of this Attribute specifies the maximum  allowable size of the 
+  corresponding dimension in array elements. <BR>For example, if Element-Limit = 
+  {5 10 50},  then a Channel sample may have 0, 1, 2, or 3 dimensions.  The 
+  first  dimension size may be no larger than 5 elements, the second no larger 
+   than 10 elements, and the last no larger than 50 elements.  Within  these 
+  limits, the Channel sample may be of arbitrary size as specified  by the 
+  Dimension Attribute (which is updatable).  
+  <LI><A name="cmt_5_7_6">6.</A>The <EM>SOURCE</EM> Attribute is a reference  to 
+  another Object that describes the immediate source of the Channel,  for 
+  example, a TOOL, PROCESS, SPLICE, or CALIBRATION Object. </LI></UL>
+<H4><A name="5_6">5.6</A> Frame Data Logical Records (FDATA)</H4>Frame Data 
+ Logical Records are Indirectly Formatted Logical Records that record  Channel 
+data packaged in Frames (see §4.1.5). 
+<H5><A name="5_6_1">5.6.1 Frames</A></H5>A Frame  constitutes the Indirectly 
+Formatted Data of a Type FDATA Indirectly  Formatted Logical Record (IFLR).  The 
+Data Descriptor Reference  of the FDATA Logical Record refers to a 
+<EM>Frame</EM> Object, defined  in Figure 5–8, and defines the <EM>Frame 
+Type</EM> of the Frame. 
+<P>Frames of a given Frame Type occur in sequences  within a single Logical 
+File.  A Frame is segmented into a <EM>Frame  Number</EM>, followed by a fixed 
+number of <EM>Slots</EM> that contain  Channel samples, one sample per Slot.  
+The Frame Number is an integer  (Representation Code UVARI) specifying the 
+numerical order of the  Frame in the Frame Type, counting sequentially from one. 
+ All Frames  of a given Frame Type record the same Channels in the same order.  
+The IFLRs containing Frames of a given Type need not be contiguous. 
+<P>A Frame Type may or may not have an <EM>Index  Channel</EM>.  If there is an 
+Index Channel, then it must appear  first in the Frame and it must be scalar.  
+When an Index Channel  is present, then all Channels in the Frame are assumed to 
+be "sampled  at" the Index value.  For example, if the Index is depth, then 
+ Channels are sampled at the given depth; if time, then they are  sampled at the 
+given time, etc.  Minor variations in this assumption  can be declared 
+explicitly in <EM>Path</EM> Objects,  which are described later. 
+<P>The truth of the assumption just stated is relative  to the measuring and 
+recording system used and does not imply absolute  accuracy.  For example, depth 
+may be measured by a device that monitors  cable movement at the surface, which 
+may differ from actual tool  movement in the borehole.  Corrections that are 
+applied to Channels  to improve the accuracy of measurements or alignments to 
+indices  are left to the higher-level semantics of applications. 
+<P>When there is no Index Channel, then Frames are  implicitly indexed by Frame 
+Number. 
+<H4><A name="5_7">5.7 Frame Logical Record (FRAME)</A></H4>Frame Logical 
+ Records are Explicitly Formatted Logical Records of Type FRAME that  contain 
+Objects that specify the characteristics and form of Frames.  Frame Logical 
+Records can contain Set Types <EM>Frame</EM>;, and  <EM>Path</EM>. 
+<H5><A name="5_7_1">5.7.1 Frame Objects</A></H5>Each Frame  Object defines a 
+Frame Type, lists the Channels recorded in the  Frame Type, and characterizes 
+the Index of that Frame Type.  The  Frame Type is equal to the Name of the Frame 
+Object.  In addition,  each Frame Object specifies whether the contents of the 
+Frames of  that Frame Type are encrypted. Figure 5-8 defines the Attributes of a 
+Frame  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>DESCRIPTION   
+    <TD>C=1, R=ASCII   
+    <TD>-  
+  <TR>
+    <TD>CHANNELS   
+    <TD>R=OBNAME   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_8_1">1</A>  
+  <TR>
+    <TD>INDEX-TYPE   
+    <TD>C=1, R=IDENT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_8_2">2</A>  
+  <TR>
+    <TD>DIRECTION   
+    <TD>C=1, R=IDENT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_8_3">3</A>  
+  <TR>
+    <TD>SPACING   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_8_4">4</A>  
+  <TR>
+    <TD>ENCRYPTED   
+    <TD>C=1, R=USHORT   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_8_5">5</A>  
+  <TR>
+    <TD>INDEX-MIN   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_8_6">6</A>  
+  <TR>
+    <TD>INDEX-MAX   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_8_7">7</A>  
+  </TR>
+  <CAPTION align="bottom"><B>Figure 5-8. Attributes of Frame 
+Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_8_1">1.</A>The <EM>Channels </EM>Attribute; is a List  of 
+  references to Channel Objects; that specify the format of the  Frame Type 
+  defined by the current Frame Object.  Channel samples  are recorded in the 
+  Frame in the order in which the Channel Objects  are listed in this Attribute. 
+   The format of a sample is specified  by the Representation-Code, Units, and 
+  Dimension Attributes of the  corresponding Channel Object.  When a Channel 
+  Object is referenced  by a Frame Object, the Representation-Code, Dimension, 
+  and  Element-Limit Attributes must be present in the Channel Object. <BR>
+  Within a Logical File, no two Frame Objects  may reference the same Channel 
+  Object.  Informally, this means that  if the same "Channel" is to be recorded 
+  in two distinct  Frame Types in a Logical File, then the Channel must be 
+  represented  by two distinct Channel Objects, which may differ by as little as 
+   the Copy Numbers in their Names.  
+  <LI><A name="cmt_5_8_2">2.</A>The <EM>Index-Type</EM> Attribute; specifies 
+   the type of Index, if present. 
+  <TABLE border="3">
+    <TBODY>
+    <TR>
+      <TD><B>INDEX-TYPE Attribute Options   </B>
+      <TD><B>Description  </B>
+    <TR>
+      <TD>ANGULAR-DRIFT   
+      <TD>Index measures angle about the Vertical Generatrix.  
+    <TR>
+      <TD>BOREHOLE-DEPTH   
+      <TD>Index measures depth along the borehole.  
+    <TR>
+      <TD>NON-STANDARD   
+      <TD>Index is not a standard measurement.  
+    <TR>
+      <TD>RADIAL-DRIFT   
+      <TD>Index measures distance from the Vertical Generatrix.  
+    <TR>
+      <TD>VERTICAL-DEPTH   
+      <TD>Index measures depth along the Vertical Generatrix. </TR></TBODY></TABLE>
+  If Attribute Index-Type is absent, then there  is no Index Channel and 
+  Attributes Direction and Spacing are meaningless  and are ignored.  When 
+  Attribute Index-Type is absent, then Frames  are implicitly indexed by the 
+  Frame Number. <BR>When a Frame has an Index, then it must be  the first 
+  Channel in the Frame, and it must be scalar.  
+  <LI><A name="cmt_5_8_3">3.</A>The <EM>DIRECTION</EM> Attribute;  specifies the 
+  behavior of the signed value of the Index.   If this Attribute  is absent, 
+  then Index direction is unknown or irrelevant. 
+  <TABLE border="3">
+    <TBODY>
+    <TR>
+      <TD><B>DIRECTION Attribute Options   </B>
+      <TD><B>Description  </B>
+    <TR>
+      <TD>DECREASING   
+      <TD>Index decreases monotonically.  
+    <TR>
+      <TD>INCREASING   
+      <TD>Index increases monotonically. </TR></TBODY></TABLE>The sequence {5.2, 
+  3.01, 2.1, 0.0, -1.8, -7.355, ...} is an example of a decreasing sequence of 
+   Index values, and  {-3.41, -2.6, -1.005, 0.5, 1.23, 6.0, 8.97, ...} is an 
+  example of an increasing sequence of  Index values.  
+  <LI><A name="cmt_5_8_4">4.</A>The <EM>Spacing</EM> Attribute; can be used  to 
+  indicate a constant spacing of the Index from one Frame to the  next.  Its 
+  value is the signed difference of the later minus the  earlier Index between 
+  any (and every) two successive Frames of a  given Frame Type.  Thus, the 
+  Spacing Attribute is negative if the  Index is decreasing (e.g., an up log) 
+  and is positive if the Index  is increasing (e.g., a down log).  Note that 
+  when Attribute Spacing  is present, then Attribute Direction is not required. 
+  <BR>Presence of this Attribute guarantees to  the Consumer that Index spacing 
+  will be constant for the current  Frame Type throughout the Logical File.  If 
+  the Index spacing is  allowed to change, then this Attribute must be absent. 
+  <LI><A name="cmt_5_8_5">5.</A>The <EM>Encrypted</EM> Attribute; is used  as a 
+  flag.  That is, only its presence or absence has semantic meaning.  Its 
+  presence indicates that IFLRs containing this Frame Type are  encrypted.  Its 
+  absence indicates that IFLRs containing this Frame  Type are not encrypted.  
+  Encrypted Frames typically contain information  considered proprietary by the 
+  Producer.  
+  <LI><A name="cmt_5_8_6">6.</A>The <EM>INDEX-MIN</EM> Attribute specifies  the 
+  minimum value of the Index Channel in all Frames of the Frame  Type.  If there 
+  is no Index Channel, then this is the minimum Frame  Number, namely 1.  
+  <LI><A name="cmt_5_8_7">7.</A>The <EM>INDEX-MAX</EM> Attribute specifies  the 
+  maximum value of the Index Channel in all Frames of the Frame  Type.  If there 
+  is no Index Channel, then this is the number of  Frames in the Frame Type. 
+  </LI></UL>
+<H5><A name="5_7_2">5.7.2 Data Paths</A></H5>The fundamental  recorded log data 
+consists of a sequence of values (i.e., a Channel)  traversing a <EM>Locus</EM> 
+in space and time.  A Locus in space and  time is a sequence of distinct points, 
+each of which, in the most  general case, has a three-dimensional 
+<EM>Position</EM> coordinate,  and a <EM>Time</EM> coordinate.  The sequence
+ {Value<SUB>i</SUB>, Position<SUB>i</SUB>, Time<SUB>i</SUB>} is called a 
+<EM>Data Path</EM>, and each member  of the sequence is called a <EM>Step</EM> 
+on the Data Path.   The sequence  {Position<SUB>i</SUB>, Time<SUB>i</SUB>} is 
+the Locus of the Data Path.  Note that it  is possible for two points on a Locus 
+to occupy the same Position  in space so long as they occupy that Position at 
+different Times.  In the extreme case, a Locus can have a fixed Position. 
+<P>A complete Position coordinate is made up of  three components that 
+correspond to the spatial coordinate system  of a well: depth (Borehole or 
+Vertical), Radial Drift, and Angular  Drift.  Occasionally, both Borehole and 
+Vertical depth components  are known and are recorded together. 
+<P>Data Paths are represented as groups of Channels  in Frames.  Some or all of 
+the components of a Data Path may be  recorded; other components may be unknown 
+or irrelevant.   The {Value<SUB>i</SUB>} sequence,  known as the Data Path's 
+<EM>Value</EM> <EM>Channel</EM>, is always  recorded.  The mechanism for 
+defining Data Paths is the <EM>Path</EM> Object.  Path Objects are not needed to 
+decode Frames, but they  add informational value to the contents of Frames. 
+<H6><A name="5_7_2_1">5.7.2.1</A> Path Objects</H6>Path Objects  specify which 
+Channels in the Data Frames of a given Frame Type  are combined to define part 
+or all of a Data Path, and what variations  in alignment exist. 
+<P>The Index of a Frame Type automatically and explicitly  serves as a Locus 
+component of any Data Path represented in the  Frame Type whenever Frame 
+Attribute INDEX-TYPE has one of the values angular-drift, borehole-depth, 
+radial-drift, time, or vertical-depth. Figure 5-9 defines the Attributes of a 
+Path Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>FRAME-TYPE   
+    <TD>C=1, R=OBNAME   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_1">1</A>  
+  <TR>
+    <TD>WELL-REFERENCE-POINT   
+    <TD>C=1, R=OBNAME   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_2">2</A>  
+  <TR>
+    <TD>VALUE   
+    <TD>R=OBNAME   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_3">3</A>  
+  <TR>
+    <TD>BOREHOLE-DEPTH   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_4">4</A>  
+  <TR>
+    <TD>VERTICAL-DEPTH   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_5">5</A>  
+  <TR>
+    <TD>RADIAL-DRIFT   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_6">6</A>  
+  <TR>
+    <TD>ANGULAR-DRIFT   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_7">7</A>  
+  <TR>
+    <TD>TIME   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_8">8</A>  
+  <TR>
+    <TD>DEPTH-OFFSET   
+    <TD>C=1   
+    <TD><A 
+      href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_9">9</A>  
+  <TR>
+    <TD>MEASURE-POINT-OFFSET   
+    <TD>C=1   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_10">10</A> 
+       
+  <TR>
+    <TD>TOOL-ZERO-OFFSET   
+    <TD>C=1   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_9_11">11</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-9. Attributes of Path 
+Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_9_1">1.</A>The <EM>FRAME-TYPE</EM> Attribute references  a 
+  Frame Object in the current Logical File and indicates the Frame  Type in 
+  which the Channels of the current Path are recorded.  
+  <LI><A name="cmt_5_9_2">2.</A>The <EM>WELL-REFERENCE-POINT</EM> Attribute 
+   references the Well-Reference-Point Object in the current Logical  File that 
+  specifies the Well Reference Point for entities specified  by the remaining 
+  Attributes of the Path Object.  
+  <LI><A name="cmt_5_9_3">3.</A>The <EM>VALUE</EM> Attribute references a 
+   Channel Object that defines the Value Channel for the current Path.  This may 
+  also be a List of references in case multiple Channels  share exactly the same 
+  Path features described by the remaining  recorded Attributes of the Path 
+  Object.  It is permissible for the  Value Channel also to be one of the Locus 
+  coordinates.  
+  <LI><A name="cmt_5_9_4">4.</A>The <EM>BOREHOLE-DEPTH</EM> Attribute specifies 
+   the constant Borehole Depth coordinate for the current Path, or  it 
+  references the Channel Object (using Representation Code OBNAME)  that defines 
+  a Borehole Depth Channel for the current Path.  This  Attribute should not be 
+  present if the Frame Type for the current  Path has an  Index-Type Value of 
+  borehole-depth.  
+  <LI><A name="cmt_5_9_5">5.</A>The <EM>VERTICAL-DEPTH</EM> Attribute specifies 
+   the constant Vertical Depth coordinate for the current Path, or  it 
+  references the Channel Object (using Representation Code OBNAME)  that defines 
+  a Vertical Depth Channel for the current Path.  This  Attribute should not be 
+  present if the Frame Type for the current  Path has an  Index-Type Value of 
+  vertical-depth.  
+  <LI><A name="cmt_5_9_6">6.</A>The <EM>RADIAL-DRIFT</EM>Attribute specifies 
+   the constant Radial Drift coordinate for the current Path, or it  references 
+  the Channel Object (using Representation Code OBNAME)  that defines a Radial 
+  Drift Channel for the current Path.  This  Attribute should not be present if 
+  the Frame Type for the current  Path has an  Index-Type Value of radial-drift. 
+ 
+  <LI><A name="cmt_5_9_7">7.</A>The <EM>ANGULAR-DRIFT</EM> Attribute specifies 
+   the constant Angular Drift coordinate for the current Path, or it  references 
+  the Channel Object (using Representation Code OBNAME)  that defines an Angular 
+  Drift Channel for the current Path.  This  Attribute should not be present if 
+  the Frame Type for the current  Path has an  Index-Type Value of 
+  angular-drift.  
+  <LI><A name="cmt_5_9_8">8.</A>The <EM>TIME</EM> Attribute specifies the 
+   constant Time coordinate for the current Path, or it references  the Channel 
+  Object (using Representation Code OBNAME) that defines  a Time Channel for the 
+  current Path.  This Attribute should not  be present if the Frame Type for the 
+  current Path has an  Index-Type  Value of TIME. <BR>The Time coordinate 
+  represents an absolute  date and time if its Representation Code is DTIME.  
+  Otherwise, it  represents elapsed time from the date and time specified in the 
+   Creation-Time Attribute of the Origin Object.  
+  <LI><A name="cmt_5_9_9">9.</A>The <EM>DEPTH-OFFSET</EM> Attribute specifies  a 
+  <EM>Depth Offset</EM>, which indicates how much the Value Channel  is "off 
+  depth".  This is a special case and applies only when there  is a recorded 
+  Borehole Depth Channel for the current Path.  Specifically,  if the recorded 
+  Borehole Depth for the current Path in a Frame is  D and the known Borehole 
+  Depth is D' , then D = D'  + Depth-Offset. <BR>Figure 5-10 illustrates how a 
+  Depth Offset  can arise for a particular acquisition model.  The Value Channel 
+   is sampled at its <EM>Measure Point</EM>, which is a fixed position  relative 
+  to the tool string, whenever a <EM>Data Reference Point</EM> (another fixed 
+  position relative to the tool string) passes certain  points along the well.  
+  If the latter points are equally spaced  in depth, and if the interval between 
+  the Measure Point and the  Data Reference Point is not evenly divisible by the 
+  sampling interval,  the Channel is off depth. 
+  <P align="center"><IMG width="393" height="268" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image198.gif"> 
+  <BR><B>Figure 5-10. Illustration of Depth Offset and Measure Point Offset</B> 
+  <P></P>
+  <LI><A name="cmt_5_9_10">10.</A> The  <EM>MEASURE-POINT-OFFSET</EM> Attribute 
+  specifies a <EM>Measure Point  Offset</EM>, which indicates a fixed distance 
+  along Borehole Depth  from the Value Channel’s Measure Point to a Data 
+  Reference Point  (see comment 11 and Figure 5-10).  This is a special case 
+  that depends  on the data acquisition model and applies only when there is a 
+  recorded  Borehole Depth Channel for the current Path. <BR>If the 
+  Measure-Point-Offset Attribute is  zero or absent, then the Time Channel for 
+  the current Path is explicitly  related to the Value Channel.  That is, in 
+  each Frame, V<SUB>i</SUB> is sampled  at T<SUB>i</SUB>. <BR>If the 
+  Measure-Point-Offset Attribute is  present and non-zero, then the Time Channel 
+  is instead explicitly  related to the Data Reference Point, and is implicitly 
+  related to  the Value Channel.  In each Frame, T<SUB>i</SUB> is the time that 
+  the Data Reference Point was  at D<SUB>i</SUB>, which is the Frame’s Borehole 
+  Depth.   The Value Channel  sample V<SUB>i</SUB> is still considered to be 
+  sampled at  D<SUB>i</SUB>, but at a time different  from T<SUB>i</SUB>.   The 
+  explicit Time for the Value Channel can be recovered  using the knowledge that 
+  at time T<SUB>i</SUB> when the Data Reference Point was at depth 
+   D<SUB>i</SUB>, the Value Channel Measure Point was at depth  D<SUB>i</SUB> - 
+  Measure-Point-Offset. <BR>Typically, only a single Time Channel per  Origin 
+  will be recorded in a Frame Type, the one explicitly associated  with the Data 
+  Reference Point.  
+  <LI><A name="cmt_5_9_11">11.</A>The <EM>TOOL-ZERO-OFFSET</EM> Attribute  is 
+  the distance of the Data Reference Point for the current Path  above the tool 
+  string’s Tool Zero Point.  It may be positive or  negative; it is frequently 
+  zero.  Specifically, Data Reference Point  = Tool Zero Point + 
+  Tool-Zero-Offset. </LI></UL>
+<H4><A name="5_8">5.8 Static Data Logical Record (STATIC)</A></H4>Static Data 
+ Logical Records are Explicitly Formatted Logical Records of Type  STATIC that 
+contain a broad category of Set Types.  Static Logical  Records may contain Set 
+Types <EM>Zone</EM>, <EM>Parameter</EM>, <EM>Equipment</EM>,  <EM>Tool</EM>, 
+<EM>PROCESS</EM>, <EM>Computation</EM>, <EM>Calibration</EM>,  
+<EM>Calibration-Measurement</EM>, <EM>Calibration-Coefficient</EM>,  
+<EM>Splice</EM>, and <EM>Group</EM>. 
+<H5><A name="5_8_1">5.8.1 Zone Objects</A></H5>Zone Objects  specify single 
+intervals in depth or time.  Zone Objects are useful  for associating other 
+Objects or values with specific regions of  a well or with specific time 
+intervals. Figure 5-11 defines the Attributes of a Zone  Object.  Zone Object 
+Names are arbitrary. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>DESCRIPTION   
+    <TD>C=1, R=ASCII   
+    <TD>-  
+  <TR>
+    <TD>DOMAIN   
+    <TD>C=1, R=IDENT   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_11_1">1</A> 
+ 
+  <TR>
+    <TD>MAXIMUM   
+    <TD>C=1   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_11_2">2</A> 
+ 
+  <TR>
+    <TD>MINIMUM   
+    <TD>C=1   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_11_3">3</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-11. Attributes of Zone 
+Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_11_1">1.</A>The <EM>Domain</EM> Attribute indicates the 
+   type of interval. 
+  <TABLE border="3">
+    <TBODY>
+    <TR>
+      <TD><B>DOMAIN Attribute Options   </B>
+      <TD><B>Description  </B>
+    <TR>
+      <TD>BOREHOLE-DEPTH   
+      <TD>Zone interval is depth along the borehole.  
+    <TR>
+      <TD>TIME   
+      <TD>Zone interval is elapsed time.  
+    <TR>
+      <TD>VERTICAL-DEPTH   
+      <TD>Zone interval is depth along the Vertical Generatrix. 
+</TR></TBODY></TABLE>
+  <LI><A name="cmt_5_11_2">2.</A>The <EM>Maximum</EM> Attribute is the depth  of 
+  the bottom (deepest part) of the zone or the latest time.  This  value is 
+  <U>not</U> considered to be part of the zone.  
+  <LI><A name="cmt_5_11_aa"></A>When this Attribute is absent, the zone is 
+   considered to extend indefinitely in the direction corresponding  to deepest 
+  or latest.  
+  <LI><A name="cmt_5_11_3">3.</A>The <EM>Minimum</EM> Attribute is the depth  of 
+  the top (shallowest part) of the zone or the earliest time.   This value is 
+  considered to be part of the zone. When this Attribute is absent, the zone is 
+   considered to extend indefinitely in the direction corresponding  to 
+  shallowest or earliest. </LI></UL>
+<H5><A name="5_8_2">5.8.2 Parameter Objects</A></H5>Parameter Objects are 
+dictionary-controlled Objects  that specify <EM>Parameters</EM> (constant or 
+zoned) used in the acquisition and processing of data.  Parameters may be 
+scalar-valued or array-valued.  When they are  array-valued, the semantic 
+meaning of the array dimensions is defined  by the application. Figure 5-12 
+defines the Attributes of a Parameter  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD colspan="3">PARAMETER Object Names are dictionary-controlled.  
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>LONG-NAME   
+    <TD>C=1, R=(OBNAME, ASCII)   
+    <TD>-  
+  <TR>
+    <TD>DIMENSION   
+    <TD>R=UVARI   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_12_1">1</A> 
+ 
+  <TR>
+    <TD>AXIS   
+    <TD>R=OBNAME   
+    <TD>-  
+  <TR>
+    <TD>ZONES   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_12_2">2</A> 
+ 
+  <TR>
+    <TD>VALUES   
+    <TD>-   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_12_2">3</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-12. Attributes of Parameter 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_12_1">1.</A>The <EM>DIMENSION</EM> Attribute specifies  the 
+  array structure of a single value of the current Parameter  (see §4.4.4).   
+  <LI><A name="cmt_5_12_2">2.</A>The <EM>ZONES</EM> Attribute is a List of 
+   references to Zone Objects that specify mutually disjoint intervals  over 
+  which the value of the current Parameter is constant.  A Parameter  may have 
+  different values in different zones.  When this Attribute  is present, the 
+  Parameter is said to be <EM>Zoned</EM>, and it is  considered to be defined 
+  only in the zones specified by the Zones  Attribute.  It is considered to be 
+  undefined elsewhere. <BR>The Zone Objects referenced in this List  must all 
+  have the same Domain Attribute Value.  That is, a Parameter  Object may only 
+  be zoned over a single domain. <BR>The Zones Attribute may be absent, in which 
+   case the Parameter is said to be <EM>Unzoned</EM>.  In this case,  the 
+  Parameter is considered to be defined everywhere.  
+  <LI><A name="cmt_5_12_3">3.</A>The <EM>VALUES</EM> Attribute is a List of 
+   Parameter values corresponding to the zones listed in the Zones  Attribute.  
+  When the Parameter is Zoned, the number of Parameter  values is the same as 
+  the number of zones referenced, and the  k<SUB>th</SUB> Parameter  value 
+  applies to the  k<SUB>th</SUB> zone.  When the Parameter is Unzoned, there  is 
+  a single Parameter value in the Values Attribute. <BR>The Count of the Values 
+  Attribute is equal  to the number of Parameter values listed (equal to 1 if 
+  Unzoned  or determined by the Count of the Zones Attribute if Zoned) 
+  multiplied  by the size in elements of each value (determined by the Dimension 
+   Attribute).  For example, if there are three zones, and if Dimension  = {3, 
+  4, 128}, then there are three Parameter values listed, each  1,536 elements 
+  big, making the Count of the Values Attribute equal  to 3*1,536 = 4,608. 
+</LI></UL>
+<H5><A name="5_8_3">5.8.3 Equipment Objects</A></H5>Equipment Objects are 
+dictionary-controlled Objects  that specify the presence  and characteristics of 
+surface and downhole equipment used in the  acquisition of data.  The purpose of 
+this Object is to record information  about individual pieces of equipment of 
+any sort that is used during  a job.  The Tool Object, described below, provides 
+a way to collect  equipment together in ensembles that are more readily 
+recognizable  to the Consumer. Figure 5-13 defines the Attributes of an 
+Equipment  Object. 
+<P align="center"><IMG width="389" height="346" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image201.gif"> 
+<BR><B>Figure 5-13. Attributes of Equipment Object</B> 
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_13_1">1.</A>The <EM>TRADEMARK-NAME</EM> Attribute 
+   specifies the name used by the Producer to refer to the Equipment.  
+  <LI><A name="cmt_5_13_2">2.</A>The<EM>STATUS</EM> Attribute  indicates the 
+  operational status of the equipment.  
+  <LI><A name="cmt_5_13_3">3.</A>The<EM>TYPE</EM>Attribute  specifies the 
+  generic type of the equipment. 
+  <TABLE border="3">
+    <TBODY>
+    <TR>
+      <TD><B>TYPE Attribute Options   </B>
+      <TD><B>Description  </B>
+    <TR>
+    <TR>
+      <TD>Adapter   
+      <TD>Adapter  
+    <TR>
+      <TD>Board   
+      <TD>Processor board  
+    <TR>
+      <TD>Bottom-Nose   
+      <TD>Bottom-Nose  
+    <TR>
+      <TD>Bridle   
+      <TD>Bridle  
+    <TR>
+      <TD>Cable   
+      <TD>Cable  
+    <TR>
+      <TD>Calibrator   
+      <TD>Calibrator  
+    <TR>
+      <TD>Cartridge   
+      <TD>Cartridge  
+    <TR>
+      <TD>Centralizer   
+      <TD>Centralizer  
+    <TR>
+      <TD>Chamber   
+      <TD>Sample chamber  
+    <TR>
+      <TD>Cushion   
+      <TD>Water cushion  
+    <TR>
+      <TD>Depth-Device   
+      <TD>Depth measuring device  
+    <TR>
+      <TD>Display   
+      <TD>Display  
+    <TR>
+      <TD>Drawer   
+      <TD>Processor drawer  
+    <TR>
+      <TD>Excentralizer   
+      <TD>Excentralizer  
+    <TR>
+      <TD>Explosive-Source   
+      <TD>Explosive source  
+    <TR>
+      <TD>Flask   
+      <TD>Flask  
+    <TR>
+      <TD>Geophone   
+      <TD>Geophone  
+    <TR>
+      <TD>Gun   
+      <TD>Gun  
+    <TR>
+      <TD>Head   
+      <TD>Head  
+    <TR>
+      <TD>Housing   
+      <TD>Housing  
+    <TR>
+      <TD>Jig   
+      <TD>Calibration jig  
+    <TR>
+      <TD>Joint   
+      <TD>Joint  
+    <TR>
+      <TD>Nuclear-Detector   
+      <TD>Nuclear detector  
+    <TR>
+      <TD>Packer   
+      <TD>Packer  
+    <TR>
+      <TD>Pad   
+      <TD>Pad  
+    <TR>
+      <TD>Panel   
+      <TD>Panel  
+    <TR>
+      <TD>Positioning   
+      <TD>Positioning device  
+    <TR>
+      <TD>Printer   
+      <TD>Printer  
+    <TR>
+      <TD>Radioactive-Source   
+      <TD>Radioactive source  
+    <TR>
+      <TD>Shield   
+      <TD>Source shield  
+    <TR>
+      <TD>Simulator   
+      <TD>Simulation equipment  
+    <TR>
+      <TD>Skid   
+      <TD>Skid  
+    <TR>
+      <TD>Sonde   
+      <TD>Sonde  
+    <TR>
+      <TD>Spacer   
+      <TD>Spacer  
+    <TR>
+      <TD>Standoff   
+      <TD>Standoff  
+    <TR>
+      <TD>System   
+      <TD>Processor system  
+    <TR>
+      <TD>Tool   
+      <TD>Tool  
+    <TR>
+      <TD>Tool-Module   
+      <TD>Tool module  
+    <TR>
+      <TD>Transducer   
+      <TD>Transducer  
+    <TR>
+      <TD>Vibration-Source   
+      <TD>Vibration source </TR></TBODY></TABLE>
+  <LI><A name="cmt_5_xx_4">4.</A>The<EM> Serial-Number</EM> Attribute contains 
+   the serial number of the equipment represented by the current Object.  
+  <LI><A name="cmt_5_xx_5">5.</A>The <EM>Location</EM> Attribute specifies  the 
+  general location of the equipment during acquisition. 
+  <TABLE border="3">
+    <TBODY>
+    <TR>
+      <TD><B>LOCATION Attribute Options   </B>
+      <TD><B>Description  </B>
+    <TR>
+    <TR>
+      <TD>Logging-System   
+      <TD>Equipment is on or in the logging system unit.  
+    <TR>
+      <TD>Remote   
+      <TD>Equipment is on the surface away from the rig and logging unit 
+        system.  
+    <TR>
+      <TD>Rig   
+      <TD>Equipment is on the rig.  
+    <TR>
+      <TD>Well   
+      <TD>Equipment is in the borehole. </TR></TBODY></TABLE>
+  <LI><A name="cmt_5_xx_6">6.</A>The <EM>Height</EM> Attribute applies only  to 
+  equipment located in the borehole.  It specifies the height of  the bottom of 
+  the equipment above the Tool Zero Point when the tool  string containing the 
+  equipment is vertical.  This value is positive  when the equipment bottom is 
+  above the Tool Zero Point and is negative  when the equipment bottom is below 
+  the Tool Zero Point.  There is  normally one piece of equipment for which the 
+  height is zero. 
+  <LI><A name="7">7.</A>The <EM>Length</EM> Attribute specifies the  length of 
+  the equipment and is typically measured from bottom make  up point to top make 
+  up point.  It may not apply to surface equipment. <BR>The total length of the 
+  tool string may not  equal the sum of the lengths of all the equipment that 
+  make up the  tool string, since some equipment may slip over other equipment. 
+   Such "slip-on" equipment includes, for example, standoffs,  centralizers, and 
+  excentralizers.  Similarly, the height of a piece  of equipment may be 
+  independent of the lengths of the equipment  below it. 
+  <LI><A name="8">8.</A>The <EM>Minimum</EM>-<EM>Diameter</EM> Attribute 
+   applies to equipment used in the borehole.  It specifies a minimum  outer 
+  diameter of the equipment.  This is defined to be the minimum  horizontal 
+  cross-sectional diameter measured when the equipment  is in a vertical 
+  configuration.  For extendible or compressible  equipment (e.g., caliper arms 
+  and centralizers), this measurement  indicates the smallest operational 
+  diameter possible. 
+  <LI><A name="9">9.</A>The <EM>Maximum</EM>-<EM>Diameter</EM> Attribute 
+   applies to equipment used in the borehole.  It specifies a maximum  outer 
+  diameter of the equipment.  This is defined to be the maximum  horizontal 
+  cross-sectional diameter measured when the equipment  is in a vertical 
+  configuration.  For extendible or compressible  equipment (e.g., caliper arms 
+  and centralizers), this measurement  indicates the largest operational 
+  diameter possible. 
+  <LI><A name="10">10.</A>The <EM>Volume</EM> Attribute specifies  the volume of 
+  the equipment and is typically used to determine bouyant  weight of the 
+  equipment.  It may not apply to surface equipment. 
+  <LI><A name="11">11.</A>The <EM>Weight</EM> Attribute specifies  the weight of 
+  the equipment in air.  It may not apply to surface  equipment. 
+  <LI><A name="12">12.</A>The <EM>Hole-Size</EM> Attribute applies  to equipment 
+  in the borehole.  It specifies the minimum borehole  diameter for which the 
+  equipment may reasonably be used. 
+  <LI><A name="13">13.</A>The <EM>Pressure</EM> Attribute indicates  the maximum 
+  operational pressure rating of the equipment, when applicable. 
+  <LI><A name="14">14.</A>The <EM>Temperature</EM> Attribute indicates  the 
+  maximum operational temperature rating of the equipment, when  applicable. 
+  <LI><A name="15">15.</A>The <EM>Vertical-Depth</EM>, <EM>Radial-Drift</EM>, 
+   and <EM>Angular-Drift</EM> Attributes specify the corresponding position 
+   coordinates, relative to the Well Reference Point (see §4.1.8),  of the 
+  equipment represented by the current Object.  These Attributes  are intended 
+  to be used for surface equipment — for example, a geophone  — that is 
+  stationary over a period of time.  These Attributes may  be updated in a 
+  Logical File (see Chapter 6) to permit recording  infrequent or slow changes 
+  of position. </LI></UL>
+<H5><A name="5_8_4">5.8.4 Tool Objects</A></H5>Tool Objects  are 
+dictionary-controlled Objects that specify ensembles of equipment  that work 
+together to provide specific measurements or services.  Such combinations are 
+more recognizable to the Consumer than are  their individual pieces.  A typical 
+tool consists of a sonde and  a cartridge and possibly some appendages such as 
+centralizers and  spacers.   It is also possible to identify certain pieces or 
+combinations  of surface measuring equipment as tools. Figure 5-14 defines the 
+Attributes of a Tool  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD colspan="3">TOOL Object Names are dictionary-controlled.  
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments </B>
+  <TR>
+    <TD>DESCRIPTION   
+    <TD>C=1, R=ASCII   
+    <TD>- 
+  <TR>
+    <TD>TRADEMARK-NAME   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_14_1">1</A> 
+      
+  <TR>
+    <TD>GENERIC-NAME   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_14_2">2</A> 
+      
+  <TR>
+    <TD>PARTS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_14_3">3</A> 
+  <TR>
+    <TD>STATUS   
+    <TD>C=1, R=STATUS   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_14_4">4</A> 
+      
+  <TR>
+    <TD>CHANNELS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_14_5">5</A> 
+  <TR>
+    <TD>PARAMETERS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_14_6">6</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-14. Attributes of Tool 
+Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_14_1">1.</A>The <EM>TRADEMARK-NAME</EM> Attribute specifies 
+   the name used by the Producer to refer to the Tool. 
+  <LI><A name="cmt_5_14_2">2.</A>The <EM>GENERIC-NAME</EM> Attribute specifies 
+   the name generally used within the industry to refer to tools of  this type. 
+  <LI><A name="cmt_5_14_3">3.</A>The<EM>PARTS</EM> Attribute is a List of 
+   references to the Equipment Objects that represent the parts of  the tool. 
+  <LI><A name="cmt_5_14_4">4.</A>The <EM>STATUS</EM> Attribute indicates whether 
+   the tool is enabled to provide information to the acquisition system  or 
+  whether it has been disabled and is simply occupying space. 
+  <LI><A name="cmt_5_14_5">5.</A>The <EM>CHANNELS</EM> Attribute is a List  of 
+  CHANNEL Objects corresponding to Channels that are produced directly  by this 
+  Tool.  The same CHANNEL Object should not appear in the  CHANNELS Attribute of 
+  more than one TOOL Object. 
+  <LI><A name="cmt_5_14_6">6.</A>The <EM>PARAMETERS</EM> Attribute is a List  of 
+  PARAMETER Objects corresponding to Parameters that directly affect  or reflect 
+  the operation of this Tool.  Certain PARAMETER Objects  may appear in the 
+  PARAMETERS Attribute of more than one TOOL Object. </LI></UL>
+<H5><A name="5_8_5">5.8.5 Process Objects</A></H5>Process  Objects are 
+dictionary-controlled Objects, each of which describes  a specific process or 
+computation applied to input Objects to get  output Objects. Figure 5-15 defines 
+the Attributes of a Process  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Label   </B>
+    <TD><B>Restrictions   </B>
+    <TD><B>Comments  </B>
+  <TR>
+    <TD>DESCRIPTION   
+    <TD>C=1,=(OBNAME, ASCII)   
+    <TD>-  
+  <TR>
+    <TD>TRADEMARK-NAME   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_1">1</A> 
+ 
+  <TR>
+    <TD>VERSION   
+    <TD>C=1, R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_2">2</A> 
+ 
+  <TR>
+    <TD>PROPERTIES   
+    <TD>R=IDENT   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_3">3</A> 
+ 
+  <TR>
+    <TD>STATUS   
+    <TD>C=1, R=IDENT   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_4">4</A> 
+ 
+  <TR>
+    <TD>INPUT-CHANNELS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_5">5</A> 
+ 
+  <TR>
+    <TD>OUTPUT-CHANNELS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_6">6</A> 
+ 
+  <TR>
+    <TD>INPUT-COMPUTATIONS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_7">7</A> 
+ 
+  <TR>
+    <TD>OUTPUT-COMPUTATIONS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_8">8</A> 
+ 
+  <TR>
+    <TD>PARAMETERS   
+    <TD>R=OBNAME   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_9">9</A> 
+ 
+  <TR>
+    <TD>COMMENTS   
+    <TD>R=ASCII   
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_15_10">10</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-15. Attributes of Process 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_15_1">1.</A>The <EM>TRADEMARK-NAME</EM> Attribute specifies 
+   the name used by the Producer to refer to the process and its products. 
+  <LI><A name="cmt_5_15_2">2.</A>The <EM>VERSION</EM> Attribute is the 
+  Producer’s  software version of the process. 
+  <LI><A name="cmt_5_15_3">3.</A>The <EM>PROPERTIES</EM> Attribute is a List  of 
+  the properties that apply to the output of the process as a result  of the 
+  process.  Values for this Attribute are taken from the list  of Properties in 
+  Appendix C. 
+  <LI><A name="cmt_5_15_4">4.</A>The <EM>STATUS</EM> Attribute indicates the 
+   state of the process at the time that the Status Attribute was recorded. 
+   This Attribute is updatable and is typically updated to indicate  when the 
+  process is completed or aborted. 
+  <TABLE border="3">
+    <TBODY>
+    <TR>
+      <TD><B>STATUS Attribute Options   </B>
+      <TD><B>Description  </B>
+    <TR>
+      <TD>ABORTED   
+      <TD>The process was aborted.  
+    <TR>
+      <TD>COMPLETE   
+      <TD>The process was completed.  
+    <TR>
+      <TD>IN-PROGRESS   
+      <TD>The process is not complete. </TR></TBODY></TABLE>
+  <LI><A name="cmt_5_15_5">5.</A>The <EM>INPUT-CHANNELS</EM> Attribute is  a 
+  List of CHANNEL Objects corresponding to Channels that are used  directly by 
+  this Process. 
+  <LI><A name="cmt_5_15_6">6.</A>The <EM>OUTPUT-CHANNELS</EM> Attribute is  a 
+  List of CHANNEL Objects corresponding to Channels that are produced  directly 
+  by this Process.  The same CHANNEL Object should not appear  in the 
+  OUTPUT-CHANNELS Attribute of more than one PROCESS Object. 
+  <LI><A name="cmt_5_15_7">7.</A>The <EM>INPUT-COMPUTATIONS</EM> Attribute  is a 
+  List of COMPUTATION Objects corresponding to Computations that  are used 
+  directly by this Process. 
+  <LI><A name="cmt_5_15_8">8.</A>The <EM>OUTPUT-COMPUTATIONS</EM> Attribute  is 
+  a List of COMPUTATION Objects corresponding to Computations that  are produced 
+  directly by this Process.  The same COMPUTATION Object  should not appear in 
+  the OUTPUT-COMPUTATIONS Attribute of more than  one PROCESS Object. 
+  <LI><A name="cmt_5_15_9">9.</A>The <EM>PARAMETERS</EM> Attribute is a List  of 
+  PARAMETER Objects corresponding to Parameters that are used by  the Process or 
+  that directly affect the operation of the Process.  Certain PARAMETER Objects 
+  may appear in the PARAMETERS Attribute  of more than one PROCESS Object. 
+  <LI><A name="cmt_5_15_10">10.</A>The <EM>COMMENTS</EM> Attribute contains 
+   information specific to the particular execution of the process  (generally 
+  provided by the user). </LI></UL>
+<H5><A name="5_8_6">5.8.6 Computation Objects</A></H5>Computation  Objects are 
+dictionary-controlled Objects that contain results of  computations that are 
+more appropriately expressed as  Static Information  rather than as Channels.  
+Computation Objects are similar to Parameter  Objects, except that Computation 
+Objects may be associated with  Property Indicators, and Computation Objects may 
+be the output of  PROCESS Objects (see §5.8.5). Figure 5-16 defines the 
+Attributes of a Computation  Object. 
+<P align="center"><IMG width="377" height="184" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image204.gif"> 
+<BR><B>Figure 5-16. Attributes of Computation Object</B> 
+<P>Comments: 
+<UL>
+  <LI><A name="1">1.</A>The <EM>Properties</EM> Attribute is a List  of Property 
+  Indicators (see Appendix C).  The Property Indicators  summarize the 
+  characteristics of the Computation and the processing  that has occurred to 
+  produce it. 
+  <LI><A name="2">2.</A>The <EM>Dimension </EM>Attribute specifies  the array 
+  structure of a single value of the current Computation  (see §4.4.4).  
+  <LI><A name="3">3.</A>The <EM>Zones</EM> Attribute references a  List of Zone 
+  Objects that specify mutually disjoint intervals over  which the value of the 
+  current Computation is constant.  A Computation  may have different values in 
+  different zones.  When this Attribute  is present, the Computation is said to 
+  be Zoned, and it is considered  to be defined only in the zones specified by 
+  the Zones Attribute.  It is considered to be undefined elsewhere. <BR>The Zone 
+  Objects referenced in this List  must all have the same Domain Attribute 
+  Value.  That is, a Computation  Object may only be zoned over a single domain. 
+  <BR>The Zones Attribute may be absent, in which  case the Computation is said 
+  to be Unzoned.  In this case, the Computation  is considered to be defined 
+  everywhere. 
+  <LI><A name="4">4.</A>The <EM>Values</EM> Attribute is a List of  Computation 
+  values corresponding to the zones listed in the Zones  Attribute.  When the 
+  Computation is Zoned, the number of Computation  values is the same as the 
+  number of zones referenced, and the  k<SUB>th</SUB> Computation value applies 
+  to the k<SUB>th</SUB> zone.   When the Computation is Unzoned, there  is a 
+  single Computation value in the Values Attribute. <BR>The Count of the Values 
+  Attribute is equal  to the number of Computation values listed (equal to 1 if 
+  Unzoned  or determined by the Count of the Zones Attribute if Zoned) 
+  multiplied  by the size in elements of each value (determined by the Dimension 
+   Attribute).  For example, if there are three zones, and if Dimension  = {3, 
+  4, 128}, then there are three Computation values listed, each  1,536 elements 
+  big, making the Count of the Values Attribute equal  to 3*1,536 = 4,608. 
+  <LI><A name="5">5.</A>The <EM>SOURCE</EM> Attribute is a reference  to another 
+  Object that describes the immediate source of the Computation,  for example, a 
+  PROCESS Object. </LI></UL>
+<H5><A name="5_8_7">5.8.7 Calibration Information</A></H5>The most common method 
+of calibration is the computation 
+<BLOCKQUOTE>Calibrated Channel = Gain * Uncalibrated Channel  + Offset,  
+</BLOCKQUOTE>where the coefficients "Gain" and "Offset"  are computed from two 
+measurements (Zero and Plus) of the Uncalibrated  Channel and their two 
+corresponding references.  Such a calibration  is acceptable provided that the 
+measurements are within a certain  tolerance of the references and the 
+coefficients are within a certain  tolerance of their nominal values, e.g., Gain 
+= 1 and Offset = 0. 
+<P>This method of calibration is not universal,  and as measuring systems become 
+more complex the method of calibration  becomes more complex.  Nevertheless, a 
+number of interesting calibration  models, although computationally distinct 
+from the model shown above,  use the same basic types of information: 
+<UL>
+  <LI>Uncalibrated Channel measurements  
+  <LI>Measurement references  
+  <LI>Measurement tolerances  
+  <LI>Computed calibration coefficients  
+  <LI>Nominal (or reference) coefficient values  
+  <LI>Coefficient tolerances </LI></UL>The Objects defined in the next two 
+sections  support the recording of a particular generalization of the 
+information  listed above. 
+<H6><A name="5_8_7_1">5.8.7.1 Calibration-Measurement Objects</A></H6>
+Calibration-Measurement  Objects record measurements, references, and tolerances 
+used to  compute calibration coefficients. Figure 5-17 defines the Attributes of 
+a Calibration-Measurement  Object.  Calibration-Measurement Object Names are 
+arbitrary. 
+<P align="center"><IMG width="441" height="284" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image205.gif"> 
+<BR><B>Figure 5-17. Attributes of Calibration-Measurement Object</B> 
+<P>Comments: 
+<UL>
+  <LI><A name="1">1.</A>The <EM>PHASE</EM> Attribute  is a dictionary-controlled 
+   code indicating what phase in the overall job sequence is represented  by the 
+  current measurement. 
+  <TABLE border="3">
+    <TBODY>
+    <TR>
+      <TD><B>PHASE Attribute Options   </B>
+      <TD><B>Description  </B>
+    <TR>
+      <TD>AFTER   
+      <TD>After survey calibration.  
+    <TR>
+      <TD>BEFORE   
+      <TD>Before survey calibration.  
+    <TR>
+      <TD>MASTER   
+      <TD>Master calibration. </TR></TBODY></TABLE>
+  <LI><A name="2">2.</A>The <EM>Measurement-Source</EM> Attribute  references an 
+  Object that specifies the source of the data recorded  in the Measurement 
+  Attribute. 
+  <LI><A name="3">3.</A>The <EM>Type</EM> Attribute defines the type  of 
+  measurement taken.  Values of this Attribute are dictionary-controlled  terms. 
+   For the simple model described earlier, the Type is "Zero"  or "Plus". 
+  <LI><A name="4">4.</A>The <EM>Dimension</EM> Attribute specifies  the array 
+  structure of samples recorded in the Measurement Attribute,  of the Reference 
+  Attribute, of the Maximum-Deviation Attribute,  of the Standard-Deviation 
+  Attribute, of the Standard Attribute,  of the Plus-Tolerance Attribute, and of 
+  the Minus-Tolerance Attribute  (see §4.4.4). 
+  <LI><A name="5">5.</A>The <EM>Measurement</EM> Attribute is a measurement, 
+   possibly containing many samples, related to the uncalibrated data  and 
+  described by the Type Attribute.  The measurement may represent  values of, an 
+  average of, or some other function of the uncalibrated  data. 
+  <LI><A name="6">6.</A>The <EM>Sample-Count</EM> Attribute is the  number of 
+  samples used to compute the Maximum-Deviation and Standard-Deviation. 
+  <LI><A name="7">7.</A>The <EM>Maximum-Deviation</EM> Attribute  is meaningful 
+  only when the Measurement Attribute contains a single  sample.  In this case, 
+  the measurement is considered to be a mean,  and Maximum-Deviation represents 
+  the maximum deviation from this  mean of any sample used to compute the mean.  
+  For array samples,  the mean and maximum deviation are computed independently 
+  for each  sample Element.  The deviation for any Element from the mean is 
+   computed as an absolute value. 
+  <LI><A name="8">8.</A>The <EM>Standard-Deviation</EM> Attribute  is meaningful 
+  only when the Measurement Attribute contains a single  sample.  In this case, 
+  the measurement is considered to be a mean,  and Standard-Deviation represents 
+  the statistical standard deviation  of the samples used to compute the mean.  
+  For array samples, the  mean and standard deviation are computed independently 
+  for each  sample Element. 
+  <LI><A name="9">9.</A>The <EM>Begin-Time</EM> Attribute is the  time at which 
+  acquisition of the measurement in the Measurement  Attribute began.  The Value 
+  of this Attribute represents either  an absolute date and time (if using 
+  Representation Code DTIME) or  an elapsed time from the file creation time 
+  specified by the Creation-Time  Attribute of the Origin Object. 
+  <LI><A name="10">10.</A>The <EM>Duration</EM> Attribute is a time  interval 
+  representing the acquisition duration of the measurement  in the Measurement 
+  Attribute. 
+  <LI><A name="11">11.</A>The <EM>Reference</EM> Attribute is the  expected 
+  nominal value of a single sample of the measurement represented  in the 
+  Measurement Attribute. 
+  <LI><A name="12">12.</A>The <EM>Standard</EM> Attribute is the measurable 
+   quantity of the calibration standard used to produce the Value of  the 
+  Measurement Attribute.  For example, a standard used to calibrate  a caliper 
+  is a steel ring.  Its measurable quantity is its inside  diameter, say 8 
+  inches.  The Measurement and Reference Attributes  may represent the same 
+  physical quantity as the calibration standard,  e.g., length.  In this case, 
+  the Standard provides the same information  as the Reference and is normally 
+  absent to avoid redundancy.  It  is possible, however, for the Measurement and 
+  Reference Attributes  to represent a different physical quantity, say voltage. 
+   In this  case, the Standard Attribute is required to describe the 
+  transformation  from the physical quantity represented by the Measurement and 
+  Reference  Attributes to the physical quantity of the calibration standard, 
+   e.g., from millivolts to inches.  Deriving this transformation may  require 
+  the Values of the Standard Attributes from more than one 
+   Calibration-Measurement Object. 
+  <LI><A name="13">13.</A>The <EM>Plus-Tolerance</EM> Attribute indicates  by 
+  how much each measurement sample may exceed a reference and still  be "within 
+  tolerance".  Elements of this Attribute are  all non-negative numbers.  If a 
+  measurement sample is an array,  then so is its reference and plus tolerance.  
+  The convention that  a measurement sample be within tolerance is that each 
+  element of  the measurement sample array be less than or equal to the sum of 
+   the corresponding reference and plus tolerance array elements. <BR>The plus 
+  tolerance represents in some sense  the maximum acceptable drift of each 
+  recorded measurement sample  <U>above</U> the value of the recorded reference. 
+   If the Plus-Tolerance  Attribute is absent, then the plus tolerance is 
+  implicitly infinite. <BR>For the common simple case when a measurement  sample 
+  is scalar, the sample value 352 is within tolerance when  its reference is 350 
+  and its plus tolerance is 5.  It is out of  tolerance when its reference is 
+  300 and its plus tolerance is 50. 
+  <LI><A name="14">14.</A>The <EM>Minus-Tolerance</EM> Attribute indicates  by 
+  how much each measurement sample may fall below a reference and  still be 
+  "within tolerance".  Elements of this Attribute  are all non-negative numbers. 
+   If a measurement sample is an array,  then so is its reference and minus 
+  tolerance.  The convention that  a measurement sample be within tolerance is 
+  that each element of  the measurement sample array be greater than or equal to 
+  the difference  of the corresponding reference and minus tolerance array 
+  elements. <BR>The minus tolerance represents in some sense  the maximum 
+  acceptable drift of each recorded measurement sample  <U>below</U> the value 
+  of the recorded reference.  If the Minus-Tolerance  Attribute is absent, then 
+  the minus tolerance is implicitly infinite. <BR>For the common simple case 
+  when a measurement  sample is scalar, the sample value 348 is within tolerance 
+  when  its reference is 350 and its minus tolerance is 5.  It is out of 
+   tolerance when its reference is 400 and its minus tolerance is 50. </LI></UL>
+<H6><A name="5_8_7_2">5.8.7.2 Calibration-Coefficient Objects</A></H6>
+Calibration-Coefficient  Objects record coefficients, their references, and 
+tolerances used  in the calibration of Channels. Figure 5-18 defines the 
+Attributes of a Calibration-Coefficient  Object.  Calibration-Coefficient Object 
+Names are arbitrary. 
+<P align="center"><IMG width="397" height="124" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image206.gif"> 
+<BR><B>Figure 5-18. Attributes of Calibration-Coefficient Object</B> 
+<P>Comments: 
+<UL>
+  <LI><A name="1">1.</A>The <EM>Label</EM> Attribute specifies a  label for the 
+  coefficients that identifying their role in the calibration  process.  Values 
+  of this Attribute are dictionary-controlled terms.  For the simple model 
+  described earlier, the Label is "Gain"  or "Offset". 
+  <LI><A name="2">2.</A>The <EM>CoefficientS</EM> Attribute are coefficients 
+   corresponding to the label in the Label Attribute. 
+  <LI><A name="3">3.</A>The <EM>ReferenceS</EM> Attribute are references 
+   corresponding to the coefficients in the CoefficientS Attribute.  Each 
+  recorded reference represents in some sense the nominal value  of the 
+  corresponding recorded coefficient. 
+  <LI><A name="4">4.</A>The <EM>Plus-Tolerances</EM> Attribute are  values that 
+  indicate by how much a coefficient may exceed a reference  and still be 
+  "within tolerance".  Elements of this Attribute  are all non-negative numbers. 
+   The convention that a coefficient  be within tolerance is that it be less 
+  than or equal to the sum  of the corresponding reference and plus tolerance. 
+  <BR>The recorded plus tolerance represents in  some sense the maximum 
+  acceptable range of the recorded coefficient  above the value of the recorded 
+  reference.  If the Plus-Tolerances  Attribute is absent, then plus tolerance 
+  is implicitly infinite. <BR>For the simple case illustrated earlier,  a Gain 
+  of 1.05 is within tolerance when its reference is 1.0 and  its plus tolerance 
+  is 0.1.  It is out of tolerance when its reference  is 1.0 and its plus 
+  tolerance is 0.01. 
+  <LI><A name="5">5.</A>The <EM>Minus-Tolerances</EM> Attribute are  values that 
+  indicate by how much a coefficient may fall short of  a reference and still be 
+  "within tolerance".  Elements  of this Attribute are all non-negative numbers. 
+   The convention  that a coefficient be within tolerance is that it be greater 
+  than  or equal to the difference of the corresponding reference and minus 
+   tolerance. <BR>The recorded minus tolerance represents in  some sense the 
+  maximum acceptable range of the recorded coefficient  below the value of the 
+  recorded reference.  If the Minus-Tolerances  Attribute is absent, then minus 
+  tolerance is implicitly infinite. <BR>For the simple case illustrated earlier, 
+   a Gain of .95 is within tolerance when its reference is 1.0 and  its minus 
+  tolerance is 0.1.  It is out of tolerance when its reference  is 1.0 and its 
+  minus tolerance is 0.01. 
+  <P>NOTE:  The coefficients, references, plus-tolerances,  and minus-tolerances 
+  Attributes must all have the same Count. </P></LI></UL>
+<H6><A name="5_8_7_3">5.8.7.3 Calibration Objects</A></H6>Calibration  Objects 
+identify the collection of measurements and coefficients  that participate in 
+the calibration of a Channel. Figure 5-19 defines the Attributes of a 
+Calibration  Object.  Calibration Object Names are arbitrary. 
+<P align="center"><IMG width="449" height="138" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image207.gif"> 
+<BR><B>Figure 5-19. Attributes of Calibration Object</B> 
+<P>Comments: 
+<UL>
+  <LI><A name="1">1.</A>The <EM>Calibrated-Channels</EM> Attribute  is a List of 
+  references to Channel Objects.  The corresponding Channels  (typically just 
+  one) are declared to be calibrated using the coefficients  and measurements 
+  identified by the Coefficients and Measurements  Attributes described below. 
+  <LI><A name="2">2.</A>The <EM>Uncalibrated-Channels</EM> Attribute  is a List 
+  of references to Channel Objects.  The corresponding Channels  (typically just 
+  one) are used, along with coefficients and according  to the computational 
+  method, to compute the Channels identified  by the Calibrated-Channels 
+  Attribute. 
+  <LI><A name="3">3.</A>The <EM>Coefficients</EM> Attribute is a  List of 
+  references to Calibration-Coefficient Objects.  The coefficients,  references, 
+  and tolerances collectively defined by these Objects  are used to compute the 
+  Channels identified by the Calibrated-Channels  Attribute. 
+  <LI><A name="4">4.</A>The <EM>Measurements</EM> Attribute is a  List of 
+  references to Calibration-Measurement Objects.  The measurements  collectively 
+  defined by these Objects are used to derive the coefficients  that are used to 
+  calibrate the Channels identified by the Calibrated-Channels  Attribute. 
+  <LI><A name="5">5.</A>The <EM>Parameters</EM> Attribute is a List  of 
+  references to Parameter Objects.  The referenced Objects provide  information 
+  directly associated with the calibration process, for  example statistics, 
+  quality control indicators, parameters entered  by the operator, 
+  vendor-supplied coefficients, and other information  (numeric or textual) that 
+  is potentially of interest to the Consumer. 
+  <LI><A name="6">6.</A>The <EM>Method</EM> Attribute defines the  computational 
+  method used to calibrate the Channels identified by  the Calibrated-Channels 
+  Attribute.  Values of this Attribute are  dictionary-controlled terms.  For 
+  the simple model described earlier,  the Method might be "Two-Point-Linear". 
+  </LI></UL>
+<H5><A name="5_8_8">5.8.8 Group Objects</A></H5>Group Objects  indicate logical 
+groupings of other Objects.  The use of Group Objects  is completely at the 
+discretion of the Producer to define whatever  associations are deemed useful.
+ Figure 5-20 defines the Attributes of a Group  Object.  Group Object Names are 
+not dictionary-controlled but usually  are selected to convey some meaning to 
+the Consumer. 
+<P align="center"><IMG width="364" height="106" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image208.gif"> 
+<BR><B>Figure 5-20. Attributes of Group Object</B> 
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_20_1">1.</A> The <EM>OBJECT-TYPE</EM> Attribute specifies 
+   the Type of Object that is referenced in the Object-List Attribute.  This 
+  Attribute is ignored whenever the OBJECT-LIST Attribute has  Representation 
+  Code OBJREF. 
+  <LI><A name="cmt_5_20_2">2.</A> The <EM>OBJECT-LIST</EM> Attribute is a List 
+   of references to arbitrary Objects when its Representation Code  is OBJREF.  
+  Otherwise, it is a List references to Objects of the  Type specified in the 
+  Object-Type Attribute.  These Objects are  considered to be related in some 
+  fashion known to the Producer. 
+  <LI><A name="cmt_5_20_3">3.</A> The <EM>GROUP-LIST</EM> Attribute is a List 
+   of references to other Group Objects.  The Group Objects referenced  are 
+  completely arbitrary and may even specify Object Types different  from that 
+  specified in the the current OBJECT-TYPE Attribute. </LI></UL>
+<H5><A name="5_8_9">5.8.9 Splice Objects</A></H5>Splice Objects  describe the 
+process of concatenating two or more instances of a  Channel (e.g., from 
+different runs) to get a resultant <EM>spliced</EM> Channel.   Figure 5-21 
+defines the Attributes of a Splice  Object. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Lable </B>
+    <TD><B>Restrictions </B>
+    <TD><B>Comments </B>
+  <TR>
+    <TD>OUTPUT-CHANNELS 
+    <TD>C=1, R=OBNAME 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_21_1">1</A> 
+  <TR>
+    <TD>INPUT-CHANNELS 
+    <TD>R=OBNAME 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_21_2">2</A> 
+  <TR>
+    <TD>ZONES 
+    <TD>R=OBNAME 
+    <TD><A href="http://w3.energistics.org/rp66/v1/rp66v1_sec5.html#cmt_5_21_3">3</A> 
+   </TR>
+  <CAPTION align="bottom"><B>Figure 5-21. Attributes of Splice 
+  Object</B></CAPTION></TABLE>
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_21_1">1.</A>The <EM>Output-Channel</EM> Attribute 
+  references  the Channel Object that represents the spliced Channel, i.e., the 
+   resultant of the splice operation.  The spliced Channel may be implied  by 
+  the Splice Object and need not actually exist.  When the spliced  Channel does 
+  exist, its Properties Attribute must include the "Spliced"  flag.  
+  <LI><A name="cmt_5_21_2">2.</A>The <EM>Input-Channels</EM> Attribute is  a 
+  List of references to Channel Objects that represent the input  Channels of 
+  the splice operation.  
+  <LI><A name="cmt_5_21_3">3.</A>The <EM>Zones</EM> Attribute is a List of 
+   references to Zone Objects.  When not Absent, this Attribute must  have the 
+  same number of Elements — i.e., the same Count — as the  Input-Channels 
+  Attribute.  The k<SUP>th</SUP> referenced Zone Object defines a zone in which 
+   the spliced Channel matches the values of the k<SUP>th</SUP> referenced input 
+  Channel  (allowing for possible differences in Representation Code and Units). 
+   The referenced Zone Objects must specify mutually-disjoint zones  in the same 
+  domain, but the ordering of the zones is arbitrary. When the ZONES Attribute 
+  is Absent, changes  in the input Channel are indicated by Updates (see 
+  Appendix D). </LI></UL>
+<H5><A name="5_9">5.9 Unformatted Data Logical Records (NOFORM) </A></H5>
+Unformatted  Data Logical Records are Indirectly Formatted Logical Records of 
+ Type NOFORM that contain "packets" of unformatted (in  the DLIS sense) binary 
+data.  The Data Descriptor reference of the  NOFORM Logical Record refers to a 
+<EM>NO-FORMAT</EM> Object, defined  in Figure 5-22.  The purpose of Unformatted 
+Data Logical Records  is to transport arbitrary data that is of value to the 
+Consumer,  the format of which is known by the Consumer, but which has no DLIS 
+ Semantic meaning. 
+<H5><A name="5_10">5.10 Unformatted Data  Identifier Logical Records (UDI) 
+</A></H5>Unformatted  Data Identifier Logical Records are Explicitly Formatted 
+Logical  Records of Type UDI that contain the single Set Type  
+<EM>NO-FORMAT</EM>.  The purpose of Unformatted Data Identifier Logical Records 
+is to  identify data that is recorded in Unformatted Data Logical Records. 
+<H5><A name="5_10_1">5.10.1</A> No-Format Objects</H5>NO-FORMAT Objects identify 
+packet sequences of  unformatted binary data.   The Indirectly Formatted Data 
+field of each NOFORM IFLR that references  a given No-Format Object contains a 
+segment of the source stream  of unformatted data.  This source stream is 
+recovered by concatenating  these segments in the same order in which they occur 
+in the NOFORM  IFLRs.  Each segment of the source stream is considered under the 
+ DLIS to be a sequence of bytes, and no conversion is applied to  the bytes as 
+they are placed into the IFLRs nor as they are removed  from the IFLRs. Figure 
+5-22 defines the Attributes of a No-Format Object. 
+<P align="center"><IMG width="388" height="76" src="Chapter%205%20SEMANTICS%20STATIC%20AND%20FRAME%20DATA_files/image210.gif"> 
+<BR><B>Figure 5-22. Attributes of No-Format Object</B> 
+<P>Comments: 
+<UL>
+  <LI><A name="cmt_5_22_1">1.</A>The <EM>CONSUMER-NAME</EM> Attribute is a 
+   client-provided name for the data, for example an external file 
+   specification. </LI></UL>
+<H4><A name="5_11">5.11</A> End of Data Logical Records (EOD)</H4>End of Data 
+ Logical Records are Indirectly Formatted Logical Records of Type  EOD that 
+signify the end of a given sequence of IFLRs.  It is useful  for the Consumer to 
+know when a sequence of IFLRs ends, particularly  when more data, either Static 
+or Dynamic, follows in the Logical  File. 
+<P>The Data Descriptor Reference of an EOD IFLR  is a copy of the Data 
+Descriptor Reference of the sequence of IFLRs  that is to be indicated ended.  
+The Indirectly Formatted Data of  the EOD IFLR consists of a single value 
+(Representation Code USHORT)  that contains the Logical Record Type of the 
+sequence of IFLRs that  has ended. 
+<P>To illustrate this, let "A" and "B"  represent two distinct Data Descriptor 
+Reference values.  The IFLRs  might occur in a Logical File in the following 
+fashion:  <BR><BR>{FDATA, A, data ... }  <BR>{FDATA, A, data ... }  <BR>{NOFORM, 
+B, data ... }  <BR>{NOFORM, B, data ... }  <BR>&nbsp; &nbsp; • • •  <BR>{NOFORM, 
+B, data ... }  <BR>{EOD, B NOFORM}&nbsp; &nbsp; &nbsp; &nbsp; end of NOFORM 
+sequence "B"  <BR>{FDATA, A, data ... }  <BR>&nbsp; &nbsp; • • •  <BR>{EOD, A, 
+FDATA}&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end of FDATA sequence "A" 
+</P></BODY></HTML>

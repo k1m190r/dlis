@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_appe.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1252"> 
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"> <TITLE>Appendix 
+E</TITLE> </HEAD> 
+<BODY><FONT face="Times" size="5">
+<P>Appendix E</P></FONT><FONT face="Times" size="6">
+<P align="JUSTIFY"> <A name="E">CHECKSUM ALGORITHM</A> </P></FONT><FONT face="Times" 
+size="2">
+<P align="JUSTIFY"> A checksum may appear in the Logical Record Segment Trailer. 
+  It includes everything in the Logical Record Segment  which precedes the 
+checksum value.   The checksum value itself and the Trailing Length, if present, 
+ are not included in the checksum.</P>
+<P align="JUSTIFY">When encryption is used, the checksum is computed  
+<I>after</I> the Logical Record Segment Body and Pad Bytes  have been 
+encrypted.</P>
+<P align="JUSTIFY">The checksum is a 16-bit integer quantity computed  using a 
+cyclic-redundancy type checksum algorithm.   This algorithm is described below.  
+ Note that this algorithm assumes that there are  an even number of bytes in the 
+data block.</P></FONT>
+<DIR><FONT face="Times" size="2"> </FONT><B><FONT face="Monaco,Courier New" 
+size="1">
+<P>1)	c=0	initialize 16-bit checksum to zero</P>
+<P>2)	loop i=1,n,2	loop over the data two bytes at a time</P>
+<P>3)	t=byte(i+1)*256+byte(i)	compute a 16-bit addend by concatenating the next 
+two bytes of data</P>
+<P>4)	c=c+t	add the addend to the checksum</P>
+<P>5)	if carry c=c+1	add carry to checksum</P>
+<P>6)	c=c*2	left shift checksum</P>
+<P>7)	if carry c=c+1	add carry to checksum</P>
+<P>8)	endloop</P></FONT></B></DIR><B><FONT face="Monaco,Courier New" 
+size="1"></FONT></B><FONT face="New York,Times New Roman">
+<P> </P></FONT> </BODY></HTML>

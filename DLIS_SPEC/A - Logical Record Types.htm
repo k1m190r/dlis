@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://w3.energistics.org/rp66/v1/rp66v1_appa.html -->
+<HTML><HEAD><META content="IE=5.0000" http-equiv="X-UA-Compatible">
+ <TITLE>Appendix A: Logical Record Types</TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<META name="GENERATOR" content="MSHTML 11.00.9600.18894"></HEAD> 
+<BODY>
+<H3>Appendix A:<BR>Logical Record Types</H3>
+<H4><A name="A_1">A.1 Indirectly Formatted Logical Records</A></H4>Numeric codes 
+0-127 are reserved for Public IFLRs.   Codes 128-255 are reserved for Private 
+IFLRs. 
+<P>Figure A-1 defines numeric codes for  Public Indirectly Formatted Logical 
+Record Types. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Code   </B>
+    <TD><B>Type   </B>
+    <TD><B>Desciption   </B>
+    <TD><B>Data Descriptor Reference Object Type  </B>
+  <TR>
+    <TD>0   
+    <TD>FDATA   
+    <TD>Frame Data   
+    <TD>FRAME  
+  <TR>
+    <TD>1   
+    <TD>NOFORMAT   
+    <TD>Unformatted Data   
+    <TD>NO-FORMAT  
+  <TR>
+    <TD>2-126   
+    <TD>...   
+    <TD>undefined, reserved   
+    <TD>--  
+  <TR>
+    <TD>127   
+    <TD>EOD   
+    <TD>End of Data   
+    <TD>--  </TR>
+  <CAPTION align="bottom"><B>Figure A-1.  Numeric Codes for Public IFLR 
+  Types</B></CAPTION></TABLE>
+<H4><A name="A_2">A.2 Explicitly Formatted Logical Records</A></H4>Numeric codes 
+0-127 are reserved for Public EFLRs.   Codes 128-255 are reserved for Private 
+EFLRs.   Figure A-2 defines numeric codes for  Explicitly Formatted Logical 
+Record Types. 
+<P align="center">
+<TABLE border="3">
+  <TBODY>
+  <TR>
+    <TD><B>Code   </B>
+    <TD><B>Type   </B>
+    <TD><B>Description   </B>
+    <TD><B>Allowable Set Types  </B>
+  <TR>
+    <TD>0   
+    <TD>FHLR   
+    <TD>File Header   
+    <TD>FILE-HEADER  
+  <TR>
+    <TD rowspan="2">1   
+    <TD rowspan="2">OLR   
+    <TD rowspan="2">Origin   
+    <TD>ORIGIN  
+  <TR>
+    <TD>WELL-REFERENCE  
+  <TR>
+    <TD>2   
+    <TD>AXIS   
+    <TD>Coordinate Axis   
+    <TD>AXIS  
+  <TR>
+    <TD>3   
+    <TD>CHANNL   
+    <TD>Channel-related information   
+    <TD>CHANNEL  
+  <TR>
+    <TD rowspan="2">4   
+    <TD rowspan="2">FRAME   
+    <TD rowspan="2">Frame Data   
+    <TD>FRAME  
+  <TR>
+    <TD>PATH  
+  <TR>
+    <TD rowspan="11">5   
+    <TD rowspan="11">STATIC   
+    <TD rowspan="11">Static Data   
+    <TD>CALIBRATION  
+  <TR>
+    <TD>CALIBRATION-COEFFICIENT  
+  <TR>
+    <TD>CALIBRATION-MEASUREMENT  
+  <TR>
+    <TD>COMPUTATION  
+  <TR>
+    <TD>EQUIPMENT  
+  <TR>
+    <TD>GROUP  
+  <TR>
+    <TD>PARAMETER  
+  <TR>
+    <TD>PROCESS  
+  <TR>
+    <TD>SPICE  
+  <TR>
+    <TD>TOOL  
+  <TR>
+    <TD>ZONE  
+  <TR>
+    <TD>6   
+    <TD>SCRIPT   
+    <TD>Textual Data   
+    <TD>COMMENT   
+    <TD>MESSAGE  
+  <TR>
+    <TD>7   
+    <TD>UPDATE   
+    <TD>Update Data   
+    <TD>UPDATE  
+  <TR>
+    <TD>8   
+    <TD>UDI   
+    <TD>Unformatted Data Identifier   
+    <TD>NO-FORMAT  
+  <TR>
+    <TD>9   
+    <TD>LNAME   
+    <TD>Long Name   
+    <TD>LONG-NAME  
+  <TR>
+    <TD rowspan="8">10   
+    <TD rowspan="8">SPEC   
+    <TD rowspan="8">Specification   
+    <TD>ATTRIBUTE  
+  <TR>
+    <TD>CODE  
+  <TR>
+    <TD>EFLR  
+  <TR>
+    <TD>IFLR  
+  <TR>
+    <TD>OBJECT-TYPE  
+  <TR>
+    <TD>REPRESENTATION-CODE  
+  <TR>
+    <TD>SPECIFICATION  
+  <TR>
+    <TD>UNIT-SYMBOL  
+  <TR>
+    <TD rowspan="4">11   
+    <TD rowspan="4">DICT   
+    <TD rowspan="4">Dictionary   
+    <TD>BASE-DICTIONARY  
+  <TR>
+    <TD>IDENTIFIER  
+  <TR>
+    <TD>LEXICON  
+  <TR>
+    <TD>OPTION  
+  <TR>
+    <TD>12-127   
+    <TD>-   
+    <TD>undefined, reserved   
+    <TD>-  </TR>
+  <CAPTION align="bottom"><B>Figure A-2.  Numeric Codes for Public EFLR 
+  Types</B></CAPTION></TABLE></P></BODY></HTML>
