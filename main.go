@@ -1,11 +1,13 @@
 package main
 
 import (
-	"encoding/binary"
+	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 var fname = "TestDataSet.dlis"
@@ -100,19 +102,37 @@ func (f *VR) Write(b []byte) (n int, err error) {
 
 // SUL $2.3.2 = storage unit label first 80 bytes (0x50) of Visible Envelop
 // Fig 2-7. Only one SUL per SU, before LF.
+// whole of SUL is ASCII
 type SUL struct {
-	SeqNum      [4]byte  // sequence number
-	DLISVersion [5]byte  // "V1.00" - most likely
-	Struct      [6]byte  // storage unit structure, "RECORD" = Record Storage Unit
-	MaxRecLen   [5]byte  // maximum record length, applies to Visible Records $2.3.6, $2.3.6.5 abs max is 16,384 (2^14)
-	SetID       [60]byte // storage set identifier
+	SeqNum      string // [4]byte  // sequence number
+	DLISVersion string // [5]byte  // "V1.00" - most likely
+	Struct      string // [6]byte  // storage unit structure, "RECORD" = Record Storage Unit
+	MaxRecLen   string // [5]byte  // maximum record length, applies to Visible Records $2.3.6, $2.3.6.5 abs max is 16,384 (2^14)
+	SetID       string // [60]byte // storage set identifier
 }
 
-func (s SUL) String() string {
-	return fmt.Sprintf("Sequence Number: %s; DLISVersion: %s; Structure: %s; MaxiRecLen: %s, SetID: %s",
-		string(s.SeqNum[:]), string(s.DLISVersion[:]),
-		string(s.Struct[:]), string(s.MaxRecLen[:]),
-		string(s.SetID[:]))
+func trimSlice(buf []byte) string {
+	return strings.TrimSpace(string(buf))
+}
+
+func (s *SUL) Read(f io.Reader) error {
+	// SUL is exacly 80 bytes
+	var buf = make([]byte, 80)
+	n, err := f.Read(buf)
+	if err != nil {
+		return err
+	}
+	if n != 80 {
+		return errors.New(fmt.Sprintf("expecting len(SUL)==80 bytes, but it is %d", n))
+	}
+
+	s.SeqNum = trimSlice(buf[0:4])      // 4
+	s.DLISVersion = trimSlice(buf[4:9]) // 5
+	s.Struct = trimSlice(buf[9:15])     // 6
+	s.MaxRecLen = trimSlice(buf[15:20]) // 5
+	s.SetID = trimSlice(buf[20:80])     // rest of it
+
+	return nil
 }
 
 type VisibleEnvelop struct {
@@ -120,36 +140,28 @@ type VisibleEnvelop struct {
 	VR    []*VR
 }
 
-func readManual() (env VisibleEnvelop) {
-	f, err := os.Open(fname)
-	if err != nil {
-		log.Printf("error opening file %s : %v", fname, err)
-		return
-	}
-	defer dclose(f)
-
-	_, err = f.Read(env.Label.SeqNum[:])
-	_, err = f.Read(env.Label.DLISVersion[:])
-	_, err = f.Read(env.Label.Struct[:])
-	_, err = f.Read(env.Label.MaxRecLen[:])
-	_, err = f.Read(env.Label.SetID[:])
-
-	return
-}
-func readReflect() (env VisibleEnvelop) {
-	f, err := os.Open(fname)
-	if err != nil {
-		log.Printf("error opening file %s : %v", fname, err)
-		return
-	}
-	defer dclose(f)
-
-	err = binary.Read(f, binary.BigEndian, &env)
-
-	return
-}
-
 func main() {
+
+	// open file for read only
+	f, err := os.Open(fname)
+	if err != nil {
+		log.Printf("error opening file %s : %v", fname, err)
+		return
+	}
+	defer dclose(f)
+
+	// buf reader with default 4k buffer
+	br := bufio.NewReader(f)
+
+	var sul SUL
+	err = sul.Read(br)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("%+v", sul)
+
 	// read
 	// need to read an process one VR at a time
 	// VR absolute max size is 16,384 (2^14) so this can be a starting point
@@ -159,24 +171,6 @@ func main() {
 	//   Interpret all LRS in VR
 	// The reader itself should present a simple range capable interface...
 
-	var temp1 struct {
-		Label SUL
-		// VR
-		VR struct {
-			Length        uint16 // UNORM, len of whole VR struct, 20 is min
-			FormatVersion uint16 // $2.3.6.2 0xFF01, USHORT = 1 - always
-		}
-	}
-
-	f, err := os.Open(fname)
-	if err != nil {
-		log.Printf("error opening file %s : %v", fname, err)
-		return
-	}
-	defer dclose(f)
-	err = binary.Read(f, binary.BigEndian, &temp1)
-
-	fmt.Printf("%+v", temp1)
 }
 
 func dclose(c io.Closer) {
