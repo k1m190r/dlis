@@ -1,70 +1,75 @@
-// Logical Record Segment
-package main
+package dlis
 
-// http://w3.energistics.org/rp66/v1/rp66v1_sec3.html
+import (
+	"encoding/binary"
+	"fmt"
+)
 
-// $3.2 Explicitly Formatted Logical Record (EFLR)
-// Template for columns/ attributes, and the their characteristics
-// Table of information
-//   Rows are Objects
-//   Columns are Attributes of Objects
-// Alternatively viewed as Set of Objects, of the Type Defined by Template
+///////////////////////////////////////////////////////////////////////////////
+// Logical Format $2.2
 
-// Each EFLR contains one and only one Set.
-// Set maybe of several different types implied by the EFLR Type.
-
-// Set is 1+ Object of same type, preceded by Template.
-// Each Object has 1+ Attributes.
-// Sets, Objects and Attributes have Characteristics
-
-// $3.2.2 EFLR Component
-
-// Notation
-
-// IDENT: n'a..x
-// e.g: 5'Hello ; 6'Origin
-type IDENT struct {
-	Size byte
-	Name string
+// LRSH - Logical Record Segment Header $2.2.2.1 Figure 2-2.
+// applies to all segments of LR and must be consistent for all
+type LRSH struct {
+	Length  int  // uint16 UNORM, Length, must be even, minimum 16 bytes
+	Attribs byte // Figure 2-3.
+	Type    byte // USHORT. App A.
 }
 
-// OBNAME: k&j&n'a..x : Origin k : Copy Number j : INDENT
-// e.g.: 1&0&5'Depth
-
-type OBNAME struct {
-	Origin   byte
-	CopyNum  byte
-	ObjectID IDENT
+func (h *LRSH) String() string {
+	return fmt.Sprintf(
+		"Header: Len: %d; Attribs: %b; Type: %d\n",
+		h.Length, h.Attribs, h.Type)
 }
 
-// "null" REPCODE len bytes all 0
-
-// 0' null ASCII or IDENT, zero length string, 1 byte = 0
-
-// "reserved" bit is zero
-
-// $3.2.2.1 Descriptor
-
-// First byte of Component is Descriptor
-// Bits 1-3 Role Fig 3-2
-// Format Fig 3-3, 3-4, 3-5
-
-type Descriptor struct {
-	Role   byte // bits 1-3, Fig 3-2
-	Format byte
-	// Role Set (101, 110, 111): Fig 3-3, bit 4 - Type IDENT, 5 - Name IDENT
-	//   defaults: Type - not defined, Name - 0'
-	// Role Obj (011): Fig - 3-4, bit 4 - Name OBNAME
-	// Role Attrib (001, 010): Fig 3-5, Label, Count, RepCode, Units, Value
-	//   Value 0+ Elements of RepCode with Units, # of Elements is Count
-	//   if Count==0 Value is undef ie Absent Value
+// Logical Record Segment Encryption Packet $2.2.2.2 Figure 2-4.
+type LRSEP struct {
+	Size           uint16 // UNORM, must be even
+	CompanyCode    uint16 // $4.1.9
+	EncriptionInfo *byte  // optional, so LRSEP can be 4 bytes
 }
 
-type Component struct {
-	Descriptor Descriptor
+// Logical Record Segment Trailer $2.2.2.4
+type LRST struct {
+	Padding  []byte
+	CheckSum *uint16 // optional, see LRSH.Attribs bit 6, App E
+	Length   uint16  // UNORM, Trailing Length
 }
 
-// LRSB interpretation as EFLR
-type EFLR struct {
-	Descriptor byte // $3.2.2.1 Bits 1-3 Role, 4-Type (Objects in the Set), 5-Name
+// Logical Record Segment is interface between LF and Physical Format
+// it applies to whole of LR not LRS, redundancy is intentional
+type LRS struct {
+	Header        LRSH
+	EncryptPacket *LRSEP // optional
+	body          []byte // LRS Body $2.2.2.3
+	Trailer       *LRST  // optional
+
+	Err []error
+}
+
+func (s *LRS) String() string {
+	return fmt.Sprintf(
+		"Logical Record Segment\n%sBody Len:%d\nErr: %v\n",
+		s.Header.String(), len(s.body), s.Err)
+}
+
+func NewLRS(b []byte) (s *LRS) {
+	s = new(LRS)
+
+	// read 2 bytes of Length
+	s.Header.Length = int(binary.BigEndian.Uint16(b[:2]))
+
+	// read next 2 bytes Attribs and Type
+	s.Header.Attribs = b[2] // 3rd
+	s.Header.Type = b[3]    // 4th
+
+	// Read rest of the segment body
+	s.body = b[4:s.Header.Length]
+
+	// Check Attribs
+	// Read Encryption Packet and Trailer
+	// defintion of LRS body will change depending on
+	// Attrib flags, Presence of Encryption Packet and Trailer
+
+	return
 }
