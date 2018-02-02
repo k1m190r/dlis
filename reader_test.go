@@ -23,24 +23,24 @@ func TestNewDLISReader(t *testing.T) {
 	t.Log(dlisread)
 
 	// read VR records
-	// vr1 := dlisread.Read()
-	// for {
-	// 	lrs := vr1.Read()
-	// 	if lrs == nil {
-	// 		break
-	// 	}
-	// 	t.Log(lrs.Header.String())
-	// }
-
-	// vr2 := dlisread.Read()
-	// t.Log(vr2)
-
+	vr1 := dlisread.Read()
 	for {
-		vr := dlisread.Read()
-		if len(vr.Err) != 0 {
-			t.Log(vr)
+		lrs := vr1.Read()
+		if lrs == nil {
 			break
 		}
-		t.Log(vr)
+		t.Log(lrs.Header.String())
 	}
+
+	vr2 := dlisread.Read()
+	t.Log(vr2)
+
+	// for {
+	// 	vr := dlisread.Read()
+	// 	if len(vr.Err) != 0 {
+	// 		t.Log(vr)
+	// 		break
+	// 	}
+	// 	t.Log(vr)
+	// }
 }
