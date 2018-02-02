@@ -8,10 +8,17 @@ type LRSH struct {
 	Length  int // uint16 UNORM, Length, must be even, minimum 16 bytes
 	Attribs LRAttribs
 	Type    byte // USHORT. App A.
+	bytes   []byte
 }
 
 func (h *LRSH) String() string {
+	var lrtype []interface{}
+	if h.Attribs.Explicit {
+		lrtype = EFLRType(h.Type)
+	} else {
+		lrtype = IFLRType(h.Type)
+	}
 	return fmt.Sprintf(
-		"Header: Len: %d; Attribs: %s; Type: %d\n",
-		h.Length, h.Attribs.String(), h.Type)
+		"Header: Len: %d; Attribs: %s; Type: %v\n",
+		h.Length, h.Attribs.String(), lrtype)
 }

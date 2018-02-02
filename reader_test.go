@@ -8,6 +8,8 @@ import (
 
 var fname = "test/TestDataSet.dlis"
 
+//var fname = "test/n802b.dls"
+
 func TestNewDLISReader(t *testing.T) {
 
 	// open file for read only
@@ -20,27 +22,46 @@ func TestNewDLISReader(t *testing.T) {
 
 	// dlis reader, read SUL
 	dlisread := NewDLISReader(f)
-	t.Log(dlisread)
 
 	// read VR records
-	vr1 := dlisread.Read()
-	for {
-		lrs := vr1.Read()
-		if lrs == nil {
-			break
-		}
-		t.Log(lrs.Header.String())
-	}
-
-	vr2 := dlisread.Read()
-	t.Log(vr2)
-
+	// vr1 := dlisread.Read()
 	// for {
-	// 	vr := dlisread.Read()
-	// 	if len(vr.Err) != 0 {
-	// 		t.Log(vr)
+	// 	lrs := vr1.Read()
+	// 	if lrs == nil {
 	// 		break
 	// 	}
-	// 	t.Log(vr)
+	// 	t.Log(lrs)
 	// }
+	// t.Log(vr1)
+
+	// vr2 := dlisread.Read()
+	// for {
+	// 	lrs := vr2.Read()
+	// 	if lrs == nil {
+	// 		break
+	// 	}
+	// 	t.Log(lrs)
+	// }
+
+	// t.Log(vr2)
+
+	for {
+		vr := dlisread.Read()
+		if len(vr.Err) != 0 {
+			t.Log(vr)
+			break
+		}
+
+		for {
+			lrs := vr.Read()
+			if lrs == nil {
+				break
+			}
+			t.Log(lrs)
+		}
+
+		t.Log(vr)
+	}
+
+	t.Log(dlisread)
 }

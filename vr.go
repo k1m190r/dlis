@@ -19,11 +19,12 @@ type VR struct {
 
 func (vr *VR) String() string {
 	return fmt.Sprintf(
-		"Visible Record\nLen: %d; Format Version: %X; LRSCount: %d\nErrors: %v",
+		"Visible Record: Len: %d; FormatVer: %X; LRSCount: %d\nErrors: %v",
 		vr.Length, vr.FormatVersion, vr.LRSCount, vr.Err)
 }
 
 // NewVR makes new Visual Record and returns it's address
+// Stop if VR.Err != nil
 func NewVR(r io.Reader) (vr *VR) {
 	vr = new(VR)
 

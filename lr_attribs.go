@@ -11,7 +11,7 @@ type LRAttribs struct { // byte Figure 2-3.
 	HasChecksum, // in LRS Trailer
 	HasTrailingLen, // in LRS Trailer
 	HasPadding bool // in LRS Trailer
-	abyte byte
+	obyte byte // orignal byte
 }
 
 func (a *LRAttribs) String() string {
@@ -27,19 +27,19 @@ func (a *LRAttribs) String() string {
 	}
 
 	setf(a.Explicit, "Explicit", "Implicit")
-	setf(a.NotFirst, "Not First", "Is First")
-	setf(a.NotLast, "Not Last", "Is Last")
-	setf(a.Encrypted, "Encrypted", "Not Encrypted")
-	setf(a.HasEncryptPacket, "Has EncryptionPacket", "No EncryptionPacket")
-	setf(a.HasChecksum, "Has Checksum", "No Checksum")
-	setf(a.HasTrailingLen, "Has TrailingLen", "No TrailingLen")
-	setf(a.HasPadding, "Has Padding", "No Padding")
+	setf(a.NotFirst, "Not First", "")
+	setf(a.NotLast, "Not Last", "")
+	setf(a.Encrypted, "Encrypted", "")
+	setf(a.HasEncryptPacket, "Has EncryptionPacket", "")
+	setf(a.HasChecksum, "Has Checksum", "")
+	setf(a.HasTrailingLen, "Has TrailingLen", "")
+	setf(a.HasPadding, "Has Padding", "")
 
-	return fmt.Sprintf("[%b], %v\n", a.abyte, aa)
+	return fmt.Sprintf("[%b], %v", a.obyte, aa)
 }
 
 func (a *LRAttribs) Parse(b byte) {
-	a.abyte = b
+	a.obyte = b
 	a.Explicit = ((1 << 7) & b) != 0 // gimmick to check if bit 7 (most significant) is set
 	a.NotFirst = ((1 << 6) & b) != 0 // using (1 << 6) to make bit number explicit
 	a.NotLast = ((1 << 5) & b) != 0

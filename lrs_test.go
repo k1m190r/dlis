@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBits(t *testing.T) {
+func _TestBits(t *testing.T) {
 	b1 := byte(0x01)
 	for b := range make([]int, 8) {
 		fmt.Printf("%b  ", b1<<uint(b))

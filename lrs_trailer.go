@@ -20,6 +20,20 @@ type LRST struct {
 	// Copy from LRS Header Len, every LRS or none, to allow traversal backwards
 }
 
+func (t *LRST) String() string {
+	msg := []string{}
+	if t.PadBytes != nil {
+		msg = append(msg, fmt.Sprintf("PadBytes, last is Count: %v", t.PadBytes))
+	}
+	if t.CheckSum != nil {
+		msg = append(msg, fmt.Sprintf("CheckSum: %d", *t.CheckSum))
+	}
+	if t.Length != nil {
+		msg = append(msg, fmt.Sprint("Traling Length: %d", *t.Length))
+	}
+	return fmt.Sprintf("Trailer:%v", msg)
+}
+
 func ParseLRSTrailer(s *LRS) {
 	// parse backward from Len -> CheckSum -> PadCount -> PadBytes
 
@@ -65,7 +79,28 @@ func ParseLRSTrailer(s *LRS) {
 }
 
 func checkSum(s *LRS) (int, bool) {
+	// http://w3.energistics.org/rp66/v1/rp66v1_appe.html
+
 	log.Fatal("OH OH Need to check this!! checksum")
 	// return the sum and if it is failed...
+
+	// Sum includes everything in the LRS which precedes the checksum value.
+	// The checksum value itself and the Trailing Length, if present, are not included.
+	// need to merge the header, encryption packet and pad bytes
+
+	// When encryption is used, the checksum is computed after the
+	// Logical Record Segment Body and Pad Bytes have been encrypted.
+
+	/* assume even number of bytes
+	   1) c=0 initialize 16-bit checksum to zero
+	   2) loop i=1,n,2 loop over the data two bytes at a time
+	   3) t=byte(i+1)*256+byte(i) compute a 16-bit addend by concatenating the next two bytes of data
+	   4) c=c+t add the addend to the checksum
+	   5) if carry c=c+1 add carry to checksum
+	   6) c=c*2 left shift checksum
+	   7) if carry c=c+1 add carry to checksum
+	   8) endloop
+	*/
+
 	return 0, true
 }
