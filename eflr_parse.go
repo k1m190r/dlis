@@ -55,12 +55,15 @@ func parseSet(s *LRS) {
 	if checkBit(b1, 4) { // Type
 		repc := SetChars[4].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
-
-		fmt.Println(val)
+		s.body = s.body[ln:]
+		fmt.Println("type", val, ln)
 	}
 
 	if checkBit(b1, 3) { // Name
-		fmt.Println(" Handle Name ")
+		repc := SetChars[3].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+		s.body = s.body[ln:]
+		fmt.Println("name", val, ln)
 	}
 }
 
