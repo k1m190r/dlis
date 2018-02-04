@@ -40,12 +40,18 @@ func (a *LRAttribs) String() string {
 
 func (a *LRAttribs) Parse(b byte) {
 	a.obyte = b
-	a.Explicit = ((1 << 7) & b) != 0 // gimmick to check if bit 7 (most significant) is set
-	a.NotFirst = ((1 << 6) & b) != 0 // using (1 << 6) to make bit number explicit
-	a.NotLast = ((1 << 5) & b) != 0
-	a.Encrypted = ((1 << 4) & b) != 0
-	a.HasEncryptPacket = ((1 << 3) & b) != 0
-	a.HasChecksum = ((1 << 2) & b) != 0
-	a.HasTrailingLen = ((1 << 1) & b) != 0
-	a.HasPadding = ((1 << 0) & b) != 0
+	a.Explicit = checkBit(b, 7)
+	a.NotFirst = checkBit(b, 6)
+	a.NotLast = checkBit(b, 5)
+	a.Encrypted = checkBit(b, 4)
+	a.HasEncryptPacket = checkBit(b, 3)
+	a.HasChecksum = checkBit(b, 2)
+	a.HasTrailingLen = checkBit(b, 1)
+	a.HasPadding = checkBit(b, 0)
+}
+
+func checkBit(b byte, bit uint) bool {
+	// gimmick to check if bit 7 (most significant) is set
+	// using (1 << 6) to make bit number explicit
+	return ((1 << bit) & b) != 0
 }

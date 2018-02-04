@@ -12,7 +12,7 @@ type LRSH struct {
 }
 
 func (h *LRSH) String() string {
-	var lrtype []interface{}
+	var lrtype LRType
 	if h.Attribs.Explicit {
 		lrtype = EFLRType(h.Type)
 	} else {
