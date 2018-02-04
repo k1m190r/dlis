@@ -67,17 +67,17 @@ var RepCode = []struct {
 			return int(in[0]), 1
 		}}, // 15
 
-	{"UNORM", 2, "Normal unsigned integer",
+	{"UNORM", 2, "Normal unsigned integer", // 16
 		func(in []byte) (interface{}, int) {
 			return int(binary.BigEndian.Uint16(in[:2])), 2
 		}}, // 16
 
-	{"ULONG", 4, "Long unsigned integer",
+	{"ULONG", 4, "Long unsigned integer", // 17
 		func(in []byte) (interface{}, int) {
 			return int(binary.BigEndian.Uint32(in[:4])), 4
 		}}, // 17
 
-	{"UVARI", 0, "Variable-length unsigned integer 1, 2, or 4",
+	{"UVARI", 0, "Variable-length unsigned integer 1, 2, or 4", // 18
 		func(in []byte) (interface{}, int) {
 			b1 := in[0]
 			if checkBit(b1, 7) { //
@@ -96,7 +96,7 @@ var RepCode = []struct {
 			return int(b1), 1 // bit 7 is 0
 		}}, // 18
 
-	{"IDENT", 0, "Variable-length identifier",
+	{"IDENT", 0, "Variable-length identifier", // 19
 		func(in []byte) (interface{}, int) {
 			ln := in[0]
 			if ln == 0 {
@@ -107,7 +107,7 @@ var RepCode = []struct {
 			return string(in[1 : 1+ln]), int(1 + ln)
 		}}, // 19
 
-	{"ASCII", 0, "Variable-length ASCII character string",
+	{"ASCII", 0, "Variable-length ASCII character string", // 20
 		func(in []byte) (interface{}, int) {
 			b1 := in[0]
 
@@ -158,7 +158,7 @@ var RepCode = []struct {
 			return int(b1), 1 // bit 7 is 0
 		}}, // 22
 
-	{"OBNAME", 0, "Object name",
+	{"OBNAME", 0, "Object name", // 23
 		func(in []byte) (interface{}, int) {
 
 			// ORIGIN

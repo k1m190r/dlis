@@ -35,17 +35,21 @@ var SetChars = []struct {
 }{
 	{}, {}, {},
 
-	{"Type", 19, nil},
-	// The Type Characteristic is a dictionary-controlled name that identifies the type of Objects contained in the Set (see Chapter 7). A Set's Type Characteristic is used to categorize the set of Attributes that apply to the Objects in the Set. A Set’s Type Characteristic must be non-null and must always be explicitly present in the Set Component. There is no global default.
+	{"Name", 19, byte(0)}, // 3
 
-	{"Name", 19, byte(0)},
-	// The Name Characteristic is a user-supplied name that identifies the Set. The phrases "Set Name" and "Set Name Characteristic" are used interchangeably.
+	{"Type", 19, nil}, // 4 19 IDENT
 
-	{}, {}, {},
+	{}, {}, {}, {},
 }
 
 func parseSet(s *LRS) {
-	fmt.Print(" Set ")
+	fmt.Print("S: ")
+
+	if len(s.body) == 0 {
+		fmt.Println("End of LRS body")
+		return
+	}
+
 	// get byte one
 	b1 := s.body[0]
 
@@ -56,24 +60,121 @@ func parseSet(s *LRS) {
 		repc := SetChars[4].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("type", val, ln)
+		fmt.Println("  Type", val)
 	}
 
 	if checkBit(b1, 3) { // Name
 		repc := SetChars[3].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("name", val, ln)
+		fmt.Println("  Name", val)
 	}
+
+}
+
+// ObjectChars is set Characteristics
+var ObjectChars = []struct {
+	Chars   string
+	RepCode int
+	Default interface{}
+}{
+	{}, {}, {}, {},
+
+	{"Name", 23, nil}, // 4
+
+	{}, {}, {}, {},
 }
 
 func parseObject(s *LRS) {
 	fmt.Println("Object")
 
+	if len(s.body) == 0 {
+		fmt.Println("End of LRS body")
+		return
+	}
+
+	// get byte one
+	b1 := s.body[0]
+
+	// restart body from 1+
+	s.body = s.body[1:]
+
+	if checkBit(b1, 4) { // Name
+		repc := ObjectChars[4].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+		s.body = s.body[ln:]
+		fmt.Println("  Name", val)
+	}
+}
+
+// AttribChars is set Characteristics
+var AttribChars = []struct {
+	Chars   string
+	RepCode int
+	Default interface{}
+}{
+	{"Value", 19, nil}, // 0: 0 here means it's repcode is defined by the REPCODE 19
+	// Value is defined by Count of REPCODE type Units
+	// If count is 0 the value is "undefined"
+	{"Units", 27, byte(0)}, // 1: 27 UNITS
+	{"REPCODE", 15, 19},    // 2: 15 USHORT
+	{"Count", 18, 1},       // 3: 18 UVARI
+	{"Label", 19, byte(0)}, // 4: 19 IDENT
+
+	{}, {}, {},
 }
 
 func parseAttrib(s *LRS) {
-	fmt.Println("Attribute")
+	fmt.Println("Attrib")
+
+	if len(s.body) == 0 {
+		fmt.Println("End of LRS body")
+		return
+	}
+
+	// get byte one
+	b1 := s.body[0]
+
+	fmt.Printf("%b\n", b1&0x3f)
+
+	// restart body from 1+
+	s.body = s.body[1:]
+
+	if checkBit(b1, 4) { // Label
+		repc := AttribChars[4].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+		s.body = s.body[ln:]
+		fmt.Println("  label", val)
+	}
+
+	if checkBit(b1, 3) { // Count
+		repc := AttribChars[3].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+		s.body = s.body[ln:]
+		fmt.Println("  Count", val)
+	}
+
+	if checkBit(b1, 2) { // REPCODE
+		repc := AttribChars[2].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+		s.body = s.body[ln:]
+		fmt.Println("  repcode", val)
+	}
+
+	if checkBit(b1, 1) { // Units
+		repc := AttribChars[1].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+		s.body = s.body[ln:]
+		fmt.Println("  units", val)
+	}
+
+	if checkBit(b1, 0) { // Value
+		// check the value of REPCODE otherwise default to 19
+		repc := AttribChars[0].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+		s.body = s.body[ln:]
+		fmt.Println("  value", val)
+	}
 
 }
 
@@ -81,6 +182,12 @@ func parseAttrib(s *LRS) {
 // TODO need to decide what happens to Components
 func ParseEFLR(s *LRS) {
 	for {
+
+		if len(s.body) == 0 {
+			fmt.Println("End of LRS body")
+			return
+		}
+
 		b := s.body[0]
 		role := b >> 5 // first 3 bits
 		switch role {
@@ -88,19 +195,12 @@ func ParseEFLR(s *LRS) {
 			parseSet(s)
 		case 3: // Object role
 			parseObject(s)
-
 		case 1, 2: // Attribute roles
 			parseAttrib(s)
-
 		case 0: // Absetnt
 			fmt.Println("Absent")
-
 		}
-		format := b & 0x1F // 0001_1111
-		fmt.Printf("%b %b", role, format)
-		break
 	}
-	fmt.Println("End of ELFR, still need to finish it")
 }
 
 // $3.2 Explicitly Formatted Logical Record (EFLR)
