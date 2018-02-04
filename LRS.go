@@ -58,9 +58,9 @@ func (s *LRS) parse() {
 	if ats.HasChecksum || ats.HasTrailingLen || ats.HasPadding {
 		ParseLRSTrailer(s)
 	}
-	// if ats.Explicit {
-	// 	ParseEFLR(s)
-	// } else {
-	// 	ParseIFLR(s)
-	// }
+	if ats.Explicit {
+		ParseEFLR(s)
+	} else {
+		ParseIFLR(s)
+	}
 }
