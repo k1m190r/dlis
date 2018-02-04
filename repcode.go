@@ -2,23 +2,38 @@ package dlis
 
 import (
 	"encoding/binary"
+	"errors"
+	"fmt"
 	"math"
 )
 
 // http://w3.energistics.org/rp66/v1/rp66v1_appb.html
+
+// OBNAME: k&j&n'a..x : Origin k : Copy Number j : INDENT
+// e.g.: 1&0&5'Depth
+type OBNAME struct {
+	Origin, Copy int
+	Ident        string
+}
 
 var RepCode = []struct {
 	// Code is index
 	Name        string
 	Size        int // # of bytes
 	Descirption string
-	Read        func([]byte) (interface{}, int)
+
+	// interface is string, int, float32, float64, or error
+	// int is len of bytes processed, 0 means something went wrong and there will be error
+	Read func([]byte) (interface{}, int)
 }{
 	{}, // 0 is not present
 	{"FSHORT", 2, "Low precision floating point", nil}, // 1
 
 	{"FSINGL", 4, "IEEE single precision floating point",
 		func(in []byte) (interface{}, int) {
+			if len(in) < 4 {
+				return errors.New(fmt.Sprintf("length of input slice %v < 4", len(in))), 0
+			}
 			return math.Float32frombits(binary.BigEndian.Uint32(in[:4])), 4
 		}}, // 2
 
@@ -29,7 +44,10 @@ var RepCode = []struct {
 
 	{"FDOUBL", 8, "IEEE double precision floating point",
 		func(in []byte) (interface{}, int) {
-			return math.Float64frombits(binary.BigEndian.Uint64(in[:4])), 8
+			if len(in) < 8 {
+				return errors.New(fmt.Sprintf("length of input slice %v < 4", len(in))), 0
+			}
+			return math.Float64frombits(binary.BigEndian.Uint64(in[:8])), 8
 		}}, // 7
 
 	{"FDOUB1", 16, "Validated double precision floating point", nil},         // 8
@@ -42,6 +60,9 @@ var RepCode = []struct {
 
 	{"USHORT", 1, "Short unsigned integer",
 		func(in []byte) (interface{}, int) {
+			if len(in) < 1 {
+				return errors.New(fmt.Sprintf("length of input slice %v < 1", len(in))), 0
+			}
 			return int(in[0]), 1
 		}}, // 15
 
@@ -58,8 +79,8 @@ var RepCode = []struct {
 	{"UVARI", 0, "Variable-length unsigned integer 1, 2, or 4",
 		func(in []byte) (interface{}, int) {
 			b1 := in[0]
-			if checkBit(7, uint(b1)) { //
-				if checkBit(6, uint(b1)) { // 4 bytes
+			if checkBit(b1, 7) { //
+				if checkBit(b1, 6) { // 4 bytes
 					tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
 					copy(tmp[1:], in[1:4])    // remaining 3 bytes
 					return int(binary.BigEndian.Uint32(tmp[:])), 4
@@ -172,10 +193,7 @@ var RepCode = []struct {
 			// only allowed 33-96, 123-126
 			// TODO check for allowed
 
-			return struct {
-				Origin, Copy int
-				Ident        string
-			}{
+			return OBNAME{
 				origin, copy, ident,
 			}, int(olen + 2 + ln)
 		}}, // 23

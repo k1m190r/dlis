@@ -94,15 +94,6 @@ type IDENT struct {
 	Name string
 }
 
-// OBNAME: k&j&n'a..x : Origin k : Copy Number j : INDENT
-// e.g.: 1&0&5'Depth
-
-type OBNAME struct {
-	Origin   byte
-	CopyNum  byte
-	ObjectID IDENT
-}
-
 // "null" REPCODE len bytes all 0
 
 // 0' null ASCII or IDENT, zero length string, 1 byte = 0
