@@ -2,20 +2,21 @@ package dlis
 
 import (
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"math"
 )
 
 // http://w3.energistics.org/rp66/v1/rp66v1_appb.html
 
-// OBNAME: k&j&n'a..x : Origin k : Copy Number j : INDENT
+// OBNAME k&j&n'a..x : Origin k : Copy Number j : INDENT
 // e.g.: 1&0&5'Depth
 type OBNAME struct {
 	Origin, Copy int
 	Ident        string
 }
 
+// RepCode holds all the information about REPCODE, most importantly it has
+// Read function that reads actual repcode
 var RepCode = []struct {
 	// Code is index
 	Name        string
@@ -32,7 +33,7 @@ var RepCode = []struct {
 	{"FSINGL", 4, "IEEE single precision floating point",
 		func(in []byte) (interface{}, int) {
 			if len(in) < 4 {
-				return errors.New(fmt.Sprintf("length of input slice %v < 4", len(in))), 0
+				return fmt.Errorf("length of input slice %v < 4", len(in)), 0
 			}
 			return math.Float32frombits(binary.BigEndian.Uint32(in[:4])), 4
 		}}, // 2
@@ -45,7 +46,7 @@ var RepCode = []struct {
 	{"FDOUBL", 8, "IEEE double precision floating point",
 		func(in []byte) (interface{}, int) {
 			if len(in) < 8 {
-				return errors.New(fmt.Sprintf("length of input slice %v < 4", len(in))), 0
+				return fmt.Errorf("length of input slice %v < 4", len(in)), 0
 			}
 			return math.Float64frombits(binary.BigEndian.Uint64(in[:8])), 8
 		}}, // 7
@@ -61,7 +62,7 @@ var RepCode = []struct {
 	{"USHORT", 1, "Short unsigned integer",
 		func(in []byte) (interface{}, int) {
 			if len(in) < 1 {
-				return errors.New(fmt.Sprintf("length of input slice %v < 1", len(in))), 0
+				return fmt.Errorf("length of input slice %v < 1", len(in)), 0
 			}
 			return int(in[0]), 1
 		}}, // 15
@@ -84,11 +85,12 @@ var RepCode = []struct {
 					tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
 					copy(tmp[1:], in[1:4])    // remaining 3 bytes
 					return int(binary.BigEndian.Uint32(tmp[:])), 4
-				} else { // 2 bytes
-					tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					tmp[1] = in[1]
-					return int(binary.BigEndian.Uint16(tmp[:])), 2
 				}
+				// 2 bytes
+				tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
+				tmp[1] = in[1]
+				return int(binary.BigEndian.Uint16(tmp[:])), 2
+
 			}
 			// single byte
 			return int(b1), 1 // bit 7 is 0
@@ -145,11 +147,12 @@ var RepCode = []struct {
 					tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
 					copy(tmp[1:], in[1:4])    // remaining 3 bytes
 					return int(binary.BigEndian.Uint32(tmp[:])), 4
-				} else { // 2 bytes
-					tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					tmp[1] = in[1]
-					return int(binary.BigEndian.Uint16(tmp[:])), 2
 				}
+				// 2 bytes
+				tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
+				tmp[1] = in[1]
+				return int(binary.BigEndian.Uint16(tmp[:])), 2
+
 			}
 			// single byte
 			return int(b1), 1 // bit 7 is 0

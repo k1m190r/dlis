@@ -7,21 +7,27 @@ import (
 // 3 - Logical Record Syntax
 // http://w3.energistics.org/rp66/v1/rp66v1_sec3.html
 
+// Roles holds roles for the Components
 var Roles = []struct {
 	Role string
 	Type string
 }{
-	{"ABSATR", "Absent Attribute"},    // 000 0
+	{"ABSATR", "Absent Attribute"}, // 000 0
+
 	{"ATTRIB", "Attribute"},           // 001 1
 	{"INVATR", "Invariant Attribute"}, // 010 2
-	{"OBJECT", "Object"},              // 011 3
-	{"reserved", "-"},                 // 100 4
-	{"RDSET", "Redundant Set"},        // 101 5
-	{"RSET", "Replacement Set"},       // 110 6
-	{"SET", "Set"},                    // 111 7
+
+	{"OBJECT", "Object"}, // 011 3
+
+	{"reserved", "-"}, // 100 4
+
+	{"RDSET", "Redundant Set"},  // 101 5
+	{"RSET", "Replacement Set"}, // 110 6
+	{"SET", "Set"},              // 111 7
 
 }
 
+// SetChars is set Characteristics
 var SetChars = []struct {
 	Chars   string
 	RepCode int
@@ -38,6 +44,8 @@ var SetChars = []struct {
 	{}, {}, {},
 }
 
+// ParseEFLR parses the LRS body into Components
+// TODO need to decide what happens to Components
 func ParseEFLR(s *LRS) {
 	for {
 		b := s.body[0]
