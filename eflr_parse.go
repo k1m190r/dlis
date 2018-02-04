@@ -44,6 +44,36 @@ var SetChars = []struct {
 	{}, {}, {},
 }
 
+func parseSet(s *LRS) {
+	fmt.Print(" Set ")
+	// get byte one
+	b1 := s.body[0]
+
+	// restart body from 1+
+	s.body = s.body[1:]
+
+	if checkBit(b1, 4) { // Type
+		repc := SetChars[4].RepCode
+		val, ln := RepCode[repc].Read(s.body[:])
+
+		fmt.Println(val)
+	}
+
+	if checkBit(b1, 3) { // Name
+		fmt.Println(" Handle Name ")
+	}
+}
+
+func parseObject(s *LRS) {
+	fmt.Println("Object")
+
+}
+
+func parseAttrib(s *LRS) {
+	fmt.Println("Attribute")
+
+}
+
 // ParseEFLR parses the LRS body into Components
 // TODO need to decide what happens to Components
 func ParseEFLR(s *LRS) {
@@ -51,22 +81,15 @@ func ParseEFLR(s *LRS) {
 		b := s.body[0]
 		role := b >> 5 // first 3 bits
 		switch role {
-		case 5, 6, 7:
-			fmt.Print(" Set ")
-			if checkBit(b, 4) {
-				fmt.Println(" Handle Type ")
-			}
-			if checkBit(b, 3) {
-				fmt.Println(" Handle Name ")
-			}
+		case 5, 6, 7: // Set Roles
+			parseSet(s)
+		case 3: // Object role
+			parseObject(s)
 
-		case 3:
-			fmt.Println("Object")
+		case 1, 2: // Attribute roles
+			parseAttrib(s)
 
-		case 1, 2:
-			fmt.Println("Attribute")
-
-		case 0:
+		case 0: // Absetnt
 			fmt.Println("Absent")
 
 		}

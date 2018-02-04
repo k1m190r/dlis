@@ -10,6 +10,7 @@ var fname = "test/TestDataSet.dlis"
 
 //var fname = "test/n802b.dls"
 
+// TestNewDLISReader tests dlis reader from
 func TestNewDLISReader(t *testing.T) {
 
 	// open file for read only

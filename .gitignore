@@ -1,3 +1,4 @@
 *.dlis
 *.dls
 *~
+.DS_Store
