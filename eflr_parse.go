@@ -43,7 +43,7 @@ var SetChars = []struct {
 }
 
 func parseSet(s *LRS) {
-	fmt.Print("S: ")
+	fmt.Print("\nS: ")
 
 	if len(s.body) == 0 {
 		fmt.Println("End of LRS body")
@@ -60,14 +60,14 @@ func parseSet(s *LRS) {
 		repc := SetChars[4].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  Type", val)
+		fmt.Print("  Type:", val)
 	}
 
 	if checkBit(b1, 3) { // Name
 		repc := SetChars[3].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  Name", val)
+		fmt.Print("  Name:", val)
 	}
 
 }
@@ -86,7 +86,7 @@ var ObjectChars = []struct {
 }
 
 func parseObject(s *LRS) {
-	fmt.Println("Object")
+	fmt.Print("\nO: ")
 
 	if len(s.body) == 0 {
 		fmt.Println("End of LRS body")
@@ -103,7 +103,7 @@ func parseObject(s *LRS) {
 		repc := ObjectChars[4].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  Name", val)
+		fmt.Print(" Name:", val)
 	}
 }
 
@@ -125,7 +125,7 @@ var AttribChars = []struct {
 }
 
 func parseAttrib(s *LRS) {
-	fmt.Println("Attrib")
+	fmt.Print("\nA: ")
 
 	if len(s.body) == 0 {
 		fmt.Println("End of LRS body")
@@ -135,8 +135,6 @@ func parseAttrib(s *LRS) {
 	// get byte one
 	b1 := s.body[0]
 
-	fmt.Printf("%b\n", b1&0x3f)
-
 	// restart body from 1+
 	s.body = s.body[1:]
 
@@ -144,28 +142,28 @@ func parseAttrib(s *LRS) {
 		repc := AttribChars[4].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  label", val)
+		fmt.Print(" Label:", val)
 	}
 
 	if checkBit(b1, 3) { // Count
 		repc := AttribChars[3].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  Count", val)
+		fmt.Print("  Count:", val)
 	}
 
 	if checkBit(b1, 2) { // REPCODE
 		repc := AttribChars[2].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  repcode", val)
+		fmt.Print(" Repcode:", val)
 	}
 
 	if checkBit(b1, 1) { // Units
 		repc := AttribChars[1].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  units", val)
+		fmt.Print(" Units:", val)
 	}
 
 	if checkBit(b1, 0) { // Value
@@ -173,7 +171,7 @@ func parseAttrib(s *LRS) {
 		repc := AttribChars[0].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Println("  value", val)
+		fmt.Print(" Value:", val)
 	}
 
 }
@@ -184,7 +182,7 @@ func ParseEFLR(s *LRS) {
 	for {
 
 		if len(s.body) == 0 {
-			fmt.Println("End of LRS body")
+			fmt.Println("\nEnd of LRS body")
 			return
 		}
 
@@ -199,6 +197,8 @@ func ParseEFLR(s *LRS) {
 			parseAttrib(s)
 		case 0: // Absetnt
 			fmt.Println("Absent")
+			fmt.Println("Something is wrong...?")
+			return
 		}
 	}
 }

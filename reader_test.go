@@ -46,7 +46,7 @@ func TestNewDLISReader(t *testing.T) {
 
 	// t.Log(vr2)
 
-	for {
+	for i := 0; i < 2; i++ {
 		vr := dlisread.Read()
 		if len(vr.Err) != 0 {
 			t.Log(vr)
