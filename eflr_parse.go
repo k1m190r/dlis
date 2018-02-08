@@ -168,6 +168,7 @@ func parseAttrib(s *LRS) {
 
 	if checkBit(b1, 0) { // Value
 		// check the value of REPCODE otherwise default to 19
+		// value of the REPCODE in the template
 		repc := AttribChars[0].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
@@ -195,8 +196,8 @@ func ParseEFLR(s *LRS) {
 			parseObject(s)
 		case 1, 2: // Attribute roles
 			parseAttrib(s)
-		case 0: // Absetnt
-			fmt.Println("Absent")
+		case 0: // Absent
+			fmt.Println("Absent argument")
 			fmt.Println("Something is wrong...?")
 			return
 		}

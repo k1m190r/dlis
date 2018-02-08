@@ -1,7 +1,6 @@
 package dlis
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -37,7 +36,7 @@ func (s *SUL) Read(f io.Reader) error {
 		return err
 	}
 	if n != 80 {
-		return errors.New(fmt.Sprintf("expecting len(SUL)==80 bytes, but it is %d", n))
+		return fmt.Errorf("expecting len(SUL)==80 bytes, but it is %d", n)
 	}
 
 	s.SeqNum = trimSlice(buf[0:4])      // 4

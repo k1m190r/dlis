@@ -14,6 +14,7 @@ type Reader struct {
 	r        io.Reader
 }
 
+// NewDLISReader reads the SUL and preps the rest of reading
 func NewDLISReader(r io.Reader) (ret *Reader) {
 	// get the label
 	ret = new(Reader)

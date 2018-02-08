@@ -58,9 +58,9 @@ func NewVR(r io.Reader) (vr *VR) {
 
 	// check that it is 0xFF01
 	if vr.FormatVersion != 0xFF01 {
-		vr.Err = append(vr.Err, errors.New(fmt.Sprintf(
+		vr.Err = append(vr.Err, fmt.Errorf(
 			"Expected Visible Record FormatVersion to be 0xFF01 but it is %d",
-			vr.FormatVersion)))
+			vr.FormatVersion))
 	}
 
 	// read the rest of the VR in to the temp buff
@@ -72,9 +72,9 @@ func NewVR(r io.Reader) (vr *VR) {
 		return
 	}
 	if n != int(restLen) { // should read restLen number of bytes
-		vr.Err = append(vr.Err, errors.New(fmt.Sprintf(
-			"Visible Record error reading the body of record. Expected %d, actual %d.",
-			restLen, n)))
+		vr.Err = append(vr.Err, fmt.Errorf(
+			" Visible Record error reading the body of record. Expected %d, actual %d.",
+			restLen, n))
 		return
 	}
 
