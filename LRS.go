@@ -8,13 +8,21 @@ import (
 ///////////////////////////////////////////////////////////////////////////////
 // Logical Format $2.2
 
-// Logical Record Segment is interface between LF and Physical Format
+// LRS Logical Record Segment is interface between LF and Physical Format
 // it applies to whole of LR not LRS, redundancy is intentional
 type LRS struct {
 	Header        LRSH
 	EncryptPacket *LRSEP // optional
-	body          []byte // LRS Body $2.2.2.3
-	Trailer       *LRST  // optional
+
+	body    []byte // LRS Body $2.2.2.3
+	Trailer *LRST  // optional
+
+	// Parse whatever it present here
+	Set               Set      // must, pass it along with template to next
+	RedundantSetCount int      // 0 means none
+	ReplacementSets   []Set    // 0 means never
+	Template          Template // must
+	Objects           []Object // object types are restricted by the Set, at least 1
 
 	Err []error
 }
@@ -36,6 +44,7 @@ func NewLRS(b []byte) (s *LRS) {
 
 	// read 2 bytes of Length
 	s.Header.Length = int(binary.BigEndian.Uint16(b[:2]))
+	// Check this must be even and min 16
 
 	// read next 2 bytes Attribs and Type
 	s.Header.Attribs.Parse(b[2]) // 3rd
@@ -55,11 +64,14 @@ func (s *LRS) parse() {
 	if ats.Encrypted || ats.HasEncryptPacket {
 		ParseEncryption(s)
 	}
+
 	if ats.HasChecksum || ats.HasTrailingLen || ats.HasPadding {
 		ParseLRSTrailer(s)
 	}
+
 	if ats.Explicit {
 		ParseEFLR(s)
+
 	} else {
 		ParseIFLR(s)
 	}

@@ -6,12 +6,26 @@ import (
 	"log"
 )
 
+// LR logical record, keeps all the LRS parsing results
+// Sets, Templates, Objects
+type LR []*LRS
+
+// LF logical file is set of LR
+// LF starts with File Header LR and ends on the next FHLR
+type LF []LR
+
+// Reader is dlis.Reader that does all the reading
 type Reader struct {
 	FileName string
 	Label    SUL
 	VRCount  int // VR records read
 	Err      []error
-	r        io.Reader
+
+	// reader for the underlying file
+	r io.Reader
+
+	// LogFiles set of all LF from DLIS file
+	LogFiles []LF
 }
 
 // NewDLISReader reads the SUL and preps the rest of reading
@@ -28,13 +42,16 @@ func NewDLISReader(r io.Reader) (ret *Reader) {
 	}
 
 	// buffered reader
+	// for now it is normal reader
 	ret.r = r // bufio.NewReaderSize(r, ret.Label.MaxRecLen)
 
 	return
 }
 
-// Read reads next VR from the dlis
-func (r *Reader) Read() (vr *VR) {
+// ReadAll reads the whole DLIS
+
+// ReadVR reads next VR from the dlis
+func (r *Reader) ReadVR() (vr *VR) {
 	vr = NewVR(r.r)
 	r.VRCount++
 	return

@@ -73,7 +73,7 @@ func NewVR(r io.Reader) (vr *VR) {
 	}
 	if n != int(restLen) { // should read restLen number of bytes
 		vr.Err = append(vr.Err, fmt.Errorf(
-			" Visible Record error reading the body of record. Expected %d, actual %d.",
+			"visible record error reading the body of record. Expected %d, actual %d",
 			restLen, n))
 		return
 	}
@@ -81,7 +81,8 @@ func NewVR(r io.Reader) (vr *VR) {
 	return
 }
 
-func (vr *VR) Read() (l *LRS) {
+// ReadLRS returns next LRS
+func (vr *VR) ReadLRS() (l *LRS) {
 	if vr.bodyOffset >= (vr.Length - 4) {
 		// the VR is exausted return nil
 		return nil

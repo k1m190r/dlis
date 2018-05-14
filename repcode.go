@@ -139,7 +139,7 @@ var RepCode = []struct {
 
 	{"DTIME", 8, "Date and time", nil}, // 21
 
-	{"ORIGIN", 0, "Origin reference",
+	{"ORIGIN", 0, "Origin reference", // 23 http://www.energistics.org/geosciences/geology-standards/rp66-organization-codes
 		func(in []byte) (interface{}, int) {
 			b1 := in[0]
 			if checkBit(7, uint(b1)) { //
@@ -161,7 +161,7 @@ var RepCode = []struct {
 	{"OBNAME", 0, "Object name", // 23
 		func(in []byte) (interface{}, int) {
 
-			// ORIGIN
+			// ORIGIN http://www.energistics.org/geosciences/geology-standards/rp66-organization-codes ???
 			b1 := in[0]
 			var olen, origin int
 			if checkBit(7, uint(b1)) { //
@@ -204,5 +204,25 @@ var RepCode = []struct {
 	{"OBJREF", 0, "Object reference", nil},    // 24
 	{"ATTREF", 0, "Attribute reference", nil}, // 25
 	{"STATUS", 1, "Boolean status", nil},      // 26
-	{"UNITS", 0, "Units expression", nil},     // 27
+	{"UNITS", 0, "Units expression",
+		func(in []byte) (interface{}, int) {
+			ln := in[0]
+			if ln == 0 {
+				return "", 0
+			}
+			// only allowed
+			// lower case letters [a, b, c, ..., z]
+			// upper case letters [A, B, C, ..., Z]
+			// digits [0, 1, 2, ..., 9]
+			// blank [ ]
+			// hyphen or minus sign [-]
+			// dot or period [.]
+			// slash [/]
+			// parentheses [(, )]
+
+			// lotsa other rules
+
+			// TODO check for allowed
+			return string(in[1 : 1+ln]), int(1 + ln)
+		}}, // 27
 }

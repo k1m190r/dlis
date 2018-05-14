@@ -29,7 +29,7 @@ func (t *LRST) String() string {
 		msg = append(msg, fmt.Sprintf("CheckSum: %d", *t.CheckSum))
 	}
 	if t.Length != nil {
-		msg = append(msg, fmt.Sprint("Traling Length: %d", *t.Length))
+		msg = append(msg, fmt.Sprintf("Traling Length: %d", *t.Length))
 	}
 	return fmt.Sprintf("Trailer:%v", msg)
 }

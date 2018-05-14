@@ -2,6 +2,7 @@ package dlis
 
 import (
 	"fmt"
+	"log"
 )
 
 // 3 - Logical Record Syntax
@@ -56,20 +57,35 @@ func parseSet(s *LRS) {
 	// restart body from 1+
 	s.body = s.body[1:]
 
-	if checkBit(b1, 4) { // Type
-		repc := SetChars[4].RepCode
+	var set Set
+
+	if checkBit(b1, 4) { // Type must
+		repc := SetChars[4].RepCode // get repcode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Print("  Type:", val)
+
+		if v, ok := val.(string); ok {
+			set.Type = v
+		} else {
+			log.Printf("unexpected type parseSet, type expected string, found: %T", val)
+			return
+		}
+		fmt.Print(" Type:", set.Type)
 	}
 
 	if checkBit(b1, 3) { // Name
 		repc := SetChars[3].RepCode
 		val, ln := RepCode[repc].Read(s.body[:])
 		s.body = s.body[ln:]
-		fmt.Print("  Name:", val)
+
+		if v, ok := val.(string); ok {
+			set.Name = &v
+		}
+		fmt.Print("  Name:", set.Name)
 	}
 
+	// save set
+	s.Set = set
 }
 
 // ObjectChars is set Characteristics
@@ -180,8 +196,9 @@ func parseAttrib(s *LRS) {
 // ParseEFLR parses the LRS body into Components
 // TODO need to decide what happens to Components
 func ParseEFLR(s *LRS) {
-	for {
+	fmt.Printf("\nLRS Type: %+v", EFLRType(s.Header.Type).Description)
 
+	for {
 		if len(s.body) == 0 {
 			fmt.Println("\nEnd of LRS body")
 			return
@@ -222,7 +239,7 @@ func ParseEFLR(s *LRS) {
 
 // Notation
 
-// IDENT: n'a..x
+// IDENT : n'a..x
 // e.g: 5'Hello ; 6'Origin
 type IDENT struct {
 	Size byte
@@ -241,6 +258,7 @@ type IDENT struct {
 // Bits 1-3 Role Fig 3-2
 // Format Fig 3-3, 3-4, 3-5
 
+// Descriptor is
 type Descriptor struct {
 	Role   byte // bits 1-3, Fig 3-2
 	Format byte
@@ -261,22 +279,40 @@ type Component struct {
 type Character struct {
 }
 
+// Set keeps the description of set
 type Set struct {
-	Character Character
+	Type string  // must
+	Name *string // optional
+	// Redundant sets are repeats
+	// Replacement sets replaces some attribs ....
 }
 
 type Attribute struct {
-	Character Character
+	Label *string // must for template, must not for object attribs
+	// default is 0' zero byte
+
+	Count   *int         // UVARI default 1, if count is 0 Value is undefined ie absent
+	RepCode *int         // default is 19 IDENT
+	Units   *string      // UNITS 27 default 0'
+	Value   *interface{} // of the RepCode type
 }
 
+// Object contains objects
 type Object struct {
+	Name       OBNAME // must
 	Attributes []Attribute
-	Character  Character
+	// trailing attributes can be omitted
+	// otherwise they must be present, as 0x00 absent as minimum
+	// missing implies global default
 }
 
 // Template specify: presence, order and default Character
 // of the Attributes in the Objects in the Set
 type Template struct {
+	Attributes []Attribute
+	// Label is must
+	// default as per Attrib
+	// can have Invariant Attrib, appear only in Template
 }
 
 // LRSB interpretation as EFLR

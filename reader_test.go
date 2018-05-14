@@ -46,15 +46,15 @@ func TestNewDLISReader(t *testing.T) {
 
 	// t.Log(vr2)
 
-	for i := 0; i < 2; i++ {
-		vr := dlisread.Read()
+	for i := 0; i < 1; i++ {
+		vr := dlisread.ReadVR()
 		if len(vr.Err) != 0 {
 			t.Log(vr)
 			break
 		}
 
 		for {
-			lrs := vr.Read()
+			lrs := vr.ReadLRS()
 			if lrs == nil {
 				break
 			}
