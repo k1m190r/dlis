@@ -214,6 +214,7 @@ func ParseEFLR(s *LRS) {
 		case 1, 2: // Attribute roles
 			parseAttrib(s)
 		case 0: // Absent
+			// TODO absent is parsed based on prior content... on template...
 			fmt.Println("Absent argument")
 			fmt.Println("Something is wrong...?")
 			return

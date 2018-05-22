@@ -2,12 +2,11 @@ package dlis
 
 import (
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"log"
 )
 
-// Logical Record Segment Trailer $2.2.2.4
+// LRST Logical Record Segment Trailer $2.2.2.4
 type LRST struct {
 	// LRST is meant to be read backwards from end to front
 	// this is allow backwards traversal
@@ -34,6 +33,7 @@ func (t *LRST) String() string {
 	return fmt.Sprintf("Trailer:%v", msg)
 }
 
+// ParseLRSTrailer parses trailer backwards
 func ParseLRSTrailer(s *LRS) {
 	// parse backward from Len -> CheckSum -> PadCount -> PadBytes
 
@@ -57,9 +57,9 @@ func ParseLRSTrailer(s *LRS) {
 		tcs := int(binary.BigEndian.Uint16(s.body[st:]))
 		t.CheckSum = &tcs
 		if cs, ok := checkSum(s); !ok { // checksum failed
-			s.Err = append(s.Err, errors.New(fmt.Sprintf(
+			s.Err = append(s.Err, fmt.Errorf(
 				"checksum failed. expected: %X found %X",
-				t.CheckSum, cs)))
+				t.CheckSum, cs))
 		}
 		// body now is but last 2 bytes
 		s.body = s.body[:st]
@@ -81,7 +81,7 @@ func ParseLRSTrailer(s *LRS) {
 func checkSum(s *LRS) (int, bool) {
 	// http://w3.energistics.org/rp66/v1/rp66v1_appe.html
 
-	log.Fatal("OH OH Need to check this!! checksum")
+	log.Fatal("checkSum in lrs_trailer is not implemented.")
 	// return the sum and if it is failed...
 
 	// Sum includes everything in the LRS which precedes the checksum value.

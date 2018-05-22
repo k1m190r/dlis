@@ -3,6 +3,7 @@ package dlis
 // http://w3.energistics.org/rp66/V1/rp66v1_appa.html
 // A.2 Explicitly Formatted Logical Record
 
+// LRType logical record type
 type LRType struct {
 	Type              string
 	Description       string

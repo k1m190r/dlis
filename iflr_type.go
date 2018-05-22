@@ -9,9 +9,10 @@ var iflr = []LRType{
 	{"NOFORMAT", "Unformatted Data", []string{"NO-FORMAT"}}, // 1
 }
 
-// Code inplied by the index of the array
+// Code implied by the index of the array
 // Code, Type, Description, AllowableSetTypes []
 
+// IFLRType returns the LRType
 func IFLRType(code byte) LRType {
 	if code == 127 {
 		return LRType{"EOD", "End of Data", []string{}}
@@ -22,6 +23,7 @@ func IFLRType(code byte) LRType {
 	return iflr[int(code)]
 }
 
+// ParseIFLR parses IFLR
 func ParseIFLR(s *LRS) {
-	fmt.Println("MAKE THIS IFLR WORK!!!")
+	fmt.Println("ParseIFLR is not yet implemented.")
 }
