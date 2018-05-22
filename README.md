@@ -13,7 +13,7 @@ Everything starts with reader.go `NewDLISReader()` which takes an `io.Reader` an
 
 Construct the reader for each part as sequence of the functions based on the either predefined format as per spec, or construct it at run time based on the data read from the dlis. Such that prior data defines next reader.
 
-
-eflr_parse.go - parseSet() must build the actual template to follow by the object.
+#### NEXT
+eflr_parse.go - `parseSet()` must build the actual template to follow by the object.
 
     
