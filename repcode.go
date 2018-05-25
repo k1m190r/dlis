@@ -8,21 +8,139 @@ import (
 
 // http://w3.energistics.org/rp66/v1/rp66v1_appb.html
 
-// OBNAME k&j&n'a..x : Origin k : Copy Number j : INDENT
-// e.g.: 1&0&5'Depth
-type OBNAME struct {
-	Origin, Copy int
-	Ident        string
-}
-
 // Val is "universal value"
 type Val struct {
-	s   []string
-	i   []int
-	f32 []float32
-	f64 []float64
-	b   []byte
-	e   []error
+	// payload with a value
+	s *string
+	i *int
+	f *float64
+	v *Val
+
+	c int // count
+	e error
+}
+
+// Funcs
+
+// FSINGL RepCode 2
+func FSINGL(in []byte) *Val {
+	if len(in) < 4 {
+		err := fmt.Errorf("length of input slice %v < 4", len(in))
+		return &Val{e: err}
+	}
+	f := float64(math.Float32frombits(binary.BigEndian.Uint32(in[:4])))
+	return &Val{f: &f, c: 4}
+}
+
+// FDOUBL RepCode 7
+func FDOUBL(in []byte) *Val {
+	if len(in) < 8 {
+		err := fmt.Errorf("length of input slice %v < 4", len(in))
+		return &Val{e: err}
+	}
+	f := math.Float64frombits(binary.BigEndian.Uint64(in[:8]))
+	return &Val{f: &f, c: 8}
+}
+
+// USHORT RepCode 15
+func USHORT(in []byte) *Val {
+	if len(in) < 1 {
+		err := fmt.Errorf("length of input slice %v < 1", len(in))
+		return &Val{e: err}
+	}
+	i := int(in[0])
+	return &Val{i: &i, c: 1}
+}
+
+// UNORM RepCode 16
+func UNORM(in []byte) *Val {
+	i := int(binary.BigEndian.Uint16(in[:2]))
+	return &Val{i: &i, c: 2}
+}
+
+// ULONG RepCode 17
+func ULONG(in []byte) *Val {
+	i := int(binary.BigEndian.Uint32(in[:4]))
+	return &Val{i: &i, c: 4}
+}
+
+// UVARI RepCode 18
+func UVARI(in []byte) *Val {
+	b1 := in[0]
+	if checkBit(b1, 7) { //
+		if checkBit(b1, 6) { // 4 bytes
+			tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
+			copy(tmp[1:], in[1:4])    // remaining 3 bytes
+			i := int(binary.BigEndian.Uint32(tmp[:]))
+			return &Val{i: &i, c: 4}
+		}
+		// 2 bytes
+		tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
+		tmp[1] = in[1]
+		i := int(binary.BigEndian.Uint16(tmp[:]))
+		return &Val{i: &i, c: 2}
+
+	}
+	// single byte
+	i := int(b1)
+	return &Val{i: &i, c: 1} // bit 7 is 0
+}
+
+// IDENT RepCode 19
+func IDENT(in []byte) *Val {
+	v := USHORT(in)
+	ln := *v.i
+
+	if ln == 0 {
+		s := ""
+		return &Val{s: &s}
+	}
+
+	// only allowed 33-96, 123-126
+	// TODO check for allowed
+	s := string(in[1:(1 + ln)])
+	return &Val{s: &s, c: (1 + ln)}
+}
+
+// ASCII RepCode 20
+func ASCII(in []byte) *Val {
+	v := UVARI(in)
+	idlen := v.c
+	asciilen := *v.i
+
+	if idlen == 0 {
+		s := ""
+		return &Val{s: &s, c: (idlen + asciilen)}
+	}
+
+	s := string(in[idlen : idlen+asciilen])
+	return &Val{s: &s, c: (idlen + asciilen)}
+}
+
+// ORIGIN RepCode 22 equivalent to UVARY
+var ORIGIN = UVARI
+
+// OBNAME RepCode 23
+// ORIGIN, USHORT, IDENT
+func OBNAME(in []byte) *Val {
+	// ORIGIN
+	v := ORIGIN(in)
+	olen := v.c
+	origin := *v.i
+
+	// COPY
+	vc := USHORT(in[olen:])
+	v.v = vc // chain vc into v
+	clen := vc.c
+	copy := *vc.i
+
+	// IDENT
+	vi := IDENT(in[(olen + clen):])
+	vc.v = vi // chain vi into vc
+	ilen := vi.c
+	ident := *vi.s
+
+	return v
 }
 
 // RepCode holds all the information about REPCODE, most importantly it has
@@ -33,33 +151,19 @@ var RepCode = []struct {
 	Size        int // # of bytes
 	Descirption string
 
-	// interface is string, int, float32, float64, or error
-	// int is len of bytes processed, 0 means something went wrong and there will be error
-	Read func([]byte) (interface{}, int)
+	Read func([]byte) *Val
 }{
 	{}, // 0 is not present
 	{"FSHORT", 2, "Low precision floating point", nil}, // 1
 
-	{"FSINGL", 4, "IEEE single precision floating point",
-		func(in []byte) (interface{}, int) {
-			if len(in) < 4 {
-				return fmt.Errorf("length of input slice %v < 4", len(in)), 0
-			}
-			return math.Float32frombits(binary.BigEndian.Uint32(in[:4])), 4
-		}}, // 2
+	{"FSINGL", 4, "IEEE single precision floating point", FSINGL}, // 2
 
 	{"FSING1", 8, "Validated single precision floating point", nil},          // 3
 	{"FSING2", 12, "Two-way validated single precision floating point", nil}, // 4
 	{"ISINGL", 4, "IBM single precision floating point", nil},                // 5
 	{"VSINGL", 4, "VAX single precision floating point", nil},                // 6
 
-	{"FDOUBL", 8, "IEEE double precision floating point",
-		func(in []byte) (interface{}, int) {
-			if len(in) < 8 {
-				return fmt.Errorf("length of input slice %v < 4", len(in)), 0
-			}
-			return math.Float64frombits(binary.BigEndian.Uint64(in[:8])), 8
-		}}, // 7
+	{"FDOUBL", 8, "IEEE double precision floating point", FDOUBL}, // 7
 
 	{"FDOUB1", 16, "Validated double precision floating point", nil},         // 8
 	{"FDOUB2", 24, "Two-way validated double precision floating point", nil}, // 9
@@ -69,147 +173,18 @@ var RepCode = []struct {
 	{"SNORM", 2, "Normal signed integer", nil},                               // 13
 	{"SLONG", 4, "Long signed integer", nil},                                 // 14
 
-	{"USHORT", 1, "Short unsigned integer",
-		func(in []byte) (interface{}, int) {
-			if len(in) < 1 {
-				return fmt.Errorf("length of input slice %v < 1", len(in)), 0
-			}
-			return int(in[0]), 1
-		}}, // 15
-
-	{"UNORM", 2, "Normal unsigned integer", // 16
-		func(in []byte) (interface{}, int) {
-			return int(binary.BigEndian.Uint16(in[:2])), 2
-		}}, // 16
-
-	{"ULONG", 4, "Long unsigned integer", // 17
-		func(in []byte) (interface{}, int) {
-			return int(binary.BigEndian.Uint32(in[:4])), 4
-		}}, // 17
-
-	{"UVARI", 0, "Variable-length unsigned integer 1, 2, or 4", // 18
-		func(in []byte) (interface{}, int) {
-			b1 := in[0]
-			if checkBit(b1, 7) { //
-				if checkBit(b1, 6) { // 4 bytes
-					tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					copy(tmp[1:], in[1:4])    // remaining 3 bytes
-					return int(binary.BigEndian.Uint32(tmp[:])), 4
-				}
-				// 2 bytes
-				tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
-				tmp[1] = in[1]
-				return int(binary.BigEndian.Uint16(tmp[:])), 2
-
-			}
-			// single byte
-			return int(b1), 1 // bit 7 is 0
-		}}, // 18
-
-	{"IDENT", 0, "Variable-length identifier", // 19
-		func(in []byte) (interface{}, int) {
-			ln := in[0]
-			if ln == 0 {
-				return "", 0
-			}
-			// only allowed 33-96, 123-126
-			// TODO check for allowed
-			return string(in[1 : 1+ln]), int(1 + ln)
-		}}, // 19
-
-	{"ASCII", 0, "Variable-length ASCII character string", // 20
-		func(in []byte) (interface{}, int) {
-			b1 := in[0]
-
-			if b1 == 0 {
-				return "", 1
-			}
-
-			var idlen, asciilen int
-			if checkBit(7, uint(b1)) { //
-				if checkBit(6, uint(b1)) { // 4 bytes
-					tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					copy(tmp[1:], in[1:4])    // remaining 3 bytes
-					idlen = 4
-					asciilen = int(binary.BigEndian.Uint32(tmp[:]))
-				} else { // 2 bytes
-					tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					tmp[1] = in[1]
-					idlen = 2
-					asciilen = int(binary.BigEndian.Uint16(tmp[:]))
-				}
-			} else {
-				// single byte
-				idlen = 1
-				asciilen = int(b1) // bit 7 is 0
-			}
-
-			return string(in[idlen : idlen+asciilen]), (idlen + asciilen)
-		}}, // 20
+	{"USHORT", 1, "Short unsigned integer", USHORT},                    // 15
+	{"UNORM", 2, "Normal unsigned integer", UNORM},                     // 16
+	{"ULONG", 4, "Long unsigned integer", ULONG},                       // 17
+	{"UVARI", 0, "Variable-length unsigned integer 1, 2, or 4", UVARI}, // 18
+	{"IDENT", 0, "Variable-length identifier", IDENT},                  // 19
+	{"ASCII", 0, "Variable-length ASCII character string", ASCII},      // 20
 
 	{"DTIME", 8, "Date and time", nil}, // 21
 
-	{"ORIGIN", 0, "Origin reference", // 23 http://www.energistics.org/geosciences/geology-standards/rp66-organization-codes
-		func(in []byte) (interface{}, int) {
-			b1 := in[0]
-			if checkBit(7, uint(b1)) { //
-				if checkBit(6, uint(b1)) { // 4 bytes
-					tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					copy(tmp[1:], in[1:4])    // remaining 3 bytes
-					return int(binary.BigEndian.Uint32(tmp[:])), 4
-				}
-				// 2 bytes
-				tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
-				tmp[1] = in[1]
-				return int(binary.BigEndian.Uint16(tmp[:])), 2
-
-			}
-			// single byte
-			return int(b1), 1 // bit 7 is 0
-		}}, // 22
-
-	{"OBNAME", 0, "Object name", // 23
-		func(in []byte) (interface{}, int) {
-
-			// ORIGIN http://www.energistics.org/geosciences/geology-standards/rp66-organization-codes ???
-			b1 := in[0]
-			var olen, origin int
-			if checkBit(7, uint(b1)) { //
-				if checkBit(6, uint(b1)) { // 4 bytes
-					tmp := [4]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					copy(tmp[1:], in[1:4])    // remaining 3 bytes
-					olen = 4
-					origin = int(binary.BigEndian.Uint32(tmp[:]))
-				} else { // 2 bytes
-					tmp := [2]byte{b1 & 0x3F} // first byte with mask 0011_1111
-					tmp[1] = in[1]
-					olen = 2
-					origin = int(binary.BigEndian.Uint16(tmp[:]))
-				}
-			} else {
-				// single byte
-				olen = 1
-				origin = int(b1) // bit 7 is 0
-			}
-
-			// COPY
-			copy := int(in[olen])
-
-			// IDENT
-			ln := int(in[olen+1])
-			ident := ""
-			if ln == 0 {
-				ident = ""
-			} else {
-				ident = string(in[olen+2 : olen+2+ln])
-			}
-			// only allowed 33-96, 123-126
-			// TODO check for allowed
-
-			return OBNAME{
-				origin, copy, ident,
-			}, int(olen + 2 + ln)
-		}}, // 23
+	// 23 http://www.energistics.org/geosciences/geology-standards/rp66-organization-codes
+	{"ORIGIN", 0, "Origin reference", ORIGIN}, // 22
+	{"OBNAME", 0, "Object name", OBNAME},      // 23
 
 	{"OBJREF", 0, "Object reference", nil},    // 24
 	{"ATTREF", 0, "Attribute reference", nil}, // 25
@@ -261,7 +236,7 @@ var RepCode = []struct {
 	{}, // 49
 	{}, // 50
 
-	{}, // 51
+	{}, // 51 SUL
 	{}, // 52
 	{}, // 53
 

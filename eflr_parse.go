@@ -242,13 +242,6 @@ func ParseEFLR(s *LRS) {
 
 // Notation
 
-// IDENT : n'a..x
-// e.g: 5'Hello ; 6'Origin
-type IDENT struct {
-	Size byte
-	Name string
-}
-
 // "null" REPCODE len bytes all 0
 
 // 0' null ASCII or IDENT, zero length string, 1 byte = 0
