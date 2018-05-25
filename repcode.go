@@ -15,6 +15,16 @@ type OBNAME struct {
 	Ident        string
 }
 
+// Val is "universal value"
+type Val struct {
+	s   []string
+	i   []int
+	f32 []float32
+	f64 []float64
+	b   []byte
+	e   []error
+}
+
 // RepCode holds all the information about REPCODE, most importantly it has
 // Read function that reads actual repcode
 var RepCode = []struct {
@@ -225,4 +235,34 @@ var RepCode = []struct {
 			// TODO check for allowed
 			return string(in[1 : 1+ln]), int(1 + ln)
 		}}, // 27
+
+	// rp66.v2 has up to repcode 42, we'll keep up to 50 reserved
+	{}, // 28
+	{}, // 29
+	{}, // 30
+	{}, // 31
+	{}, // 32
+	{}, // 33
+	{}, // 34
+	{}, // 35
+	{}, // 36
+	{}, // 37
+	{}, // 38
+	{}, // 39
+	{}, // 40
+	{}, // 41
+	{}, // 42
+	{}, // 43
+	{}, // 44
+	{}, // 45
+	{}, // 46
+	{}, // 47
+	{}, // 48
+	{}, // 49
+	{}, // 50
+
+	{}, // 51
+	{}, // 52
+	{}, // 53
+
 }

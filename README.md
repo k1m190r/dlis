@@ -2,6 +2,20 @@
 Spec: http://w3.energistics.org/rp66/v1/Toc/main.html
 
 
+
+#### NEXT
+
+reader.go - start with `NewDLISReader()` reading SUL as example. Everything is constructed as simple sequence of `func(in []byte) (Val, int)`. `Val` is universal value type. Calling function must know the expected return type.
+
+
+#### older notes
+    
+eflr_parse.go - `parseSet()` must build the actual template to follow by the object.
+
+repcode.go - use the funcs from `RepCode` var to build up the template.
+
+
+
 ### How to read the code
     
 #### reader.go
@@ -12,8 +26,4 @@ Everything starts with reader.go `NewDLISReader()` which takes an `io.Reader` an
 #### IDEA
 
 Construct the reader for each part as sequence of the functions based on the either predefined format as per spec, or construct it at run time based on the data read from the dlis. Such that prior data defines next reader.
-
-#### NEXT
-eflr_parse.go - `parseSet()` must build the actual template to follow by the object.
-
     

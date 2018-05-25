@@ -207,9 +207,11 @@ func ParseEFLR(s *LRS) {
 		b := s.body[0]
 		role := b >> 5 // first 3 bits
 		switch role {
-		case 5, 6, 7: // Set Roles
+		case 5, 6, 7: // Set role
+			// TODO build up a parsing template
 			parseSet(s)
 		case 3: // Object role
+			// TODO use the parsing template
 			parseObject(s)
 		case 1, 2: // Attribute roles
 			parseAttrib(s)
