@@ -4,16 +4,16 @@ Spec: http://w3.energistics.org/rp66/v1/Toc/main.html
 
 
 #### NEXT
+eflr_parse.go - `parseSet()` must build the actual template to follow by the object.
 
-reader.go - start with `NewDLISReader()` reading SUL as example. Everything is constructed as simple sequence of `func(in []byte) (Val, int)`. `Val` is universal value type. Calling function must know the expected return type.
-
+How object would use the Template? How does attrib know it parces Template or object?
 
 #### older notes
     
-eflr_parse.go - `parseSet()` must build the actual template to follow by the object.
 
 repcode.go - use the funcs from `RepCode` var to build up the template.
 
+reader.go - start with `NewDLISReader()` reading SUL as example. Everything is constructed as simple sequence of `func(in []byte) (Val, int)`. `Val` is universal value type. Calling function must know the expected return type.
 
 
 ### How to read the code
