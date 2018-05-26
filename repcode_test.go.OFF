@@ -34,7 +34,8 @@ func TestRepCode(t *testing.T) {
 			exRet := expRepVal.Ret[tstidx]
 
 			// run
-			retVal, retLen := readfn(in)
+			retVal := readfn(in)
+			retLen := retVal.c
 
 			// check type
 			if exTp != reflect.TypeOf(retVal).Kind() {
@@ -53,8 +54,8 @@ func TestRepCode(t *testing.T) {
 			}
 
 			// check value
-			switch rv := retVal.(type) {
-			case int:
+			switch {
+			case retVal.i != nil:
 				ev, ok := exRet.(int)
 				if !ok {
 					t.Logf("REPCODE: %v expected: %v of type %T, but found: %v of type %T",

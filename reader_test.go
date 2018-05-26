@@ -24,28 +24,6 @@ func TestNewDLISReader(t *testing.T) {
 	// dlis reader, read SUL
 	dlisread := NewDLISReader(f)
 
-	// read VR records
-	// vr1 := dlisread.Read()
-	// for {
-	// 	lrs := vr1.Read()
-	// 	if lrs == nil {
-	// 		break
-	// 	}
-	// 	t.Log(lrs)
-	// }
-	// t.Log(vr1)
-
-	// vr2 := dlisread.Read()
-	// for {
-	// 	lrs := vr2.Read()
-	// 	if lrs == nil {
-	// 		break
-	// 	}
-	// 	t.Log(lrs)
-	// }
-
-	// t.Log(vr2)
-
 	for i := 0; i < 1; i++ {
 		vr := dlisread.ReadVR()
 		if len(vr.Err) != 0 {

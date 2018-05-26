@@ -28,15 +28,15 @@ var Roles = []struct {
 
 }
 
-// SetChars is set Characteristics
+// SetChars is Set Characteristics
 var SetChars = []struct {
 	Chars   string
 	RepCode int
-	Default interface{}
+	Default *Val
 }{
 	{}, {}, {},
 
-	{"Name", 19, byte(0)}, // 3
+	{"Name", 19, &Val{}}, // 3
 
 	{"Type", 19, nil}, // 4 19 IDENT
 
@@ -61,27 +61,31 @@ func parseSet(s *LRS) {
 
 	if checkBit(b1, 4) { // Type must
 		repc := SetChars[4].RepCode // get repcode
-		val, ln := RepCode[repc].Read(s.body[:])
-		s.body = s.body[ln:]
-
-		if v, ok := val.(string); ok {
-			set.Type = v
-		} else {
-			log.Printf("unexpected type parseSet, type expected string, found: %T", val)
+		v := RepCode[repc].Read(s.body[:])
+		if v.e != nil {
+			log.Printf("unexpected error parsing set type: %v", v)
 			return
 		}
+		set.Type = *v.s
+		ln := v.c
+
 		fmt.Print(" Type:", set.Type)
+
+		s.body = s.body[ln:]
 	}
 
 	if checkBit(b1, 3) { // Name
 		repc := SetChars[3].RepCode
-		val, ln := RepCode[repc].Read(s.body[:])
-		s.body = s.body[ln:]
-
-		if v, ok := val.(string); ok {
-			set.Name = &v
+		v := RepCode[repc].Read(s.body[:])
+		if v.e != nil {
+			log.Printf("unexpected error parsing set name: %v", v)
 		}
+		set.Name = v.s
+		ln := v.c
+
 		fmt.Print("  Name:", set.Name)
+
+		s.body = s.body[ln:]
 	}
 
 	// save set
@@ -117,9 +121,13 @@ func parseObject(s *LRS) {
 
 	if checkBit(b1, 4) { // Name
 		repc := ObjectChars[4].RepCode
-		val, ln := RepCode[repc].Read(s.body[:])
+		v := RepCode[repc].Read(s.body[:])
+		ln := v.c
+
+		fmt.Print(" Name:", v)
+
 		s.body = s.body[ln:]
-		fmt.Print(" Name:", val)
+
 	}
 }
 
@@ -156,39 +164,44 @@ func parseAttrib(s *LRS) {
 
 	if checkBit(b1, 4) { // Label
 		repc := AttribChars[4].RepCode
-		val, ln := RepCode[repc].Read(s.body[:])
+		v := RepCode[repc].Read(s.body[:])
+		ln := v.c
+		fmt.Print(" Label:", *v.s)
 		s.body = s.body[ln:]
-		fmt.Print(" Label:", val)
 	}
 
 	if checkBit(b1, 3) { // Count
 		repc := AttribChars[3].RepCode
-		val, ln := RepCode[repc].Read(s.body[:])
+		v := RepCode[repc].Read(s.body[:])
+		ln := v.c
+		fmt.Print("  Count:", *v.i)
 		s.body = s.body[ln:]
-		fmt.Print("  Count:", val)
 	}
 
 	if checkBit(b1, 2) { // REPCODE
 		repc := AttribChars[2].RepCode
-		val, ln := RepCode[repc].Read(s.body[:])
+		v := RepCode[repc].Read(s.body[:])
+		ln := v.c
+		fmt.Print(" Repcode:", *v.i)
 		s.body = s.body[ln:]
-		fmt.Print(" Repcode:", val)
 	}
 
 	if checkBit(b1, 1) { // Units
 		repc := AttribChars[1].RepCode
-		val, ln := RepCode[repc].Read(s.body[:])
+		v := RepCode[repc].Read(s.body[:])
+		ln := v.c
+		fmt.Print(" Units:", *v.s)
 		s.body = s.body[ln:]
-		fmt.Print(" Units:", val)
 	}
 
 	if checkBit(b1, 0) { // Value
 		// check the value of REPCODE otherwise default to 19
 		// value of the REPCODE in the template
 		repc := AttribChars[0].RepCode
-		val, ln := RepCode[repc].Read(s.body[:])
+		v := RepCode[repc].Read(s.body[:])
+		ln := v.c
+		fmt.Print(" Value:", *v.i)
 		s.body = s.body[ln:]
-		fmt.Print(" Value:", val)
 	}
 
 }
@@ -271,10 +284,6 @@ type Component struct {
 	Descriptor Descriptor // first byte
 }
 
-///////////
-type Character struct {
-}
-
 // Set keeps the description of set
 type Set struct {
 	Type string  // must
@@ -287,15 +296,18 @@ type Attribute struct {
 	Label *string // must for template, must not for object attribs
 	// default is 0' zero byte
 
-	Count   *int         // UVARI default 1, if count is 0 Value is undefined ie absent
-	RepCode *int         // default is 19 IDENT
-	Units   *string      // UNITS 27 default 0'
-	Value   *interface{} // of the RepCode type
+	Count   *int    // UVARI default 1, if count is 0 Value is undefined ie absent
+	RepCode *int    // default is 19 IDENT
+	Units   *string // UNITS 27 default 0'
+	Value   *Val    // of the RepCode type
 }
 
 // Object contains objects
 type Object struct {
-	Name       OBNAME // must
+	Name struct {
+		O, C int
+		I    string
+	} // must
 	Attributes []Attribute
 	// trailing attributes can be omitted
 	// otherwise they must be present, as 0x00 absent as minimum

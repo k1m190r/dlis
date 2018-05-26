@@ -126,21 +126,42 @@ func OBNAME(in []byte) *Val {
 	// ORIGIN
 	v := ORIGIN(in)
 	olen := v.c
-	origin := *v.i
 
 	// COPY
 	vc := USHORT(in[olen:])
 	v.v = vc // chain vc into v
 	clen := vc.c
-	copy := *vc.i
 
 	// IDENT
 	vi := IDENT(in[(olen + clen):])
 	vc.v = vi // chain vi into vc
-	ilen := vi.c
-	ident := *vi.s
 
 	return v
+}
+
+// UNITS RepCode 27
+func UNITS(in []byte) *Val {
+	v := USHORT(in)
+	ln := *v.i
+
+	if ln == 0 {
+		s := ""
+		return &Val{s: &s}
+	}
+
+	/* Allowed TODO
+	   lower case letters [a, b, c, ..., z]
+	   upper case letters [A, B, C, ..., Z]
+	   digits [0, 1, 2, ..., 9]
+	   blank [ ]
+	   hyphen or minus sign [-]
+	   dot or period [.]
+	   slash [/]
+	   parentheses [(, )]
+	*/
+
+	s := string(in[1:(1 + ln)])
+	return &Val{s: &s, c: (1 + ln)}
 }
 
 // RepCode holds all the information about REPCODE, most importantly it has
@@ -189,27 +210,7 @@ var RepCode = []struct {
 	{"OBJREF", 0, "Object reference", nil},    // 24
 	{"ATTREF", 0, "Attribute reference", nil}, // 25
 	{"STATUS", 1, "Boolean status", nil},      // 26
-	{"UNITS", 0, "Units expression",
-		func(in []byte) (interface{}, int) {
-			ln := in[0]
-			if ln == 0 {
-				return "", 0
-			}
-			// only allowed
-			// lower case letters [a, b, c, ..., z]
-			// upper case letters [A, B, C, ..., Z]
-			// digits [0, 1, 2, ..., 9]
-			// blank [ ]
-			// hyphen or minus sign [-]
-			// dot or period [.]
-			// slash [/]
-			// parentheses [(, )]
-
-			// lotsa other rules
-
-			// TODO check for allowed
-			return string(in[1 : 1+ln]), int(1 + ln)
-		}}, // 27
+	{"UNITS", 0, "Units expression", UNITS},   // 27
 
 	// rp66.v2 has up to repcode 42, we'll keep up to 50 reserved
 	{}, // 28
