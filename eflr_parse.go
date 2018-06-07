@@ -72,6 +72,10 @@ func parseSet(s *LRS) {
 		fmt.Print(" Type:", set.Type)
 
 		s.body = s.body[ln:]
+	} else {
+		// if bit 4 is not set this is undefined
+		log.Println("Set must have a type, bit 4 is not set.")
+		return
 	}
 
 	if checkBit(b1, 3) { // Name
@@ -217,22 +221,31 @@ func ParseEFLR(s *LRS) {
 			return
 		}
 
-		b := s.body[0]
-		role := b >> 5 // first 3 bits
+		// Fig 3-1
+		b := s.body[0] // first byte is a role and characteristic
+		role := b >> 5 // first 3 bits (highest order) is a role
+
 		switch role {
-		case 5, 6, 7: // Set role
-			// TODO build up a parsing template
-			parseSet(s)
-		case 3: // Object role
-			// TODO use the parsing template
-			parseObject(s)
-		case 1, 2: // Attribute roles
-			parseAttrib(s)
 		case 0: // Absent
 			// TODO absent is parsed based on prior content... on template...
 			fmt.Println("Absent argument")
 			fmt.Println("Something is wrong...?")
 			return
+
+		case 1, 2: // Attribute roles
+			parseAttrib(s)
+
+		case 3: // Object role
+			// TODO use the parsing template
+			parseObject(s)
+
+		case 4: // Reserved
+			fmt.Println("Reserved Role for ELFR Component. Undefined behaviour.")
+
+		case 5, 6, 7: // Set role
+			// TODO build up a parsing template
+			parseSet(s)
+
 		}
 	}
 }

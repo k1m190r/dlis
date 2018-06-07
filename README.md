@@ -10,7 +10,6 @@ How object would use the Template? How does attrib know it parces Template or ob
 
 #### older notes
     
-
 repcode.go - use the funcs from `RepCode` var to build up the template.
 
 reader.go - start with `NewDLISReader()` reading SUL as example. Everything is constructed as simple sequence of `func(in []byte) (Val, int)`. `Val` is universal value type. Calling function must know the expected return type.
