@@ -4,9 +4,16 @@ Spec: http://w3.energistics.org/rp66/v1/Toc/main.html
 
 
 #### NEXT
+
+Overhaul to keep the io.Reader around. LRS is a temporary transient structure that needs to go away. Need to get to object data as soon as possible.
+
+Start overhaul with SUL.
+    
 eflr_parse.go - `parseSet()` must build the actual template to follow by the object.
 
 How object would use the Template? How does attrib know it parces Template or object?
+
+Once object data gets parsed just throw it into a chan with large buffer, on the other side collect it for disk persistance asap. Try to stay as wait free as possible.
 
 #### older notes
     

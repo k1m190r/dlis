@@ -31,7 +31,7 @@ func NewVR(r io.Reader) (vr *VR) {
 	buff := make([]byte, 2)
 
 	// read 2 bytes of Length
-	n, err := r.Read(buff)
+	n, err := io.ReadFull(r, buff) // r.Read(buff)
 	if err != nil {
 		vr.Err = append(vr.Err, err)
 		return

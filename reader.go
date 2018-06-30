@@ -1,6 +1,7 @@
 package dlis
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -42,8 +43,7 @@ func NewDLISReader(r io.Reader) (ret *Reader) {
 	}
 
 	// buffered reader
-	// for now it is normal reader
-	ret.r = r // bufio.NewReaderSize(r, ret.Label.MaxRecLen)
+	ret.r = bufio.NewReaderSize(r, ret.Label.MaxRecLen)
 
 	return
 }

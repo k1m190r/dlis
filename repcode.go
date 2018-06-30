@@ -8,18 +8,6 @@ import (
 
 // http://w3.energistics.org/rp66/v1/rp66v1_appb.html
 
-// Val is "universal value"
-type Val struct {
-	// payload with a value
-	s *string
-	i *int
-	f *float64
-	v *Val
-
-	c int // count
-	e error
-}
-
 // Funcs
 
 // FSINGL RepCode 2
