@@ -61,9 +61,3 @@ func (r *Reader) String() string {
 	return fmt.Sprintf("DLIS Reader\n%s\nVRCount:%d\nErr: %v\n",
 		r.Label.String(), r.VRCount, r.Err)
 }
-
-func dclose(c io.Closer) {
-	if err := c.Close(); err != nil {
-		log.Printf("error with deferred closing: %v", err)
-	}
-}

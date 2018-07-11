@@ -5,6 +5,13 @@ Spec: http://w3.energistics.org/rp66/v1/Toc/main.html
 
 #### NEXT
 
+Think about the run.go Run(*V) *V, how does it work? It takes a *V which is slice of *V and think of them as one feeding the other. Values are simply get imbeded into the next? 
+
+
+Let code deal with io.Reader, *V deals only with []byte to values
+
+Default value objects are closures, that generate default value. 
+
 Overhaul to keep the io.Reader around. LRS is a temporary transient structure that needs to go away. Need to get to object data as soon as possible.
 
 Start overhaul with SUL.
