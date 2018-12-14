@@ -18,7 +18,7 @@ type LF []LR
 // Reader is dlis.Reader that does all the reading
 type Reader struct {
 	FileName string
-	Label    SUL
+	Label    SULT
 	VRCount  int // VR records read
 	Err      []error
 

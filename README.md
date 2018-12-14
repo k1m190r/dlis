@@ -2,8 +2,14 @@
 Spec: http://w3.energistics.org/rp66/v1/Toc/main.html
 
 
-
 #### NEXT
+
+Re-write in maplang
+
+Use abuse maps:
+    - maps make it clear if something is missing
+
+
 
 Think about the run.go Run(*V) *V, how does it work? It takes a *V which is slice of *V and think of them as one feeding the other. Values are simply get imbeded into the next? 
 
